@@ -800,8 +800,8 @@ def _ft_liveness(lines, labels, start, regs, depth=0, seen=None):
 def ido_copy_and_bump(text):
     """ASPSX fills a delay slot that has nothing above it by COPYING the
     branch target's first instruction into the slot and bumping the branch
-    past it, leaving the original in place (docs/reference/
-    IDO-CODEGEN-ASPSX-ASSEMBLY.md; _spu_setCommonAttr words 2-3: `bnez v0 ;
+    past it, leaving the original in place (_spu_setCommonAttr
+    words 2-3: `bnez v0 ;
     move v1,zero` with the original `move v1,zero` still at the old target).
     Only a single plain ALU word is copied, never a load, store or branch.
     The copy is placed just before the branch and GNU as's own reorder mode

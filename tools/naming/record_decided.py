@@ -4,7 +4,7 @@
 Input: one or more decision files, each a JSON list of
     {"id": "OV:0x8013XXXX", "decision": "LAND"|"DEFER", "name": "...",
      "basis": "...", "agreement": "...", "evidence": "..."}
-(the adjudicator output of the blind-review workflow, docs/reference/NAMING-TOOLS.md).
+(the adjudicator output of the blind-review workflow).
 
 A row may carry `"internal_of": "<window>"` for a function the C defines
 inside another .sym window (merged-symbol window); the record keeps it.

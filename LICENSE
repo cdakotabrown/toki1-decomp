@@ -35,8 +35,8 @@ Does not cover:
     art, its music and its text are (c) Konami. This repository holds no disc
     images and none of the game's data files, Japanese script text, art,
     audio or video.
-    The disc-derived inputs are built on your machine from your own copy
-    (docs/GETTING-STARTED.md). The repository does contain the project's
+    The disc-derived inputs are built on your machine from your own copy.
+    The repository does contain the project's
     reimplementation in C (below), symbol maps, decompiled C for the Sony
     SDK functions linked into the game, initial values of some program
     variables, and a small amount of disassembly quoted in documentation.

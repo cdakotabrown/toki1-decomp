@@ -1,6 +1,6 @@
 /* @TU: rensyu_serifu_tbl_set */
 /* File-scope data of the RENSYU translation unit that starts at
-   rensyu_serifu_tbl_set (docs/reference/OVERLAY-DATA-FROM-SOURCE.md). */
+   rensyu_serifu_tbl_set. */
 #include "types.h"
 
 s32 rensyu_serifu_ptr = 0;

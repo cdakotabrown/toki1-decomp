@@ -58,6 +58,6 @@
    "sites": 0
   }
  },
- "description": "Functions that used a RESTRICTED PostProc class before it was banned for new use on 2026-09-27 (docs/reference/PS1-HARDENING-AUDIT.md). This is a REMEDIATION WORKLIST, not a permission: banned_postproc.check_restricted_postproc_steps refuses the class for any function not listed here, or for more sites than listed. Entries may only be REMOVED (fix the C, or demote to asm_only); `python3 tools/build/banned_postproc.py --census --prune` drops remediated entries and never adds. Main functions are keyed by address (names are being renamed).",
+ "description": "Functions that used a RESTRICTED PostProc class before it was banned for new use on 2026-09-27. This is a REMEDIATION WORKLIST, not a permission: banned_postproc.check_restricted_postproc_steps refuses the class for any function not listed here, or for more sites than listed. Entries may only be REMOVED (fix the C, or demote to asm_only); `python3 tools/build/banned_postproc.py --census --prune` drops remediated entries and never adds. Main functions are keyed by address (names are being renamed).",
  "generated": "2026-09-27"
 }

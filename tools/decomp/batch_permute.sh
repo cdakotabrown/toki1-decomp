@@ -11,7 +11,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_ROOT="$SCRIPT_DIR/../.."
 PERMUTER_DIR="$PROJECT_ROOT/build/decomp-permuter"
 
-# Smallest Medium functions - best permuter candidates (from ASM-TO-C-TRIAGE.md)
+# Smallest Medium functions - best permuter candidates
 FUNCTIONS=(
     CdGetSector   # 15 instr, delay slot
     _cmp   # 15 instr, delay slot

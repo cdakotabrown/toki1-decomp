@@ -1,6 +1,6 @@
 /* @TU: rensyu_main */
 /* File-scope data of the RENSYU translation unit that starts at
-   rensyu_main (docs/reference/OVERLAY-DATA-FROM-SOURCE.md).  The rest of
+   rensyu_main.  The rest of
    the TU's data lives in its functions: the string literals of
    rensyu_init_main / rensyu_load3 and the local-initialiser tables of
    rensyu_main, rensyu_girl_pick_main, 2, 4, 5 and 6. */

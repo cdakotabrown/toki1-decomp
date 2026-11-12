@@ -12,8 +12,7 @@ cannot see them either.  This gate asks the honest question instead:
     Is the shipped object a register-renaming plus a rescheduling of what the
     C compiles to with NO PostProc at all?
 
-Method (promoted from the 2026-09-27 hardening audit, `ha/ha_dfa.py`; see
-docs/reference/PS1-HARDENING-AUDIT.md section 3):
+Method (promoted from the 2026-09-27 hardening audit, `ha/ha_dfa.py`):
 
   * compile the function RAW (every @PostProc line stripped; @CompileFlags,
     @CompileEnv hooks and the ORIGINAL header's PIC mode kept) and FINAL (the

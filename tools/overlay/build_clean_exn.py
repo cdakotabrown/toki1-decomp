@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""build_clean_exn.py - Whole-EXN clean build from SOURCE (spec: docs/CLEAN-DISK-BUILD-SPEC.md).
+"""build_clean_exn.py - Whole-EXN clean build from SOURCE.
 
 Builds a byte-identical overlay EXN where every CODE byte comes from source:
 
@@ -1044,7 +1044,6 @@ def update_debt_file(overlay: str, debt: Dict, verify: Optional[Dict]):
     db = _load_json(DEBT_FILE)
     db.setdefault("_meta", {})
     db["_meta"]["tool"] = "tools/overlay/build_clean_exn.py"
-    db["_meta"]["spec"] = "docs/CLEAN-DISK-BUILD-SPEC.md"
     entry = {k: v for k, v in debt.items() if k not in RUNTIME_KEYS}
     if verify is not None:
         entry["verify"] = {k: verify[k] for k in
@@ -1296,8 +1295,7 @@ def main():
     ap.add_argument("--data-from-source", action="store_true",
                     help="build the .rodata/.data/.bss region from source "
                          "(overlay_data_from_source.py) instead of copying "
-                         "it from the EXN; opt-in, see "
-                         "docs/reference/OVERLAY-DATA-FROM-SOURCE.md")
+                         "it from the EXN; opt-in")
     ap.add_argument("-v", "--verbose", action="store_true")
     args = ap.parse_args()
 

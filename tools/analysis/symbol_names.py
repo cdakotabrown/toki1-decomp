@@ -29,7 +29,7 @@ Sub-commands:
                 matcher's `--anchors confirmed` uses only confirmed anchors.
 
 Overlay records (2026-10, tools/overlay/apply_overlay_symbols.py): keyed
-"<OV>:0xADDR" with "scope": "<OV>" (docs/SYMBOL-NAMING-PIPELINE.md §3 v2).  The
+"<OV>:0xADDR" with "scope": "<OV>".  The
 address is the one the function's `func_<ADDR>` name carried (its prologue).
 Every overlay loads at 0x80132000, so the same name or address may exist in
 several overlays; names are unique WITHIN an overlay and never equal a landed
@@ -37,7 +37,7 @@ MAIN name.  `load_names()` returns the MAIN view only (so the main tools --
 matcher, census, lander -- never meet an overlay key) and `save_names()` puts
 the overlay records back; pass `all_scopes=True` to see and edit both.
 
-Design notes (measured 2026-09-26, see docs/SYMBOL-MAPPING-PLAN.md):
+Design notes (measured 2026-09-26):
   * o.bin is a DIFFERENT SOURCE REVISION linked in the same order: consecutive
     anchor distances correlate 0.985 but the per-function debug gap has ZERO
     rank correlation with retail size, so a debug gap is not a size signal.

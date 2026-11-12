@@ -30,7 +30,7 @@ WINDOWS = [
     ('RotTransPers', 0x800B1650, 688,
      'LIBGTE hand-written COP2 assembly: a window of ~17 tiny GTE wrappers '
      '(lwc2/swc2/cop2/cfc2/mfc2 bodies, `jr ra` each) -- the LIBGTE members '
-     'Konami linked VERBATIM (docs/reference/PSYQ-LIB-IDENTIFICATION.md).  No C '
+     'Konami linked VERBATIM.  No C '
      'compiler emits COP2; terminal state asm_only.  Sibling filings: '
      'SetBackColor/5024/50D0/50DC.'),
     ('SetDQB', 0x800A50E8, 884,
@@ -95,7 +95,7 @@ WINDOWS = [
      'in SDK 3.3/3.5/3.6 at 0x800A6460.  No ccpsx source record: a hand-written '
      'Sony asm member (0 COP2 -- an lh/sh transpose; like RotMatrix, a '
      'verbatim Sony object is asm_only whatever its COP2 count).  Konami linked '
-     'LIBGTE verbatim (docs/reference/PSYQ-LIB-IDENTIFICATION.md).  Terminal '
+     'LIBGTE verbatim.  Terminal '
      'asm_only.'),
     # 2026-11-05: the LIBGTE listings that existed only as local, untracked
     # files (asm/main/matched/ is gitignored); now emitted from the disc too.
@@ -138,7 +138,7 @@ WINDOWS = [
     ('PopMatrix', 0x800A62DC, 304,
      'GTE hand-asm: libgte PopMatrix + ReadRotMatrix + ReadLightMatrix in one 304-byte window. Saves $ra to a GLOBAL (sw ra,D_800E4750), uses `addi` (no C compiler emits addi), ctc2 $0-$7 from the matrix stack slot, cfc2 $0-$7 / $8-$15 stores. Same class as func_800A623C / func_800A4DAC.'),
     ('GsTMDfastTNG3', 0x800A7AF0, 376,
-     'GTE hand-asm: libgs TMDF GT3-family sorter (lwc2 $0-$5 vertex loads, RTPT 0x280030, NCLIP 0x1400006, AVSZ3 0x158002d, mtc2/mfc2, six swc2 stores into the 40-byte 0x09-tag packet). Sits between the verbatim TMDF_FT3 and TMDF_G4 LIBGTE members (PSYQ-LIB-IDENTIFICATION.md) and is the same hand-written family; no C spelling reaches cop2.'),
+     'GTE hand-asm: libgs TMDF GT3-family sorter (lwc2 $0-$5 vertex loads, RTPT 0x280030, NCLIP 0x1400006, AVSZ3 0x158002d, mtc2/mfc2, six swc2 stores into the 40-byte 0x09-tag packet). Sits between the verbatim TMDF_FT3 and TMDF_G4 LIBGTE members and is the same hand-written family; no C spelling reaches cop2.'),
     ('GsTMDfastTG3NL', 0x800A7C68, 348,
      'sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMDF_GT3 +0x178 (GsTMDfastTG3NL), 21/87 COP2 words; member aligned 399/400 at 0x800A7AF0 (miss = trailing pad)'),
     ('GsTMDfastTG3L', 0x800A7DC4, 436,

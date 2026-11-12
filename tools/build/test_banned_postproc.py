@@ -2,8 +2,8 @@
 """Regression tests for banned_postproc: is_painting_script() and the
 RESTRICTED classes (banned for new use, pre-ban users grandfathered).
 
-Guards the 2026-08-09 main-binary `custom_script` audit
-(docs/reference/CUSTOM-SCRIPT-AUDIT.md).  That audit read all 163 live
+Guards the 2026-08-09 main-binary `custom_script` audit.
+That audit read all 163 live
 `custom_script` directives under src/main/ by hand and found the detector was
 missing whole classes of painting -- 32 of them in the SHIPPED build.
 

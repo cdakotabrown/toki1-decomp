@@ -47,7 +47,7 @@ MAN = {"images": [], "models": [], "audio": [], "raw": [], "failed": []}
 
 
 # The converters belong to the PC port (pc/tools) and the English patch
-# (translation/tools); docs/REPO-SPLIT-PLAN.md.  Without that part its formats
+# (translation/tools).  Without that part its formats
 # are skipped, and said so once.
 _SKIPPED = set()
 

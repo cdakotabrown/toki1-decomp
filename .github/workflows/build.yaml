@@ -10,8 +10,7 @@ name: Lint and policy
 # separate repositories with their own CI.)
 
 # CI has no retail disc, so it cannot run the verification battery: that needs
-# the player's own SLPS-00065 image (see docs/GETTING-STARTED.md and the battery
-# in docs/progress/REMAINING-WORK.md). Everything here is disc-free on purpose.
+# the player's own SLPS-00065 image. Everything here is disc-free on purpose.
 # If a check below ever needs the disc, delete the check instead of making it
 # skip silently: a green CI that verified nothing is worse than no CI.
 

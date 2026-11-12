@@ -2,7 +2,7 @@
 """History-preserving record correction for renaming an ALREADY-LANDED name.
 
 A refinement replaces a landed mechanical name with a data-verified one (the
-0x80084ED0 / 0x8008D778 merge pattern, docs/TODO-NEXT.md 2026-10-16).  Renames
+0x80084ED0 / 0x8008D778 merge pattern).  Renames
 are done by the landers, never here: this tool only rewrites the RECORD.  The
 old record is preserved verbatim in `history` (with a `superseded` marker) and
 the refined name takes the top level with `landed: false`, ready for

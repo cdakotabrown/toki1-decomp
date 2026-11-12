@@ -496,7 +496,6 @@ def main():
         funcs["%s/%s" % (r["overlay"], r["func"])] = r
     out = {"_meta": {
         "generator": "tools/overlay/audit_paint_dataflow_census.py --all",
-        "doc": "docs/reference/PAINT-DATAFLOW-CENSUS.md",
         "population": "byte_perfect overlay functions with an active "
                       "@PostProc: patch_insn_reg_field directive",
         "warning": "PROVABLE and ADVISORY are different epistemic tiers. "

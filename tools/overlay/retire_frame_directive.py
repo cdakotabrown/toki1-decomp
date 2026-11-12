@@ -2,7 +2,7 @@
 """Retire `@PostProc: patch_stack_complete --old N --new N+16` in favour of
 the compiler flag that actually causes the +16: `-Wc,-pic1`.
 
-Root cause: docs/reference/FRAME-SIZE-ROOTCAUSE.md.  `-Wc,-pic1` makes ugen
+`-Wc,-pic1` makes ugen
 reserve the IRIX-4 PIC linkage area — a silent +16 bytes on every emitted
 frame, instruction stream unchanged.  A file gets `-pic1` automatically once
 it no longer carries a frame directive (policy lives in
@@ -211,7 +211,7 @@ def apply_stamp_pic0(text: str) -> Tuple[str, str]:
         " * accounts for the PIC linkage area some other way -- typically\n"
         " * invented padding locals in the decompiled C -- so -Wc,-pic1 would\n"
         " * add the 16 bytes a second time. Model the frame honestly, then\n"
-        " * delete this stamp. See docs/reference/FRAME-SIZE-ROOTCAUSE.md.\n"
+        " * delete this stamp.\n"
         " */\n")
     return stamp + text, "created"
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """build_clean_main.py - Build the MAIN executable (SLPS_000.65) from SOURCE.
 
-Stage 4 of docs/CLEAN-DISK-BUILD-SPEC.md: replaces the whole-image ROM-byte
+Replaces the whole-image ROM-byte
 model of build_level3_c.py (original exe + patched C functions) with the same
 source-priority model as the overlay clean build:
 

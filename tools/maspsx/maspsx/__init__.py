@@ -80,7 +80,7 @@ double_reg_loads = {
 # are not sinks at all: 24-26 needs the `lui $at` to move UP past a `sllv`
 # that writes the stored register, and 29-31 needs the store to land in a
 # branch delay slot that our cc1 fills itself.  Neither is derivable from the
-# available evidence -- see docs/reference/ASPSX-STORE-MACRO-SPLIT.md.)
+# available evidence.)
 store_split_crossable = {
     "la",
 }

@@ -204,7 +204,6 @@ def print_analysis(address, asm_lines):
     print("  4. Compare with: mipsel-linux-gnu-objdump -d output.o")
     print()
 
-    print("See docs/IDO-REGISTER-PATTERNS.md for detailed patterns.")
     print(f"{'='*70}\n")
 
 

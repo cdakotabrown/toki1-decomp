@@ -3,7 +3,7 @@
 
 A volatile access to a table cell cannot become `host[i]`: IDO shares one
 base register across a host's elements (base CSE), so the cell keeps its own
-symbol (docs/reference/NAMING-TOOLS.md, "volatile").  It can still have a
+symbol.  It can still have a
 real NAME: the host's name plus the cell's position.
 
   integer array host  `T host[N]`      -> host_<i>        (host_<i>_<j> for 2-D)
@@ -217,8 +217,8 @@ def main():
         dec.append({'id': '%s:%s' % (ov, r['addr'].upper().replace('0X', '0x')), 'decision': 'LAND', 'name': name,
                     'size': csize, 'type': ctype, 'tier': 'T4', 'style': 'derived', 'confidence': 'DERIVED',
                     'evidence': 'T4: cell %s of %s (%s at %s, +0x%X): the cell keeps its own symbol '
-                                '(a volatile access, or IDO shares a base register across host[i]; '
-                                'NAMING-TOOLS.md "volatile"), so it is named for its host and position.'
+                                '(a volatile access, or IDO shares a base register across host[i]), '
+                                'so it is named for its host and position.'
                                 % (name[len(hname) + 1:], hname, ht, '0x%08X' % h, off),
                     'note': 'gen_cell_names.py (mechanical, 2026-11-10)'})
     json.dump(dec, open(out, 'w'), indent=1)

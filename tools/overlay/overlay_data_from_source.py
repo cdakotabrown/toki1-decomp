@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """overlay_data_from_source.py - build an overlay's .rodata/.data/.bss from SOURCE.
 
-Design and findings: docs/reference/OVERLAY-DATA-FROM-SOURCE.md.
-
 build_clean_exn.py copies everything after the last code byte (the "data
 splice") from the retail EXN.  This module replaces that splice, behind
 `build_clean_exn.py --data-from-source`, with sections taken from compiled

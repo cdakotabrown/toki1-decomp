@@ -182,7 +182,7 @@ def main():
     # missing once instead (the CI job installs binutils-mipsel-linux-gnu).
     if not shutil.which("mipsel-linux-gnu-as"):
         print("ERROR: mipsel-linux-gnu-as not found on PATH: install "
-              "binutils-mipsel-linux-gnu (docs/GETTING-STARTED.md).")
+              "binutils-mipsel-linux-gnu.")
         sys.exit(1)
 
     # matched/ failures fail CI; semi-matched/ failures are warnings only

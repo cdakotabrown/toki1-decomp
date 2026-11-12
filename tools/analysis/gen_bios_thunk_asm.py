@@ -29,8 +29,7 @@ NAMES ARE NOT CLAIMED
 Symbols stay func_<ADDR>.  The (table, index) pair IS established -- it is
 literally the two immediates -- and the PSX-SPX name for that index is
 recorded in the header as documentation.  That is not the same as proving
-which Sony LIBAPI symbol Konami linked, so no name is asserted.  See the
-retraction at docs/TODO-NEXT.md and docs/reference/PSYQ-LIB-IDENTIFICATION.md.
+which Sony LIBAPI symbol Konami linked, so no name is asserted.
 
 Every emitted .s is assembled and compared against the retail bytes.
 asm/main/matched/*.s is gitignored; this script is the tracked recipe.
@@ -185,7 +184,7 @@ def header(addr, ws):
               'That is documentation.  The SYMBOL stays func_<ADDR>: knowing which',
               'kernel entry the thunk targets does not establish which Sony LIBAPI',
               'symbol Konami linked, and this project retracted 23 names that were',
-              'guessed that way (docs/TODO-NEXT.md, PSYQ-LIB-IDENTIFICATION.md).',
+              'guessed that way.',
               '',
               'BLOCKER: bios_trampoline -- asm_only.  `jr $t2` with the call number',
               'established in the branch-delay slot has no C89 form: C cannot jump',

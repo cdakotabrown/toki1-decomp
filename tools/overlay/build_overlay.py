@@ -42,7 +42,7 @@ import overlay_names
 from ido_flags import base_flags, pic_flags
 
 # Honest relocation resolution: name-encoded symbol addresses (see
-# resolve_overlay_relocs.py / docs/reference/PHASE2-RELOC-RESOLUTION.md). Each
+# resolve_overlay_relocs.py). Each
 # extern func_/D_ symbol carries its true RAM address in its NAME, so we define
 # it at that address and let ld apply R_MIPS_26/HI16/LO16 for real — NOT
 # copy-from-target. This is what turns reloc_only -> byte_perfect at link time.

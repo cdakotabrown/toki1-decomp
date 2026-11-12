@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Match retail main-binary functions to o.bin debug names (Phase 1 of
-docs/SYMBOL-MAPPING-PLAN.md), calibrated by leave-one-out on the landed names.
+"""Match retail main-binary functions to o.bin debug names,
+calibrated by leave-one-out on the landed names.
 
 WHAT THE DATA SAYS (2026-09-26, measured before this was written)
   * o.bin is a different source revision linked in the SAME ORDER: over the
@@ -390,7 +390,7 @@ def write_worklist(rows, m, anchor_mode='all'):
          f'Generated {SN.TODAY} by `tools/analysis/match_debug_symbols.py`. HIGH rows land via '
          '`apply_debug_symbols.py` only after a `symbol_names.py review ... consistent` verdict; MEDIUM lands only '
          'after a reviewer reads the retail code; LOW never lands. '
-         'Method, calibration and the evidence format: the tool docstring and `docs/SYMBOL-MAPPING-PLAN.md`.', '',
+         'Method, calibration and the evidence format: the tool docstring.', '',
          '## What the measurements changed (Phase 0/1 findings, 2026-09-26)', '',
          '* o.bin is a DIFFERENT SOURCE REVISION linked in the same order: consecutive-anchor distances correlate '
          '0.985, only 0.6% of anchor pairs are order-inverted, but the debug gap has Spearman 0.00 against retail size '

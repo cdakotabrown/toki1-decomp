@@ -48,7 +48,7 @@ Hooks added:
 After patching, rebuild with:
     cd tools/ido-static-recomp && make -C build/5.2 uopt
 
-See docs/UOPT-HOOKS-REFERENCE.md for full documentation.
+See docs/reference/UOPT-HOOKS-REFERENCE.md for full documentation.
 """
 
 import sys

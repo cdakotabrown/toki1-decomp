@@ -147,7 +147,7 @@ def main():
         rows.append({'addr': '0x%08X' % a, 'decision': 'LAND', 'name': name, 'type': ctype,
                      'size': WIDTH[ctype], 'tier': 'T4',
                      'evidence': 'T4: cell %s of %s (%s at 0x%08X, +0x%X): a cell that keeps its own symbol '
-                                 '(volatile access or a separate base register; NAMING-TOOLS.md "volatile"), '
+                                 '(volatile access or a separate base register), '
                                  'named for its host and position; gen_main_host_cells.py (mechanical, 2026-11-10)'
                                  % (name[len(hname) + 1:], hname, ht or '?', h, off)})
     json.dump(rows, open(out, 'w'), indent=1)

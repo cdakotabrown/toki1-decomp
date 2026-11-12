@@ -7,7 +7,7 @@ address off its `func_<ADDR>` name).  Names are recorded per overlay,
 
     "RENSYU:0x80132040": {"name": "<ov>_main", "kind": "func", "scope": "RENSYU", ...}
 
-(docs/SYMBOL-NAMING-PIPELINE.md §3 v2), the address being the prologue address
+the address being the prologue address
 the function's `func_<ADDR>` name carried.  Every overlay loads at 0x80132000, so
 the same name or address may exist in several overlays: every rename here is
 scoped to ONE overlay and never touches another overlay or the main binary.

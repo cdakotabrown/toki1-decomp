@@ -65,7 +65,7 @@ def parse_header(src: Path):
     derivation (region/PIC flags), so the audit compiles what the build
     compiles.  The first version of this tool regex-scraped across line
     breaks and used an approximated command line; that produced 25 false
-    'stale' tokens and one phantom banned token (HOOK-HONESTY-AUDIT.md)."""
+    'stale' tokens and one phantom banned token."""
     txt = src.read_text(errors="replace")
     env = {}
     for body in directive_bodies(txt, "@CompileEnv:"):

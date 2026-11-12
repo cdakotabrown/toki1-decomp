@@ -8660,7 +8660,6 @@
     }
   },
   "_meta": {
-    "spec": "docs/CLEAN-DISK-BUILD-SPEC.md",
     "tool": "tools/overlay/build_clean_exn.py"
   },
   "main": {

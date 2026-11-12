@@ -72,7 +72,7 @@ Rules for changing the C, and the other gates: `CLAUDE.md`.
 | `asm/overlay/` | the few windows kept as assembly |
 | `config/` | function registry, symbol maps, names |
 | `tools/` | compilers, build, gates |
-| `docs/reference/` | proof model, compiler hooks, directives, matching tricks, naming, game architecture (other `docs/` files cited in comments are unpublished notes) |
+| `docs/reference/` | proof model, compiler hooks, directives, matching tricks, naming, game architecture |
 
 `toki1-english` (the English patch) and `toki1-pc` (the PC port) build on
 this repository and expect it beside them as `../toki1-decomp`.

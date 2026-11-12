@@ -356,8 +356,7 @@
 # AUTOFIX-CLASSIFIED 2026-06-29: the PAINTING_REMOVED + semi-matched blockers were run through
 # the autonomous autofix pipeline (scheduler + patch_insn_reg_field + remap_stack +
 # patch_stack). 23 recovered to byte-perfect (now in src/main/matched/). The rest
-# carry genuine residuals after all ALLOWED postproc -- per-function verdicts in
-# docs/reference/SEMI-BLOCKER-CLASSIFICATION-2026-06-29.md (count/restore=lazy-save/
+# carry genuine residuals after all ALLOWED postproc (count/restore=lazy-save/
 # dup-lw-ra/cross-prologue count mismatch; held-const=li/move remat; opcode/rtype=
 # real op divergence; imm=often wrong-global-decl, C-fixable on manual review).
 # These 56 functions were 'matched' via a BANNED painting custom_script
@@ -369,7 +368,7 @@
 # blocker verdict). A genuine matched C rewrite is welcome (then remove from
 # this list); do NOT re-paint them.
 #
-# TRIAGE 2026-06-28 (docs/reference/PAINTING-REWRITE-TRIAGE.md): recompiled the
+# TRIAGE 2026-06-28: recompiled the
 # faithful archived C of all 104 with ONLY allowed PostProc -- ZERO have a
 # register-only residual; every one carries a genuine structural/codegen
 # residual (they were painted precisely because clean C does not match).
@@ -575,7 +574,7 @@
 # later). Pre-existing tool limitation, not fixed here (out of scope for a
 # single-function pass) — flagged for scheduler_normalizer maintenance.
 # RETIRED 2026-10-04: TACO/taco_zk_cd_load byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
-#   Original entry: TACO/taco_zk_cd_load        # BLOCKER 2026-06-30: filled-branch-delay-slot lw-ra duplication. 6 sibling case-groups (get_CD_State2-gated) share this shape: `n=get_CD_State2(); andi t,v0,1; beq t,zero,0x801342D0 / delay=lw ra,20(sp)`. IDO schedules the epilogue's `lw ra` into the delay slot of this early bit-test UNCONDITIONALLY (executes on both taken/not-taken paths), then the fallthrough path (continues to more cd_read_start calls) reloads ra a SECOND time via the full shared epilogue at 0x801342CC before its own return. C89 cannot force IDO to duplicate a restore load into an unrelated branch's delay slot when the fallthrough path needs a live ra afterward — same family as func_80060E28/SpuVmNoiseOnWithAdsr (documented PAINTING-REWRITE-TRIAGE.md). Not fixable with allowed PostProc (would need insert_instruction_and_shift = banned). 32 residual diffs are ALL downstream of this one scheduling choice (32 = branch target offsets shifted because compiled code takes the single shared epilogue every time instead of the two-tier early/full split).
+#   Original entry: TACO/taco_zk_cd_load        # BLOCKER 2026-06-30: filled-branch-delay-slot lw-ra duplication. 6 sibling case-groups (get_CD_State2-gated) share this shape: `n=get_CD_State2(); andi t,v0,1; beq t,zero,0x801342D0 / delay=lw ra,20(sp)`. IDO schedules the epilogue's `lw ra` into the delay slot of this early bit-test UNCONDITIONALLY (executes on both taken/not-taken paths), then the fallthrough path (continues to more cd_read_start calls) reloads ra a SECOND time via the full shared epilogue at 0x801342CC before its own return. C89 cannot force IDO to duplicate a restore load into an unrelated branch's delay slot when the fallthrough path needs a live ra afterward — same family as func_80060E28/SpuVmNoiseOnWithAdsr. Not fixable with allowed PostProc (would need insert_instruction_and_shift = banned). 32 residual diffs are ALL downstream of this one scheduling choice (32 = branch target offsets shifted because compiled code takes the single shared epilogue every time instead of the two-tier early/full split).
 # RETIRED 2026-10-04: BUNKA_SD/bunka_sd_result_step byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
 #   Original entry: BUNKA_SD/bunka_sd_result_step   spill_hoist  # BLOCKER 2026-07-01: after fixing genuinely wrong addresses (all rodata/global constants were fabricated, plus wrong frame size 64 vs real natural 72) the C is now faithful and reaches 90.1% masked (118/131), but 13 residual diffs are a real spill-vs-rematerialize codegen difference: the target rematerializes cheap sp-relative addresses (`addiu a0,sp,56` for the stack name buffer, and the pad_data ctrl-flag address) fresh at each of 3 call sites, while IDO 5.2 -O2 on our C spills/reloads them from a stack slot instead (verified via remap_stack_slots trying every plausible slot mapping — the residual is a genuine extra load/store vs a genuine extra lui/addiu, not an offset choice). Matches the SKIP-list spill-hoist category. Not fixable with allowed PostProc.
 # RETIRED 2026-10-04: ETC/etc_init byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
@@ -887,7 +886,7 @@
 # compiler emits COP2, and the archive members record no source path (Sony
 # shipped these as .s).  Byte-perfect ASM in asm/main/matched/, regenerated and
 # self-verified by tools/analysis/gen_b0508_asm.py (24/24 assemble back to the
-# retail bytes).  Details: docs/reference/PSYQ-LIB-IDENTIFICATION.md.
+# retail bytes).
 gte_texture_gouraud3     # ASM-ONLY: GTE asm, 0x800B0508/356, LIBGTE 2.5 TMD (byte-verified)
 gte_flat_fog3            # ASM-ONLY: GTE asm, 0x800B066C/244, LIBGTE 2.5 TMD (byte-verified)
 gte_texture_flat_fog3    # ASM-ONLY: GTE asm, 0x800B0760/288, LIBGTE 2.5 TMD (byte-verified)
@@ -939,12 +938,11 @@ RCpolyF3A                # ASM-ONLY: GTE asm, 0x800B12E8/872, LIBGTE 2.5 DIVF3A 
 # Konami linked LIBGTE verbatim: the retail bytes at these addresses are
 # byte-for-byte the shipped Sony archive objects, modulo relocation fields.
 # Evidence is WHOLE-MEMBER alignment (a linker emits a member's .text
-# contiguously), never per-function masked similarity -- that shortcut is the
-# false-positive class retracted in docs/TODO-NEXT.md.  Measured FP rate at the
+# contiguously), never per-function masked similarity -- that shortcut is a
+# retracted false-positive class.  Measured FP rate at the
 # reporting floor: 0 over the 70,656-word Konami game region.  Corroborated by
 # Sony's own symbol sizes matching the repo-derived boundaries exactly, and by
-# COP2 density.  Record: config/psyq_lib_symbols.json.  Full method:
-# docs/reference/PSYQ-LIB-IDENTIFICATION.md.
+# COP2 density.  Record: config/psyq_lib_symbols.json.
 #
 # Blocker category: sony_libgte_verbatim.  These are not Konami code.  Most are
 # hand-written GTE assembly (COP2 densities below); the 8-byte RCpoly* entries
@@ -1031,8 +1029,7 @@ RotMatrix            # ASM-ONLY sony_libgte_verbatim (RE-ADJUDICATED 2026-10-03:
 # Every listing round-trips: tools/analysis/gen_bios_thunk_asm.py --check
 # reassembles each and compares against disks/SLPS_000.65 (51/51, 0 failures).
 # Names are deliberately left as func_<ADDR>: the (table,index) pair is proven
-# (it is the immediates) but the Sony LIBAPI symbol name is not -- see the
-# retraction in docs/TODO-NEXT.md.
+# (it is the immediates) but the Sony LIBAPI symbol name is not.
 strncpy         # ASM-ONLY bios_trampoline: 0x800B4830/16 -- A(0x1A) strncpy
 memcpy         # ASM-ONLY bios_trampoline: 0x800B4840/16 -- A(0x2A) memcpy
 printf         # ASM-ONLY bios_trampoline: 0x800B4850/16 -- A(0x3F) printf
@@ -1113,7 +1110,7 @@ SetFarColor        # ASM-ONLY sony_libgte_verbatim (2026-09-26): 3.3 LIBGTE.LIB 
 #   end to end: f_home_parameters / f_home_parms / f_save_vreg only reserve).
 
 # 2026-09-02: remaining semi_stub functions that are hand-written GTE assembly (libgte
-#   class -- LIBGTE was linked verbatim, see PSYQ-LIB-IDENTIFICATION.md). ctc2/mtc2/mfc2/
+#   class -- LIBGTE was linked verbatim). ctc2/mtc2/mfc2/
 #   c2 cannot be emitted by IDO 5.2 from C. Terminal asm_only, same class as the five
 #   ctc2 loaders filed 2026-08-31.
 MulMatrix2        # ASM-ONLY sony_libgte_verbatim: 4.5 LIBGTE.LIB member MTX_04 +0x0 (MulMatrix2), 23/67 COP2 words, 268 B; member aligned 67/68 at 0x800A4AAC (miss = trailing pad) (2026-09-25)
@@ -1124,7 +1121,7 @@ MulMatrix0        # ASM-ONLY sony_libgte_verbatim: 4.5 LIBGTE.LIB members MTX_00
 GsTMDfastTG3LFG        # ASM-ONLY sony_libgte_verbatim (2026-09-26, NO LONGER partial): 3.3 LIBGTE.LIB member TMDF_GT3 +0x488 (GsTMDfastTG3LFG, 436 B) + +0x63C (GsTMDfastTG3L_FLIP, 436 B at 0x800A812C) = the whole 872-byte window; member whole 508/508 at 0x800A7AF0 | prev: ASM-ONLY sony_libgte_verbatim (partial): first 436 B = 2.5 LIBGTE.LIB member TMDF_GT3 +0x488 (GsTMDfastTG3LFG), member aligned 399/400 at 0x800A7AF0; the 436 B from 0x800A812C is a separate frameless function (single-symbol 109/109 vs 4.5 GT3F GsTMDfastTG3L_FLIP, hint only); window should be split at 0x800A812C; 872 B (2026-09-25)
 SetDQA        # ASM-ONLY sony_libgte_verbatim (2026-09-26): 3.3 LIBGTE.LIB member REG03 +0x15C (SetDQA), 12 B; member whole 96/96 | prev: BLOCKER: GTE hand-asm (ctc2 a0,$27 wrapper; libgte control-register store)
 SetDQB        # ASM-ONLY sony_libgte_verbatim (2026-09-26, first 152 B): 3.3 LIBGTE.LIB REG03 +0x168 (SetDQB, 24 B) then 3.3 REG01 whole 32/32 at 0x800A5100 (ReadSZfifo3/4, ReadSXSYfifo, ReadRGBfifo, ReadGeomOffset, ReadGeomScreen, to 0x800A5180); the rest of the 884-byte window (0x800A5180-0x800A545C) is the same class of tiny lwc2/swc2/ctc2 loaders but no shipped 2.5/3.3/3.5/3.6/4.0/4.5 member aligns whole there | prev: BLOCKER: GTE hand-asm (filed 2026-09-17): 884-byte window of ~14 tiny LIBGTE register loaders/storers (ctc2/swc2/mtc2, jr ra each) right after SetDQA. Verbatim-linked Sony COP2 assembly, no C compiler emits it; asm_only listing in asm/main/matched.
-RotTransPers        # ASM-ONLY sony_libgte_verbatim (2026-09-26): 3.3 LIBGTE.LIB member SMP, whole member 172/172 words = exactly this 688-byte window (RotTransPers 0x800B1650, RotTransPers3, RotTrans, LocalLight, DpqColor, NormalColor, NormalColor3, NormalColorDpq, NormalColorDpq3, NormalColorCol, NormalColorCol3, ColorDpq, ColorCol, NormalClip, NormalClipS, AverageSZ3, AverageSZ4) | prev: BLOCKER: GTE hand-asm (filed 2026-09-17): 688-byte window of ~17 tiny LIBGTE wrappers (lwc2/swc2/cop2/cfc2/mfc2 bodies, jr ra each). Verbatim-linked Sony COP2 assembly (PSYQ-LIB-IDENTIFICATION.md), no C compiler emits it; asm_only listing in asm/main/matched.
+RotTransPers        # ASM-ONLY sony_libgte_verbatim (2026-09-26): 3.3 LIBGTE.LIB member SMP, whole member 172/172 words = exactly this 688-byte window (RotTransPers 0x800B1650, RotTransPers3, RotTrans, LocalLight, DpqColor, NormalColor, NormalColor3, NormalColorDpq, NormalColorDpq3, NormalColorCol, NormalColorCol3, ColorDpq, ColorCol, NormalClip, NormalClipS, AverageSZ3, AverageSZ4) | prev: BLOCKER: GTE hand-asm (filed 2026-09-17): 688-byte window of ~17 tiny LIBGTE wrappers (lwc2/swc2/cop2/cfc2/mfc2 bodies, jr ra each). Verbatim-linked Sony COP2 assembly, no C compiler emits it; asm_only listing in asm/main/matched.
 rand        # BLOCKER: PS1 BIOS call thunk (li t2,0xA0; jr t2; li t1,0x2F) -- hand-written
 ApplyMatrixSV        # ASM-ONLY sony_libgte_verbatim: 4.5 LIBGTE.LIB member MTX_06 +0x0 (ApplyMatrixSV), 11/23 COP2 words, 92 B; member aligned 23/24 at 0x800A4C08 (2026-09-25)
 SetRotMatrix        # ASM-ONLY sony_libgte_verbatim: 4.5 LIBGTE.LIB member MTX_09 +0x0 (SetRotMatrix), 5/12 COP2 words, 48 B; member aligned 12/12 at 0x800A4DAC (FULL 11 sub-floor; chain MTX_09..MTX_12 FULL 40) (2026-09-25)

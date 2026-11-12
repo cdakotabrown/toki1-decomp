@@ -49,7 +49,7 @@ def measure(name, src):
     rec.update(compiled=comp, target=tgt, exact=int(m.group(1)), pct=float(m.group(3)),
                fixups=int(f.group(1)) if f else 0, overrun=(int(u.group(1)) - comp) if (u and over) else 0)
     # BYTE-PERFECT only when the harness copied nothing: a Fixup word is a target
-    # byte, not a compiled one (docs/reference/MAIN-RELOC-AUDIT.md).
+    # byte, not a compiled one.
     if 'BYTE-PERFECT' in o and rec['fixups'] == 0 and not over: rec['verdict'] = 'BYTE-PERFECT'
     elif over: rec['verdict'] = 'OVERRUN'
     elif comp <= 8 and tgt >= 16: rec['verdict'] = 'STUB'   # an empty body; tiny real functions stay SEMI

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """build_clean_iso.py - Assemble a byte-identical game disc from the clean build.
 
-Pipeline (spec: docs/CLEAN-DISK-BUILD-SPEC.md "Disk assembly"):
+Pipeline:
   1. Stage the extracted ISO tree (gitignored assets/extracted_iso) into
      build/clean_iso/staging via symlinks, OVERRIDING:
        - all 26 CDROM/EXEDIR/<OV>.EXN with the clean-built EXNs

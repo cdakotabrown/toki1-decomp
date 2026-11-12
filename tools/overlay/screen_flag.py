@@ -7,11 +7,11 @@
 ────────────────────────────────────────────────────────────────────────────
 Why this exists
 ────────────────────────────────────────────────────────────────────────────
-`docs/reference/IDO52-FLAG-ARCHAEOLOGY.md` ranked flag leads by a **directional
+Flag leads were first ranked by a **directional
 bias** table (how often a flag moved a semi's mnemonic score toward the target).
 The top-ranked entry by that metric, `-Wc,-nooffsetopt` (16 improved : 8
 worsened), was then conclusively refuted: 0 wins, 0 rescues, and it would have
-broken 131 already-byte-perfect functions (`NOOFFSETOPT-INVESTIGATION.md`).
+broken 131 already-byte-perfect functions.
 
 **Bias is not yield.** Two columns of this report are decision-grade:
 
@@ -454,8 +454,8 @@ def main():
     if not counts['newly_byte_perfect'] and not counts['broke_a_win']:
         print("VERDICT: no yield and no cost on this population. `improved` /"
               " `worsened`\n         are directional BIAS, not yield — do not"
-              " plan a campaign off them\n         (see -Wc,-nooffsetopt,"
-              " docs/reference/NOOFFSETOPT-INVESTIGATION.md).")
+              " plan a campaign off them\n         (as with"
+              " -Wc,-nooffsetopt).")
 
     for k in ('newly_byte_perfect', 'broke_a_win', 'downgraded',
               'error_under_flag'):

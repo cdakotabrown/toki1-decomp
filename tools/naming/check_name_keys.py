@@ -15,7 +15,7 @@ silently bypass (each one broke a gate in the 2026-11-10 renames):
      overrides) are not left deleted in the worktree by a rename.
 
 Checks 1-3 need the PC port and check 4 the English patch in this checkout
-(tools/repo_paths.py, docs/REPO-SPLIT-PLAN.md); without them those checks are
+(tools/repo_paths.py); without them those checks are
 skipped and the report says so.
 
 Exit 1 on any problem.  usage: check_name_keys.py [--fix-makefile]

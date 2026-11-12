@@ -9,8 +9,8 @@ comment-shape surgery, same auto-revert.  Read that tool first.
 Why a pure-+16 remap is redundant under -pic1
 ────────────────────────────────────────────────────────────────────────────
 
-`-Wc,-pic1` makes ugen reserve the IRIX-4 PIC linkage area
-(docs/reference/FRAME-SIZE-ROOTCAUSE.md).  Concretely it
+`-Wc,-pic1` makes ugen reserve the IRIX-4 PIC linkage area.
+Concretely it
 
   * grows every emitted frame by 16 bytes,
   * leaves the bottom 16-byte outgoing-arg area and the `$ra` slot where they
@@ -179,7 +179,6 @@ def _stamp_pic1(lines: List[str]) -> List[str]:
             " * directive that remains is the RESIDUAL delta only, and because",
             " * ido_flags derives the PIC mode from the absence of a frame",
             " * directive, the mode has to be named explicitly here.",
-            " * See docs/reference/FRAME-SIZE-ROOTCAUSE.md.",
             " */"] + list(lines)
 
 

@@ -15,7 +15,7 @@
 #
 # Mirrors the workflow step for step. If you change build.yaml, change this
 # script in the same commit. The same script serves the monorepo and the
-# exported toki1-decomp repository (docs/REPO-SPLIT-PLAN.md): the `pc` job and
+# exported toki1-decomp repository: the `pc` job and
 # the pc/tools + translation/reviewer lint paths apply only where those parts
 # are tracked, and say so when they are skipped. Differences, on purpose:
 #   * the IDO recompiler build is copied from this checkout's

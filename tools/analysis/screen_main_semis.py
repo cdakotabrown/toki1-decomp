@@ -2,7 +2,7 @@
 """screen_main_semis.py -- lever-screening battery for the MAIN binary.
 
 The main-binary counterpart of tools/overlay/screen_semis.py.  The overlays
-have had a lever screen (docs/worklists/semi_screen.md) for a while; the main
+have had a lever screen for a while; the main
 binary's open functions had nothing sorting or classifying them, so they could
 not be prioritised or dispatched.  This builds that queue.
 
@@ -891,8 +891,7 @@ def md_conversion(rows, lines):
     lines += ["## Queue M3 — conversion (`semi_stub` + `missing`)", "",
               f"{len(rows)} functions with no usable C body. These need "
               "decompilation, not residual chasing — a different skill and a "
-              "different queue. Recipe: "
-              "`docs/reference/CONVERSION-REFERENCE.md`.", ""]
+              "different queue.", ""]
 
     tc = Counter((r['kind'], r['tier']) for r in rows)
     lines += ["| Tier (target instructions) | `semi_stub` | `missing` |",

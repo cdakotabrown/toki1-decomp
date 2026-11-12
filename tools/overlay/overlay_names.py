@@ -9,7 +9,7 @@ instead.  It is deliberately light (stdlib only) so that anything, including
 resolve_overlay_relocs, overlay_postproc and build_clean_exn, can import it
 without a cycle.
 
-Records live in config/symbol_names.json (docs/SYMBOL-NAMING-PIPELINE.md §3 v2):
+Records live in config/symbol_names.json:
 
     "0x800429B8"          main record     (scope "main", the historic form)
     "RENSYU:0x80132040"   overlay record  ("scope": "RENSYU")

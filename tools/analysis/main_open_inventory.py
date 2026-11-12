@@ -157,8 +157,8 @@ def main():
                     'the listed address -- IDO -O2 hoisted its opening global '
                     'reads above the prologue. C written from the recorded '
                     'address is missing those statements and cannot match, '
-                    'however good it otherwise is. Use the corrected window. '
-                    'See docs/reference/PHANTOM-SYMBOL-AUDIT.md.\n\n')
+                    'however good it otherwise is. Use the corrected window.'
+                    '\n\n')
             for k in order:
                 sel = [r for r in recs if r['bucket'] == k]
                 if not sel:

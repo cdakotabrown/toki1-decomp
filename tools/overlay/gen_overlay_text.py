@@ -3,8 +3,7 @@
 
 A matched overlay function writes a string literal as `TXT_<ADDR>`, the
 address its bytes occupy in the retail overlay.  Game text is Konami's
-creative content and never enters the repository
-(docs/CLEAN-DISK-BUILD-SPEC.md, project decision D4), so this tool generates
+creative content and never enters the repository, so this tool generates
 the gitignored header include/overlay_text/<OV>.h from the extraction
 assets/overlays/<OV>.EXN:
 
@@ -12,7 +11,7 @@ assets/overlays/<OV>.EXN:
 
 After preprocessing the compiler sees an ordinary literal, so IDO places it
 in the function's own .rodata literal pool exactly as the original source
-did (docs/reference/OVERLAY-DATA-FROM-SOURCE.md).  The PC port maps each
+did.  The PC port maps each
 TXT_<ADDR> back to the PS1 object at ADDR (generate_overlay_modules.py).
 
 Usage:

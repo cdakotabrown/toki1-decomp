@@ -129,8 +129,6 @@ def print_tools():
     print("  5. Build:        make")
     print("  6. Verify:       python3 tools/diff_binary.py")
     print()
-    print("Documentation: docs/00-DOCUMENTATION-INDEX.md")
-    print()
 
 if __name__ == "__main__":
     print_tools()

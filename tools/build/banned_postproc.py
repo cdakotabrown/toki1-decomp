@@ -510,7 +510,6 @@ def count_banned_in_source(content: str) -> int:
 # PATCHES_BY_OFFSET signature: a dict of {position: target_word}
 # struct.pack_into'd over .text. Name-based banning cannot catch
 # these, so consumers content-scan the referenced script.
-# See docs/reference/BANNED-CUSTOM-SCRIPT-ANALYSIS.md.
 
 _PAINTING_SIGNATURES = (
     "PATCHES_BY_POS",
@@ -1398,7 +1397,7 @@ def is_painting_script(script_path) -> bool:
 
 
 # ── RESTRICTED directives: BANNED for new use, current users grandfathered ──
-# Added 2026-09-27 from docs/reference/PS1-HARDENING-AUDIT.md.  Each of these
+# Added 2026-09-27.  Each of these
 # was confirmed by READING the tool (the count test cannot see any of them:
 # every one rewrites in place).  They are banned outright for any function
 # not already using them; the functions that use them today are listed, with
@@ -1729,8 +1728,8 @@ def check_restricted_postproc_steps(steps: List[dict], ident, *,
             f"   Class:   {cls}  [{detail}]\n"
             f"   Reason:  {reason}\n"
             f"\n"
-            f"   This class is BANNED for new use (2026-09-27, "
-            f"docs/reference/PS1-HARDENING-AUDIT.md).  The functions that used it\n"
+            f"   This class is BANNED for new use (2026-09-27).  "
+            f"The functions that used it\n"
             f"   before the ban are a remediation worklist in "
             f"{GRANDFATHER_FILE.relative_to(_REPO_ROOT)};\n"
             f"   do NOT add to it.  Fix the C, or mark the function asm_only with a\n"

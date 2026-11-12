@@ -5,8 +5,8 @@ Scope: the census class `string/single` of tools/naming/overlay_data_census.py
 (an open overlay-local D_ whose EXN bytes are a NUL-terminated cp932 string and
 whose every non-extern reference sits in ONE function of a live overlay).
 These were string literals at the call site in the original source; until a
-data-from-source build step lets them be written back as literals
-(docs/SYMBOL-MAPPING-PLAN.md), they get the one mechanical name
+data-from-source build step lets them be written back as literals,
+they get the one mechanical name
 NAMING-CONVENTIONS-1994.md section 4.2 sanctions for compiler-generated
 objects:
 

@@ -198,7 +198,7 @@ def print_progress(stats: dict, verbose: bool = False):
 
     # Motivational message
     if stats['progress_percent'] == 0:
-        print("🚀 Ready to start decompilation! Check TOP_50_CANDIDATES.md for easy functions.")
+        print("🚀 Ready to start decompilation!")
     elif stats['progress_percent'] < 10:
         print("📈 Great start! Keep going!")
     elif stats['progress_percent'] < 25:

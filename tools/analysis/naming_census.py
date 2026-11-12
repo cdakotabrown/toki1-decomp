@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """
 naming_census.py -- reproducible statistics behind
-docs/reference/NAMING-CONVENTIONS-1994.md and the sizing tables in
-docs/SYMBOL-NAMING-PIPELINE.md.
+docs/reference/NAMING-CONVENTIONS-1994.md.
 
 READ-ONLY.  It reads the o.bin symbol cache and the source tree and prints
 counts; it writes nothing unless --json OUT is given (and then only OUT).
@@ -13,8 +12,7 @@ Two halves:
           data, split at the debug text end 0x800C1480) plus the olh overlay's
           own 5 procedures and 9 data symbols.  Names are banded by their
           position in the DEBUG link (o.bin order is link order within a band;
-          the addresses themselves do not transfer to retail -- see
-          docs/SYMBOL-MAPPING-PLAN.md):
+          the addresses themselves do not transfer to retail):
 
             K-game   warm_reset_init .. twinbee        Konami game core
             K-sd     SD_Call_SD .. cdread_callback      Konami sound driver

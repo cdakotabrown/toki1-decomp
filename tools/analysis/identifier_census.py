@@ -3,7 +3,7 @@
 
 Counts distinct identifiers by kind and how many are still address-style
 (func_/D_XXXXXXXX) or placeholder-style (unk/pad/var/temp/a0...). Tracks the
-naming goal in docs/SYMBOL-MAPPING-PLAN.md. Run from the repo root.
+naming goal. Run from the repo root.
 """
 import re,glob,collections,sys
 TOK=re.compile(r'/\*.*?\*/|//[^\n]*|"(?:\\.|[^"\\\n])*"|\'(?:\\.|[^\'\\\n])*\'|^[ \t]*#[^\n]*(?:\\\n[^\n]*)*|[A-Za-z_]\w*|0[xX][0-9A-Fa-f]+|\d+|->|[{}()\[\];,.:=*]|\S',re.S|re.M)

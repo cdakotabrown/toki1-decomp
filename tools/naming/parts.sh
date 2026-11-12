@@ -1,6 +1,6 @@
 # Sourced by the landers (land_overlay.sh, land_overlay_data.sh, land_data.sh)
 # after they cd to the repository root.  Says which other parts of the project
-# (docs/REPO-SPLIT-PLAN.md) this checkout holds, through tools/repo_paths.py:
+# this checkout holds, through tools/repo_paths.py:
 #
 #   HAVE_PC=1       the PC port (pc/, src/main/pc-port) is in THIS checkout
 #   HAVE_ENGLISH=1  the English patch (tools/patch, config/patch, src/patch) is

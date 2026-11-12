@@ -40,8 +40,8 @@ OBJECTS
   intervals merge into one candidate object.  Its base is the interval start.
   A la base with far-flung fields (D_800EE760 + 0xF5F) therefore pulls the
   whole block into one object -- which is the point: that is how the C
-  addresses it.  Layouts are candidates for Stage 4 (docs/SYMBOL-NAMING-
-  PIPELINE.md s.4), to be confirmed by reading the C.
+  addresses it.  Layouts are candidates, to be confirmed by reading
+  the C.
 
 Usage:
     python3 tools/analysis/data_access_census.py               # top 60 table

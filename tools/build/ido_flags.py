@@ -20,7 +20,6 @@ otherwise unchanged.  Frameless functions are unaffected.
 That +16 is exactly what ``@PostProc: patch_stack_complete --old N --new N+16``
 was painting in on ~4,500 overlay functions.  Konami built the game region
 with the linkage area reserved and the Sony library region without it.
-Full root-cause writeup: ``docs/reference/FRAME-SIZE-ROOTCAUSE.md``.
 
 So ``-pic1`` and a ``+16`` ``patch_stack_complete`` are two spellings of the
 same thing, and a translation unit uses exactly one of them — never both.
@@ -42,7 +41,7 @@ locals to fake the frame — opt out with an explicit
 ``/* @CompileFlags: -Wc,-pic0 */``.  Those stamps are a to-do list: the real
 fix is deleting the invented locals, after which the stamp comes off.
 
-Region policy (per ``docs/reference/FRAME-SIZE-ROOTCAUSE.md`` §1.8): the split
+Region policy: the split
 is per translation unit, not global.  Overlays and the main **game** region
 (< 0x80086000) are ``pic1``; the Sony **library** region (>= 0x80086000) must
 stay ``pic0`` — 48 of its 73 framed functions target frame 24, the stock IDO
@@ -209,7 +208,7 @@ def base_flags(include_dirs: Iterable[Union[str, Path]] = ()) -> List[str]:
 
 # ── Flag SCREENING support (--extra-cflags) ─────────────────────────────────
 # Ad-hoc flags supplied by a screening harness, on top of whatever the source
-# file already declares.  See docs/reference/IDO52-FLAG-ARCHAEOLOGY.md — the
+# file already declares.  The
 # whole point is that a candidate flag can be evaluated through the REAL
 # pipeline (compile + PostProc + name-derived resolved link) instead of a
 # hand-rolled monkeypatch.

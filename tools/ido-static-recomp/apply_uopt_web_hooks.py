@@ -16,8 +16,8 @@ docs/reference/UOPT-HOOKS-REFERENCE.md):
     37  (limits only) IDO52_FORCE_WEB_COLOR overflow -> hard error.  The
         Hook 37 parser in apply_uopt_hooks.py stops silently at
         FORCE_WEB_COLOR_MAX (24) entries and at its 512-byte token buffer,
-        so a directive could look applied and be partly ignored
-        (HOOK-HONESTY-AUDIT.md finding 3, 2026-09-26).  This applier adds
+        so a directive could look applied and be partly ignored.
+        This applier adds
         the two checks after the parse loop: surplus entries or an
         over-long value print `[GC-COLOR] ERROR: ...` and exit(1), which
         the build reports as a compile failure.  Anchored on the Hook 37

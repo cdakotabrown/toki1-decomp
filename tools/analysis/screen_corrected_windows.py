@@ -10,7 +10,7 @@ test_single_match, and restores the file whatever happens.
 RESULT (2026-08-28, 19 candidates): the strong claim is REFUTED -- not one
 becomes a match on the window alone.  The weak claim holds for seven: their
 WINDOW OVERRUN verdict disappears, so it was a measurement artefact and not a
-codegen problem.  See docs/TODO-NEXT.md item 1 for the table.
+codegen problem.
 
 Rerun after regenerating the worklists; the candidate list is the OVERRUN rows
 that carry a START HERE column.

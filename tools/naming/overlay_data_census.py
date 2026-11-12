@@ -35,7 +35,7 @@ tested in this order (interior, bss, local_init, string, head):
               An upper bound: `objects` merges runs of heads (next address
               within 8 bytes of the previous head's extent, same user set).
 
-Strings are subclassed for the naming passes (docs/SYMBOL-MAPPING-PLAN.md):
+Strings are subclassed for the naming passes:
 
   format      contains a printf conversion (%d, %s, %x, %5d, %%...)
   dataref     the address also appears as an aligned word in the EXN image

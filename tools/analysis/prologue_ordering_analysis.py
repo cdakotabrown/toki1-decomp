@@ -863,8 +863,8 @@ def generate_report(all_results, multi_save, asm_results, c_results,
           100*mixed_count/total_multi if total_multi else 0))
     w()
     w("3. **This is part of the `as1` scheduling gap**: The prologue save reordering "
-      "is the same class of issue as the basic-block scheduling differences documented "
-      "in `IDO_SCHEDULING_BRAINSTORM.md`. Both are caused by `as1`'s instruction "
+      "is the same class of issue as the basic-block scheduling differences. "
+      "Both are caused by `as1`'s instruction "
       "scheduler operating on the same data differently across versions.")
     w()
     w("4. **2-register functions are fine**: With only 2 saves, there are only 2 "

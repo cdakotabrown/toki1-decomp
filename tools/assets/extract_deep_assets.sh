@@ -35,8 +35,6 @@ if ! command -v java &> /dev/null; then
     echo "  sudo apt update"
     echo "  sudo apt install -y default-jre"
     echo ""
-    echo "Or see docs/JAVA-INSTALLATION-GUIDE.md for other methods"
-    echo ""
     exit 1
 fi
 
@@ -151,6 +149,4 @@ echo "  Images: $(ls "$OUTPUT_DIR/images/" 2>/dev/null | wc -l) files ($(du -sh 
 echo "  Files:  $(ls "$OUTPUT_DIR/files/" 2>/dev/null | wc -l) files ($(du -sh "$OUTPUT_DIR/files/" 2>/dev/null | cut -f1))"
 echo ""
 echo "  Total:  $(du -sh "$OUTPUT_DIR/" | cut -f1)"
-echo ""
-echo "For catalog details, see: docs/EXTRACTED-ASSETS-CATALOG.md"
 echo ""

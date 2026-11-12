@@ -3,7 +3,7 @@
 Psy-Q LIBGTE functions Konami linked verbatim.
 
 The retail bytes of these functions ARE shipped Sony objects (see
-config/psyq_lib_symbols.json and docs/reference/PSYQ-LIB-IDENTIFICATION.md), so
+config/psyq_lib_symbols.json), so
 there is nothing to decompile: the terminal state is asm_only.  This tool emits
 one listing per symbol from disks/SLPS_000.65.
 

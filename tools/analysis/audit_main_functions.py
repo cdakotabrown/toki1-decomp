@@ -8,8 +8,6 @@ up as 'exit_function missing' in the report.
 
 Outputs:
   config/main_function_audit_by_addr.json — machine-readable, keyed by address
-  (the former docs/MAIN-FUNCTION-AUDIT.md snapshot is kept in
-   the project's private archive; the JSON is authoritative)
 
 Stubs are flagged 'shadowed_by: pc-port' if any alias has a pc-port override
 that wins in the build (so the stub is dead, not blocking).
@@ -24,7 +22,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 import sys as _sys_paths
 _sys_paths.path.insert(0, os.path.join(ROOT, 'tools'))
 from repo_paths import PC as _PC_ROOT  # noqa: E402
-# src/main/pc-port belongs to the PC port (docs/REPO-SPLIT-PLAN.md): its
+# src/main/pc-port belongs to the PC port: its
 # Address headers and overrides are read where that part is, and are simply
 # absent (no aliases, no pc_port_only rows) without it.
 _PC_BASE = (ROOT if _PC_ROOT and os.path.realpath(str(_PC_ROOT)) == os.path.realpath(ROOT)

@@ -1,6 +1,6 @@
 /* @TU: rensyu_basyo10_res_set */
 /* File-scope data of the RENSYU translation unit that starts at
-   rensyu_basyo10_res_set (docs/reference/OVERLAY-DATA-FROM-SOURCE.md). */
+   rensyu_basyo10_res_set. */
 #include "types.h"
 
 s32 rensyu_cal_cw_res;

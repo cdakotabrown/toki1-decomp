@@ -353,7 +353,6 @@ def run_permuter(func_dir: Path, func_name: str, iterations: int = 1000,
         print("Suggestions:")
         print("- Increase iterations: --iterations 10000")
         print("- Check if the function needs manual adjustments")
-        print("- See docs/MATCHING-PATTERNS.md for common patterns")
 
         return None
 

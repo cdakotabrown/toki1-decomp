@@ -6,7 +6,6 @@ true composition is 24 separate functions, established three independent ways:
 
   * whole-member alignment of three Psy-Q LIBGTE archive members against the
     retail image (0 masked mismatches each) -- see
-    docs/reference/PSYQ-LIB-IDENTIFICATION.md and
     tools/analysis/match_psyq_lib.py;
   * `jr ra` + delay-slot walk over the retail disassembly (every Sony boundary
     coincides with one);

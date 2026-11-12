@@ -16,8 +16,8 @@ GNU ld apply R_MIPS_26 / R_MIPS_HI16 / R_MIPS_LO16 for real. The relocated bytes
 are then compared STRICTLY (no copy-from-target masking). A match proves the
 symbol references are correct; it is NOT painting (we never read the answer).
 
-Since 2026-09-27 a main-binary symbol may also carry a REAL name (Phase 1 of
-docs/SYMBOL-MAPPING-PLAN.md): those resolve through the landed-name table in
+Since 2026-09-27 a main-binary symbol may also carry a REAL name:
+those resolve through the landed-name table in
 config/symbol_names.json (name -> retail address, consulted before the suffix
 rule; see load_name_table). Same honesty tier: the table is a rename ledger,
 not a copy of the target.  Since 2026-10 an OVERLAY function may be renamed too
@@ -100,7 +100,7 @@ NAME_ADDR_RE = re.compile(r'^[A-Za-z_][A-Za-z0-9_]*?_([0-9A-Fa-f]{8})(?:_[a-z]{1
 RAM_LO = 0x80000000
 RAM_HI = 0x801FFFFF
 
-# NAME TABLE (2026-09-27, Phase 1 of docs/SYMBOL-MAPPING-PLAN.md): a main-binary
+# NAME TABLE (2026-09-27): a main-binary
 # symbol that has been given its real name (`indexed_byte_lsb_set`, `bustup_cd_read`) no
 # longer carries its address in the name, so the suffix rule above cannot link
 # it. config/symbol_names.json is the single source of truth for those renames

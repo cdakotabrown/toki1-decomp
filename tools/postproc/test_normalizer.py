@@ -102,7 +102,6 @@ TEST_CASES = [
     ),
     # NOTE: func_80077D6C is excluded — the normalizer's trailing-nop trimming
     # prevents it from handling the li/nop swap at instructions 15<->19.
-    # This is a known limitation documented in AS1_SCHEDULING_TODO.md.
 ]
 
 

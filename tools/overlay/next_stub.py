@@ -7,7 +7,7 @@ still semi_matched, whose target is a jr-table dispatch with a static IN-EXN cas
 table and simple call-per-case bodies. This tool finds and ranks them so the
 autonomous loop can just `next_stub.py`, decode the top hit, commit, repeat.
 
-Screening (per docs/reference/DISPATCHER-DECODE-GUIDE.md):
+Screening:
   * status is NOT byte_perfect / reloc_only / asm_only (work remains),
   * the .c is a stub: <= MAXLINES lines, or carries a BLOCKER/stub marker,
   * extract_jr_table reports strategy=IN-EXN with >= 4 cases (a real dispatch

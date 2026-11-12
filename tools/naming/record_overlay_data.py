@@ -62,7 +62,7 @@ IDENT_RE = re.compile(r'^[A-Za-z_][A-Za-z0-9_]*$')
 STR_COMMENT = re.compile(r'''"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|/\*[\s\S]*?\*/|//[^\n]*''')
 TIERS = ('T1', 'T2', 'T3', 'T4')
 CONFIDENCES = ('HIGH', 'MEDIUM', 'DERIVED', 'LOW')
-DEAD_OVERLAYS = ('EVENT', 'GYOZI')      # never loaded (DEAD-OVERLAYS-EVENT-GYOZI.md)
+DEAD_OVERLAYS = ('EVENT', 'GYOZI')      # never loaded
 SRC_EXTS = ('.c', '.h', '.s')
 CORE_FIELDS = ('name', 'kind', 'scope', 'size', 'type', 'tier', 'style', 'confidence')
 
