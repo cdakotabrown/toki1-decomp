@@ -1,0 +1,1 @@
+{"host": "0x8012AC20", "type": "LIBGS_RVIEW2", "size": 32, "count": 1, "leaves": [[0, "vpx", "s32"], [4, "vpy", "s32"], [8, "vpz", "s32"], [12, "vrx", "s32"], [16, "vry", "s32"], [20, "vrz", "s32"], [24, "rz", "s32"], [28, "super", "ptr"]], "header": "tokimeki/libgs_types.h"}

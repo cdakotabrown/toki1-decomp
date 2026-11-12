@@ -1,0 +1,34 @@
+[default]
+compiler_path = "./tokimeki_compile.sh"
+assembler_path = "mipsel-linux-gnu-as"
+objdump_path = "mipsel-linux-gnu-objdump"
+arch = "mips"
+score_method = "default"
+adaptive_weights = true
+adaptive_weight_multiplier = 1.1
+adaptive_weight_max = 5.0
+stagnation_reset_iters = 500
+stagnation_keep_prob = 0.0
+stagnation_weight_jitter = 0.2
+stagnation_weight_cap = 10.0
+bandit_enabled = true
+bandit_exploration = 1.4
+progress_snapshot_iters = 200
+keep_prob_improve_boost = 0.2
+keep_prob_improve_decay = 0.01
+adaptive_seed_prob = 0.1
+adaptive_seed_pool_size = 25
+compile_cache_size = 200
+scorer_cache_size = 5000
+quick_reject_size_ratio = 3.0
+quick_reject_size_abs = 0
+
+[default.scorer_penalties]
+stackdiff = 1
+regalloc = 5
+reordering = 60
+insertion = 100
+deletion = 100
+frame_offset = 0.1
+delay_slot = 20
+relocation = 0

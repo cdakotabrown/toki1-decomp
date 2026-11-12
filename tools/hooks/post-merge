@@ -1,0 +1,14 @@
+#!/bin/sh
+# Opt-in reaudit hook (install via tools/hooks/install.sh).
+# After a merge/pull that touched the compiler/hook layer, re-test every
+# asm_only function's retained C and loudly flag any that now match.
+# Safe by design: never fails the merge, always exits 0.
+
+. "$(git rev-parse --show-toplevel)/tools/hooks/_common.sh"
+
+# ORIG_HEAD is the pre-merge tip; compare it against the new HEAD.
+if reaudit_paths_changed ORIG_HEAD HEAD; then
+    reaudit_run_and_banner
+fi
+
+exit 0

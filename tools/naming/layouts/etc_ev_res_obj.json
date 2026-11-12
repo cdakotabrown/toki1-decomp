@@ -1,0 +1,1 @@
+{"scope": "ETC", "hosts": ["0x8014EDA0"], "type": "ETC_EV_RES_OBJ", "header": "tokimeki/etc_ev_res.h", "size": 20, "count": 1, "head_leaf": "hdr", "leaves": [[0, "hdr", "s32"], [4, "cels", "s32"], [8, "anim_tbl", "s32"], [12, "scale", "s16"], [16, "pal", "s32"]]}

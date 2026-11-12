@@ -1,0 +1,1 @@
+{"scope": "TAIIKU", "host": "0x8014A5F0", "count": 3, "type": "TAIIKU_SPOON_RUN", "size": 28, "leaves": [[0, "pose", "u8"], [1, "b01", "u8"], [2, "se_tick", "u16"], [4, "pose_tick", "s32"], [8, "press", "s32"], [12, "w0C", "s32"], [16, "acc", "s32"], [20, "spd", "s32"], [24, "pos", "s32"], [26, "x", "s16"]]}

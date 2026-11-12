@@ -1,0 +1,1 @@
+{"scope": "ETC", "hosts": ["0x801500A0"], "count": 1, "type": "DATE_CW_RES", "size": 20, "leaves": [[0, "hdr", "s32"], [4, "img", "s32"], [8, "anim_tbl", "s32"], [12, "aux", "s16"], [16, "pal", "s32"]]}

@@ -1,0 +1,30 @@
+# Tokimeki Memorial PS1 Decompilation - Python Requirements
+# Install with: pip install -r tools/requirements-python.txt
+# (`make setup` does this; it also pulls in the top-level requirements.txt:
+# capstone, pyelftools, Pillow and numpy for the English patch build.)
+-r ../requirements.txt
+
+# Core decompilation tools
+splat64>=0.34.0
+spimdisasm>=1.35.0
+rabbitizer>=1.13.0
+mapfile-parser>=2.1.0
+
+# C parsing (for m2c)
+pycparser
+
+# ELF parsing
+pyelftools
+
+# Configuration
+PyYAML
+toml
+
+# Utilities
+tabulate
+intervaltree>=3.1.0
+requests
+colorama
+
+# Asset extraction
+pillow

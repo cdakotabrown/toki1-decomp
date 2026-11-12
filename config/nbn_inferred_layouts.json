@@ -1,0 +1,25 @@
+{
+ "schema": "tokimemo.nbn.inferred-layouts/v1",
+ "method": "exact documented storage archetype plus coherent render across a directory/name family",
+ "confidence": "strong",
+ "records": [
+  {"family":"FUKUTEST","filename":"GIRLINFO.NBN","width":256,"height":256,"pixel_offset":0,"palette_offset":65536},
+  {"family":"FUKUTEST","filename":"NOZOKI.NBN","width":384,"height":256,"pixel_offset":0,"palette_offset":98304},
+  {"family":"FUKUTEST","filename":"O_31_04.NBN","width":384,"height":256,"pixel_offset":0,"palette_offset":98304},
+  {"family":"FUKUTEST","filename":"O_31_05L.NBN","width":256,"height":256,"pixel_offset":0,"palette_offset":65536},
+  {"family":"FUKUTEST","filename":"O_31_05R.NBN","width":256,"height":256,"pixel_offset":0,"palette_offset":65536},
+  {"family":"FUKUTEST","filename":"O_31_06.NBN","width":384,"height":256,"pixel_offset":0,"palette_offset":98304},
+  {"family":"FUKUTEST","filename":"O_31_07.NBN","width":256,"height":256,"pixel_offset":0,"palette_offset":65536},
+  {"family":"PROLODIR","filename":"CUT_05.NBN","width":384,"height":256,"pixel_offset":0,"palette_offset":98304},
+  {"family":"PROLODIR","filename":"CUT_07.NBN","width":384,"height":256,"pixel_offset":0,"palette_offset":98304},
+  {"family":"PROLODIR","filename":"CUT_08.NBN","width":384,"height":256,"pixel_offset":0,"palette_offset":98304},
+  {"family":"PROLODIR","filename":"CUT_09.NBN","width":384,"height":256,"pixel_offset":0,"palette_offset":98304},
+  {"family":"PROLODIR","filename":"CUT_10.NBN","width":384,"height":256,"pixel_offset":0,"palette_offset":98304},
+  {"family":"PROLODIR","filename":"CUT_12.NBN","width":384,"height":256,"pixel_offset":0,"palette_offset":98304},
+  {"family":"PROLODIR","filename":"CUT_14.NBN","width":384,"height":256,"pixel_offset":0,"palette_offset":98304},
+  {"family":"PROLODIR","filename":"CUT_16.NBN","width":384,"height":256,"pixel_offset":0,"palette_offset":98304},
+  {"family":"PROLODIR","filename":"O_11.NBN","width":256,"height":256,"pixel_offset":0,"palette_offset":65536},
+  {"family":"PROLODIR","filename":"O_15.NBN","width":256,"height":256,"pixel_offset":0,"palette_offset":65536},
+  {"family":"TACO","filename":"ALBUM1.NBN","width":384,"height":256,"pixel_offset":1536,"palette_offset":0}
+ ]
+}

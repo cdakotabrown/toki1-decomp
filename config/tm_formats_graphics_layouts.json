@@ -1,0 +1,1832 @@
+{
+ "schema": "tokimemo.tm-formats-layouts/v1",
+ "provenance": {
+  "title": "TM Formats",
+  "author": "Tadanori Tezuka",
+  "date": "1996-01-01",
+  "source_url": "https://ftp.vector.co.jp/03/90/735/TM_Formats.sit.bin",
+  "input_sha256": "7282bf69973ad5baffe4c3e89c012cfaa7f41ded7a5b4f7dc5de26d21b283ec6",
+  "resource_fork_sha256": "0bf4fa65d3267026307bb363e88678abd2fa0a76e933d9a56be351347c470d30"
+ },
+ "record_count": 202,
+ "records": [
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P0E.NBN",
+   "width": 256,
+   "height": 128,
+   "pixel_offset": 1344,
+   "palette_offset": 0
+  },
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P0EW.NBN",
+   "width": 256,
+   "height": 128,
+   "pixel_offset": 1344,
+   "palette_offset": 0
+  },
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P0F.NBN",
+   "width": 256,
+   "height": 128,
+   "pixel_offset": 1344,
+   "palette_offset": 0
+  },
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P0FW.NBN",
+   "width": 256,
+   "height": 128,
+   "pixel_offset": 1344,
+   "palette_offset": 0
+  },
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P10.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1008,
+   "palette_offset": 0
+  },
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P10W.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1008,
+   "palette_offset": 0
+  },
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P11.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1040,
+   "palette_offset": 0
+  },
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P11W.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1040,
+   "palette_offset": 0
+  },
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P12.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1264,
+   "palette_offset": 0
+  },
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P12W.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1264,
+   "palette_offset": 0
+  },
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P13.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1248,
+   "palette_offset": 0
+  },
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P13W.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1264,
+   "palette_offset": 0
+  },
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P14.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1296,
+   "palette_offset": 0
+  },
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P15.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1296,
+   "palette_offset": 0
+  },
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P16.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1536,
+   "palette_offset": 0
+  },
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P17.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1536,
+   "palette_offset": 0
+  },
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P18.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1664,
+   "palette_offset": 0
+  },
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P19.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1424,
+   "palette_offset": 0
+  },
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P1A.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1264,
+   "palette_offset": 0
+  },
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P1B.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1264,
+   "palette_offset": 0
+  },
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P1C.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 976,
+   "palette_offset": 0
+  },
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P1D.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 976,
+   "palette_offset": 0
+  },
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P1E.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1280,
+   "palette_offset": 0
+  },
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P1EW.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1280,
+   "palette_offset": 0
+  },
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P1F.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1280,
+   "palette_offset": 0
+  },
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P1FW.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1344,
+   "palette_offset": 0
+  },
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P20.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1216,
+   "palette_offset": 0
+  },
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P20W.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1216,
+   "palette_offset": 0
+  },
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P21.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1184,
+   "palette_offset": 0
+  },
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P21W.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1184,
+   "palette_offset": 0
+  },
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P22.NBN",
+   "width": 256,
+   "height": 128,
+   "pixel_offset": 1568,
+   "palette_offset": 0
+  },
+  {
+   "family": "CLUB_SD",
+   "resource_id": 129,
+   "filename": "SD_P23.NBN",
+   "width": 256,
+   "height": 128,
+   "pixel_offset": 1584,
+   "palette_offset": 0
+  },
+  {
+   "family": "LASTP",
+   "resource_id": 134,
+   "filename": "ALBUM.NBN",
+   "width": 384,
+   "height": 256,
+   "pixel_offset": 1536,
+   "palette_offset": 0
+  },
+  {
+   "family": "LASTP",
+   "resource_id": 134,
+   "filename": "ALL_C.NBN",
+   "width": 384,
+   "height": 256,
+   "pixel_offset": 0,
+   "palette_offset": 98304
+  },
+  {
+   "family": "LASTP",
+   "resource_id": 134,
+   "filename": "LASTP_AS.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 0,
+   "palette_offset": 65536
+  },
+  {
+   "family": "LASTP",
+   "resource_id": 134,
+   "filename": "LASTP_HI.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 0,
+   "palette_offset": 65536
+  },
+  {
+   "family": "LASTP",
+   "resource_id": 134,
+   "filename": "LASTP_HU.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 0,
+   "palette_offset": 65536
+  },
+  {
+   "family": "LASTP",
+   "resource_id": 134,
+   "filename": "LASTP_IZ.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 0,
+   "palette_offset": 65536
+  },
+  {
+   "family": "LASTP",
+   "resource_id": 134,
+   "filename": "LASTP_KA.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 0,
+   "palette_offset": 65536
+  },
+  {
+   "family": "LASTP",
+   "resource_id": 134,
+   "filename": "LASTP_KG.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 0,
+   "palette_offset": 65536
+  },
+  {
+   "family": "LASTP",
+   "resource_id": 134,
+   "filename": "LASTP_KI.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 0,
+   "palette_offset": 65536
+  },
+  {
+   "family": "LASTP",
+   "resource_id": 134,
+   "filename": "LASTP_KO.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 0,
+   "palette_offset": 65536
+  },
+  {
+   "family": "LASTP",
+   "resource_id": 134,
+   "filename": "LASTP_KY.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 0,
+   "palette_offset": 65536
+  },
+  {
+   "family": "LASTP",
+   "resource_id": 134,
+   "filename": "LASTP_MI.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 0,
+   "palette_offset": 65536
+  },
+  {
+   "family": "LASTP",
+   "resource_id": 134,
+   "filename": "LASTP_NI.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 0,
+   "palette_offset": 65536
+  },
+  {
+   "family": "LASTP",
+   "resource_id": 134,
+   "filename": "LASTP_TA.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 0,
+   "palette_offset": 65536
+  },
+  {
+   "family": "LASTP",
+   "resource_id": 134,
+   "filename": "LASTP_YU.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 0,
+   "palette_offset": 65536
+  },
+  {
+   "family": "END_OBJ",
+   "resource_id": 133,
+   "filename": "EBD_KY.BIN",
+   "width": 320,
+   "height": 512,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "END_OBJ",
+   "resource_id": 133,
+   "filename": "END_AL.BIN",
+   "width": 512,
+   "height": 256,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "END_OBJ",
+   "resource_id": 133,
+   "filename": "END_AS.BIN",
+   "width": 320,
+   "height": 512,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "END_OBJ",
+   "resource_id": 133,
+   "filename": "END_FU.BIN",
+   "width": 320,
+   "height": 512,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "END_OBJ",
+   "resource_id": 133,
+   "filename": "END_IJ.BIN",
+   "width": 320,
+   "height": 512,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "END_OBJ",
+   "resource_id": 133,
+   "filename": "END_KA.BIN",
+   "width": 320,
+   "height": 512,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "END_OBJ",
+   "resource_id": 133,
+   "filename": "END_KG.BIN",
+   "width": 320,
+   "height": 512,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "END_OBJ",
+   "resource_id": 133,
+   "filename": "END_KI.BIN",
+   "width": 320,
+   "height": 512,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "END_OBJ",
+   "resource_id": 133,
+   "filename": "END_KI2.BIN",
+   "width": 320,
+   "height": 512,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "END_OBJ",
+   "resource_id": 133,
+   "filename": "END_KO.BIN",
+   "width": 320,
+   "height": 512,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "END_OBJ",
+   "resource_id": 133,
+   "filename": "END_KY.BIN",
+   "width": 320,
+   "height": 512,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "END_OBJ",
+   "resource_id": 133,
+   "filename": "END_KY2.BIN",
+   "width": 320,
+   "height": 512,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "END_OBJ",
+   "resource_id": 133,
+   "filename": "END_MI.BIN",
+   "width": 320,
+   "height": 512,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "END_OBJ",
+   "resource_id": 133,
+   "filename": "END_HI.BIN",
+   "width": 320,
+   "height": 512,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "END_OBJ",
+   "resource_id": 133,
+   "filename": "END_NI.BIN",
+   "width": 320,
+   "height": 512,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "END_OBJ",
+   "resource_id": 133,
+   "filename": "END_TA.BIN",
+   "width": 320,
+   "height": 512,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "END_OBJ",
+   "resource_id": 133,
+   "filename": "END_SA.BIN",
+   "width": 320,
+   "height": 512,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "END_OBJ",
+   "resource_id": 133,
+   "filename": "END_TREE.BIN",
+   "width": 320,
+   "height": 256,
+   "pixel_offset": 8192,
+   "palette_offset": 106496
+  },
+  {
+   "family": "HOLI_SD",
+   "resource_id": 130,
+   "filename": "SD_P24.NBN",
+   "width": 128,
+   "height": 128,
+   "pixel_offset": 1200,
+   "palette_offset": 0
+  },
+  {
+   "family": "HOLI_SD",
+   "resource_id": 130,
+   "filename": "SD_P24W.NBN",
+   "width": 128,
+   "height": 128,
+   "pixel_offset": 1216,
+   "palette_offset": 0
+  },
+  {
+   "family": "HOLI_SD",
+   "resource_id": 130,
+   "filename": "SD_P25.NBN",
+   "width": 128,
+   "height": 128,
+   "pixel_offset": 1088,
+   "palette_offset": 0
+  },
+  {
+   "family": "HOLI_SD",
+   "resource_id": 130,
+   "filename": "SD_P25W.NBN",
+   "width": 128,
+   "height": 128,
+   "pixel_offset": 1088,
+   "palette_offset": 0
+  },
+  {
+   "family": "HOLI_SD",
+   "resource_id": 130,
+   "filename": "SD_P26.NBN",
+   "width": 256,
+   "height": 128,
+   "pixel_offset": 1216,
+   "palette_offset": 0
+  },
+  {
+   "family": "HOLI_SD",
+   "resource_id": 130,
+   "filename": "SD_P26W.NBN",
+   "width": 256,
+   "height": 128,
+   "pixel_offset": 1216,
+   "palette_offset": 0
+  },
+  {
+   "family": "HOLI_SD",
+   "resource_id": 130,
+   "filename": "SD_P27.NBN",
+   "width": 128,
+   "height": 128,
+   "pixel_offset": 1280,
+   "palette_offset": 0
+  },
+  {
+   "family": "HOLI_SD",
+   "resource_id": 130,
+   "filename": "SD_P27W.NBN",
+   "width": 128,
+   "height": 128,
+   "pixel_offset": 1280,
+   "palette_offset": 0
+  },
+  {
+   "family": "HOLI_SD",
+   "resource_id": 130,
+   "filename": "SD_P28.NBN",
+   "width": 256,
+   "height": 128,
+   "pixel_offset": 992,
+   "palette_offset": 0
+  },
+  {
+   "family": "HOLI_SD",
+   "resource_id": 130,
+   "filename": "SD_P28W.NBN",
+   "width": 256,
+   "height": 128,
+   "pixel_offset": 1008,
+   "palette_offset": 0
+  },
+  {
+   "family": "HOLI_SD",
+   "resource_id": 130,
+   "filename": "SD_P29.NBN",
+   "width": 256,
+   "height": 128,
+   "pixel_offset": 1024,
+   "palette_offset": 0
+  },
+  {
+   "family": "HOLI_SD",
+   "resource_id": 130,
+   "filename": "SD_P29W.NBN",
+   "width": 256,
+   "height": 128,
+   "pixel_offset": 1024,
+   "palette_offset": 0
+  },
+  {
+   "family": "OTHER",
+   "resource_id": 135,
+   "filename": "T_KIS_EV.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "OTHER",
+   "resource_id": 135,
+   "filename": "T_KIY_EV.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_AS01.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_AS02.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_AS03.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_AS04.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_AS05.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_AS06.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_FU01.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_FU03.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_FU04.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_FU05.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_FU06.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_FU07.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_FU08.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_HI01.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_HI02.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_HI03.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_HI04.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_HI05.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_HI06.BIN",
+   "width": 128,
+   "height": 128,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_IJ02.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_KA01.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_KA02.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_KA03.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_KA04.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_KA05.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_KA06.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_KG01.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_KG02.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_KG03.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_KG04.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_KG05.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_KG07.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_KG10.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 16384,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_KI01.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_KI02.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_KI03.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_KI04.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_KI05.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_KI10.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 16384,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_KO01.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_KO03.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_KO04.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_KO05.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_KO06.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_KO07.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_KY01.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_KY02.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_KY03.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_KY04.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_KY05.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_MI01.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_MI03.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_MI04.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_MI05.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_MI06.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_MI07.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_NI01.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_NI02.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_NI03.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_NI04.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_NI05.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_NI06.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_SA01.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_SA03.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_SA04.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_SA05.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_SA06.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_SA07.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_TA02.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_TA04.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "EV_YO01.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "NOZOKI1.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "NOZOKI2.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "NOZOKI3.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "NOZOKI4.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "EVENT",
+   "resource_id": 132,
+   "filename": "NOZOKI5.BIN",
+   "width": 320,
+   "height": 160,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "BUNKA_SD",
+   "resource_id": 131,
+   "filename": "B_BUNGEI.BIN",
+   "width": 640,
+   "height": 256,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "BUNKA_SD",
+   "resource_id": 131,
+   "filename": "B_DENNOU.BIN",
+   "width": 640,
+   "height": 384,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "BUNKA_SD",
+   "resource_id": 131,
+   "filename": "B_JIKKEN.BIN",
+   "width": 640,
+   "height": 384,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "BUNKA_SD",
+   "resource_id": 131,
+   "filename": "B_LASER.BIN",
+   "width": 640,
+   "height": 384,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "BUNKA_SD",
+   "resource_id": 131,
+   "filename": "B_SUISOU.BIN",
+   "width": 640,
+   "height": 256,
+   "pixel_offset": 8192,
+   "palette_offset": 0
+  },
+  {
+   "family": "BUNKA_SD",
+   "resource_id": 131,
+   "filename": "B_TENSOU.BIN",
+   "width": 640,
+   "height": 384,
+   "pixel_offset": 512,
+   "palette_offset": 0
+  },
+  {
+   "family": "MAIN_SD",
+   "resource_id": 128,
+   "filename": "Default",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1200,
+   "palette_offset": 0
+  },
+  {
+   "family": "MAIN_SD",
+   "resource_id": 128,
+   "filename": "SD_P00.NBN",
+   "width": 256,
+   "height": 128,
+   "pixel_offset": 1280,
+   "palette_offset": 0
+  },
+  {
+   "family": "MAIN_SD",
+   "resource_id": 128,
+   "filename": "SD_P00W.NBN",
+   "width": 256,
+   "height": 128,
+   "pixel_offset": 1280,
+   "palette_offset": 0
+  },
+  {
+   "family": "MAIN_SD",
+   "resource_id": 128,
+   "filename": "SD_P01.NBN",
+   "width": 256,
+   "height": 128,
+   "pixel_offset": 1296,
+   "palette_offset": 0
+  },
+  {
+   "family": "MAIN_SD",
+   "resource_id": 128,
+   "filename": "SD_P01W.NBN",
+   "width": 256,
+   "height": 128,
+   "pixel_offset": 1280,
+   "palette_offset": 0
+  },
+  {
+   "family": "MAIN_SD",
+   "resource_id": 128,
+   "filename": "SD_P02.NBN",
+   "width": 256,
+   "height": 128,
+   "pixel_offset": 1280,
+   "palette_offset": 0
+  },
+  {
+   "family": "MAIN_SD",
+   "resource_id": 128,
+   "filename": "SD_P02W.NBN",
+   "width": 256,
+   "height": 128,
+   "pixel_offset": 1280,
+   "palette_offset": 0
+  },
+  {
+   "family": "MAIN_SD",
+   "resource_id": 128,
+   "filename": "SD_P03.NBN",
+   "width": 256,
+   "height": 128,
+   "pixel_offset": 1008,
+   "palette_offset": 0
+  },
+  {
+   "family": "MAIN_SD",
+   "resource_id": 128,
+   "filename": "SD_P03W.NBN",
+   "width": 256,
+   "height": 128,
+   "pixel_offset": 1008,
+   "palette_offset": 0
+  },
+  {
+   "family": "MAIN_SD",
+   "resource_id": 128,
+   "filename": "SD_P04.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1312,
+   "palette_offset": 0
+  },
+  {
+   "family": "MAIN_SD",
+   "resource_id": 128,
+   "filename": "SD_P04W.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1328,
+   "palette_offset": 0
+  },
+  {
+   "family": "MAIN_SD",
+   "resource_id": 128,
+   "filename": "SD_P05.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1280,
+   "palette_offset": 0
+  },
+  {
+   "family": "MAIN_SD",
+   "resource_id": 128,
+   "filename": "SD_P05W.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1296,
+   "palette_offset": 0
+  },
+  {
+   "family": "MAIN_SD",
+   "resource_id": 128,
+   "filename": "SD_P06.NBN",
+   "width": 512,
+   "height": 128,
+   "pixel_offset": 1184,
+   "palette_offset": 0
+  },
+  {
+   "family": "MAIN_SD",
+   "resource_id": 128,
+   "filename": "SD_P07.NBN",
+   "width": 640,
+   "height": 128,
+   "pixel_offset": 1248,
+   "palette_offset": 0
+  },
+  {
+   "family": "MAIN_SD",
+   "resource_id": 128,
+   "filename": "SD_P08.NBN",
+   "width": 512,
+   "height": 128,
+   "pixel_offset": 1120,
+   "palette_offset": 0
+  },
+  {
+   "family": "MAIN_SD",
+   "resource_id": 128,
+   "filename": "SD_P09.NBN",
+   "width": 128,
+   "height": 128,
+   "pixel_offset": 1280,
+   "palette_offset": 0
+  },
+  {
+   "family": "MAIN_SD",
+   "resource_id": 128,
+   "filename": "SD_P09W.NBN",
+   "width": 128,
+   "height": 128,
+   "pixel_offset": 1280,
+   "palette_offset": 0
+  },
+  {
+   "family": "MAIN_SD",
+   "resource_id": 128,
+   "filename": "SD_P0A.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1296,
+   "palette_offset": 0
+  },
+  {
+   "family": "MAIN_SD",
+   "resource_id": 128,
+   "filename": "SD_P0AW.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1440,
+   "palette_offset": 0
+  },
+  {
+   "family": "MAIN_SD",
+   "resource_id": 128,
+   "filename": "SD_P0B.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1248,
+   "palette_offset": 0
+  },
+  {
+   "family": "MAIN_SD",
+   "resource_id": 128,
+   "filename": "SD_P0BW.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1264,
+   "palette_offset": 0
+  },
+  {
+   "family": "MAIN_SD",
+   "resource_id": 128,
+   "filename": "SD_P0C.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1200,
+   "palette_offset": 0
+  },
+  {
+   "family": "MAIN_SD",
+   "resource_id": 128,
+   "filename": "SD_P0CW.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1200,
+   "palette_offset": 0
+  },
+  {
+   "family": "MAIN_SD",
+   "resource_id": 128,
+   "filename": "SD_P0D.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1232,
+   "palette_offset": 0
+  },
+  {
+   "family": "MAIN_SD",
+   "resource_id": 128,
+   "filename": "SD_P0DW.NBN",
+   "width": 256,
+   "height": 256,
+   "pixel_offset": 1232,
+   "palette_offset": 0
+  },
+  {
+   "family": "BUSTUP",
+   "resource_id": 136,
+   "filename": "ASXX",
+   "width": 128,
+   "height": 160,
+   "pixel_offset": 8364,
+   "palette_offset": 172
+  },
+  {
+   "family": "BUSTUP",
+   "resource_id": 136,
+   "filename": "HIXX",
+   "width": 128,
+   "height": 160,
+   "pixel_offset": 8364,
+   "palette_offset": 172
+  },
+  {
+   "family": "BUSTUP",
+   "resource_id": 136,
+   "filename": "HUXX",
+   "width": 128,
+   "height": 160,
+   "pixel_offset": 8364,
+   "palette_offset": 172
+  },
+  {
+   "family": "BUSTUP",
+   "resource_id": 136,
+   "filename": "IJXX",
+   "width": 128,
+   "height": 160,
+   "pixel_offset": 8364,
+   "palette_offset": 172
+  },
+  {
+   "family": "BUSTUP",
+   "resource_id": 136,
+   "filename": "KAXX",
+   "width": 128,
+   "height": 160,
+   "pixel_offset": 8364,
+   "palette_offset": 172
+  },
+  {
+   "family": "BUSTUP",
+   "resource_id": 136,
+   "filename": "KGXX",
+   "width": 128,
+   "height": 160,
+   "pixel_offset": 8364,
+   "palette_offset": 172
+  },
+  {
+   "family": "BUSTUP",
+   "resource_id": 136,
+   "filename": "KIXX",
+   "width": 128,
+   "height": 160,
+   "pixel_offset": 8364,
+   "palette_offset": 172
+  },
+  {
+   "family": "BUSTUP",
+   "resource_id": 136,
+   "filename": "KOXX",
+   "width": 128,
+   "height": 160,
+   "pixel_offset": 8364,
+   "palette_offset": 172
+  },
+  {
+   "family": "BUSTUP",
+   "resource_id": 136,
+   "filename": "KYXX",
+   "width": 128,
+   "height": 160,
+   "pixel_offset": 8364,
+   "palette_offset": 172
+  },
+  {
+   "family": "BUSTUP",
+   "resource_id": 136,
+   "filename": "MIXX",
+   "width": 128,
+   "height": 160,
+   "pixel_offset": 8364,
+   "palette_offset": 172
+  },
+  {
+   "family": "BUSTUP",
+   "resource_id": 136,
+   "filename": "NIXX",
+   "width": 128,
+   "height": 160,
+   "pixel_offset": 8364,
+   "palette_offset": 172
+  },
+  {
+   "family": "BUSTUP",
+   "resource_id": 136,
+   "filename": "SAXX",
+   "width": 128,
+   "height": 160,
+   "pixel_offset": 8364,
+   "palette_offset": 172
+  },
+  {
+   "family": "BUSTUP",
+   "resource_id": 136,
+   "filename": "SOXX",
+   "width": 128,
+   "height": 160,
+   "pixel_offset": 8364,
+   "palette_offset": 172
+  },
+  {
+   "family": "BUSTUP",
+   "resource_id": 136,
+   "filename": "TAXX",
+   "width": 128,
+   "height": 160,
+   "pixel_offset": 8364,
+   "palette_offset": 172
+  },
+  {
+   "family": "BUSTUP",
+   "resource_id": 136,
+   "filename": "YOXX",
+   "width": 128,
+   "height": 160,
+   "pixel_offset": 8364,
+   "palette_offset": 172
+  }
+ ]
+}

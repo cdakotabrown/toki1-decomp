@@ -1,0 +1,1998 @@
+{
+  "change_yoshio": {
+    "func_name": "change_yoshio",
+    "address": "0x80092BDC",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP"
+    ],
+    "blocker_detail": "ASM-ONLY: 604B/151 insns library; MIDI event dispatcher with hidden t7/t8 parameters; t0=t7+(t8<<3) computed inside function body from caller-provided t7=track base ptr and t8=track index; function also uses a0/a1 as normal args (MIDI channel/key); 132 compiled vs 151 target (19-insn gap from missing hidden param computation and different switch structure); no C89 function signature can receive args in t7/t8 registers",
+    "family": "sound_sequencer",
+    "region": "library",
+    "source_file": "src/main/wip/change_yoshio.c",
+    "has_wip_source": true
+  },
+  "dec_bg_show": {
+    "func_name": "dec_bg_show",
+    "address": "0x800647B8",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "DUAL_ENTRY"
+    ],
+    "blocker_detail": "Dual-entry thunk + hidden registers + shared frame",
+    "family": "dual_entry_game",
+    "region": "game",
+    "source_file": "src/main/wip/dec_bg_show.c",
+    "has_wip_source": true
+  },
+  "pad_scan": {
+    "func_name": "pad_scan",
+    "address": "0x80043330",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "DUAL_ENTRY",
+      "SREG_ALLOC",
+      "INSN_COUNT_GAP",
+      "DELAY_SLOT"
+    ],
+    "blocker_detail": "ASM-ONLY: 680B/170 insns (combined: 2-insn thunk + first 168 insns of func_80043338 body); dual_entry_thunk: pad_scan (lui a1,0x800F / lw a1,-2336(a1)) falls through to func_80043338 with a1=pad_data; the thunk requires IDO to emit `lui a1` in cross-prologue position, but IDO never uses a1 as a cross-prologue load register (only t6/t8/at); additionally the body produces 200 insns from C vs 168 target for the comparable window \u2014 multiple structural mismatches: (1) a1 vs a0 as argument register (pervasive), (2) extra lui t0 for pad_main_tbl0 in delay slot (hidden by pre-load in target), (3) repeated sw a1,pad_data in branch delay slots (4x in target vs 1x in compiled), (4) D_800EF871 block has different register allocation (t4 vs t2 etc); best C-only: 21.2% raw, 57.2% with scheduler_normalizer; instruction count gap (200 vs 168 for body portion) cannot be bridged by any allowed PostProc; matched via asm/main/matched/pad_scan.s",
+    "family": "dual_entry_game",
+    "region": "game",
+    "source_file": "src/main/wip/pad_scan.c",
+    "has_wip_source": true
+  },
+  "cdq_command_process": {
+    "func_name": "cdq_command_process",
+    "address": "0x80045804",
+    "status": "unmatchable",
+    "primary_blocker": "DUAL_ENTRY",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP",
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "ASM-only: 627-insn dual-entry thunk sharing code body with func_8004580C; same blockers: cross-prologue beq t6,t7 (+1 insn), shared lui at,0x800f across same-page globals (+11 lui at); instruction count gap cannot be bridged by any allowed PostProc",
+    "family": "dual_entry_game",
+    "region": "game",
+    "source_file": "src/main/wip/cdq_command_process.c",
+    "has_wip_source": true
+  },
+  "func_8005DF34": {
+    "func_name": "func_8005DF34",
+    "address": "0x8005DF34",
+    "status": "unmatchable",
+    "primary_blocker": "DUAL_ENTRY",
+    "secondary_blockers": [
+      "OVERLAP_MISATTR"
+    ],
+    "blocker_detail": "ASM-only: dual-entry thunk; first 6 insns are loop-tail continuation from menu_girl_taku_set with no prologue; second entry at 0x8005DFF4 is internal callable subroutine; overlaps menu_girl_taku_set (0x8005DF34-0x8005DFF0); matched via asm/main/matched/func_8005DF34.s",
+    "family": "dual_entry_game",
+    "region": "game",
+    "source_file": "src/main/wip/func_8005DF34.c",
+    "has_wip_source": true
+  },
+  "func_8006646C": {
+    "func_name": "func_8006646C",
+    "address": "0x8006646C",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "DUAL_ENTRY",
+      "INSN_COUNT_GAP"
+    ],
+    "blocker_detail": "BLOCKER: IDO 5.2 loop unrolling produces 434 insns (target: 444); 10-insn gap from different Duff's device shape \u2014 target uses 4 independent running variables (v1,a2,a3,t0) decremented by 56 each; IDO 5.2 generates serial computation from one counter via successive -14 subtractions; loopunroll=0/2/4/8 all miss (300/388/434/498); dual-entry thunk func_80066700 at offset 0x294; ra used as data reg for basyo_init_tbl0; non-standard 72-byte frame",
+    "family": "dual_entry_game",
+    "region": "game",
+    "source_file": "src/main/wip/func_8006646C.c",
+    "has_wip_source": true
+  },
+  "func_80066700": {
+    "func_name": "func_80066700",
+    "address": "0x80066700",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "DUAL_ENTRY"
+    ],
+    "blocker_detail": "ASM-only: dual-entry thunk + $ra used as data register (subu t6,ra,a1); no prologue/epilogue; code fragment inside func_8006646C; already matched via asm/main/matched/func_80066700.s",
+    "family": "dual_entry_game",
+    "region": "game",
+    "source_file": "src/main/wip/func_80066700.c",
+    "has_wip_source": true
+  },
+  "func_80067490": {
+    "func_name": "func_80067490",
+    "address": "0x80067490",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "DUAL_ENTRY"
+    ],
+    "blocker_detail": "Dual-entry thunk + hidden treg",
+    "family": "dual_entry_game",
+    "region": "game",
+    "source_file": "src/main/wip/func_80067490.c",
+    "has_wip_source": true
+  },
+  "StCdInterrupt": {
+    "func_name": "StCdInterrupt",
+    "address": "0x80088378",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "ANDI_ELIM",
+      "DELAY_SLOT"
+    ],
+    "blocker_detail": "ASM-only: GCC function (16 j insns, addu move) with hidden $v0 param + 2 andi 0xFFFF after lhu (impossible in GCC) + 35 delay slot fills beyond maspsx capability; GCC 2.6.0 -O1 closest at 564 vs 561 insns, 83.4% multiset",
+    "family": "sound_sequencer",
+    "region": "library",
+    "source_file": "src/main/wip/StCdInterrupt.c",
+    "has_wip_source": true
+  },
+  "Snd_SetVol": {
+    "func_name": "Snd_SetVol",
+    "address": "0x8008C7A0",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP"
+    ],
+    "blocker_detail": "ASM-only: hidden register pattern; t7=base, t8/t1=index pair arrive as live inputs from caller; sign-extension pattern sll t2,a2,16/sra t2,t2,16 (cross-reg preserving a2) requires no arg homes, impossible from standard C ABI; IDO always generates 20 insns for any C equivalent vs target 21; instruction count cannot be bridged by any allowed PostProc",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/wip/Snd_SetVol.c",
+    "has_wip_source": true
+  },
+  "SpuVmAlloc": {
+    "func_name": "SpuVmAlloc",
+    "address": "0x8008C810",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP"
+    ],
+    "blocker_detail": "ASM-only: hidden t3 register for count (4th param); prologue zeros a3 for matchCnt before bnez t3 (count check) \u2014 t3 is a live-in from caller, not standard ABI a3; additionally all 12 variables (result,bestF6,matchCnt,bestCtr,bestSlot,i,priVal,pri,f6,ctr,cnt,a0) must fit in registers for 8-byte frame (only s0 saved) but IDO with declared C vars produces 32-48 byte frame and 174+ insns vs target 102; instruction count gap (174 vs 102) and hidden t3 input cannot be bridged by any allowed PostProc",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/wip/SpuVmAlloc.c",
+    "has_wip_source": true
+  },
+  "func_800910fc": {
+    "func_name": "func_800910fc",
+    "address": "0x800910FC",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "DUAL_ENTRY",
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "ASM-only, dual_entry_thunk + hidden t9/t1/$at: cross-prologue at 0x800910DC loads t9=D_80131480[a0], t1=_svm_vab_pg[a0], at=0x80130000 before function entry; compiler cannot emit $at as data-register base for sw/sb",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/wip/func_800910fc.c",
+    "has_wip_source": true
+  },
+  "func_8009465C": {
+    "func_name": "func_8009465C",
+    "address": "0x8009465C",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "IDO_CSE"
+    ],
+    "blocker_detail": "ASM-only: cross-prologue thunk (lui t7,0x8013) + hidden t1/t2/t7/t9/a2 registers + IDO CSE; 240 insns target; same body as GetMetaEvent with leading lui; MIDI command handler (0x2F=end track, 0x51=set tempo); shares all blockers with GetMetaEvent",
+    "family": "voice168",
+    "region": "library",
+    "source_file": "src/main/wip/func_8009465C.c",
+    "has_wip_source": true
+  },
+  "GetMetaEvent": {
+    "func_name": "GetMetaEvent",
+    "address": "0x80094660",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "STRENGTH_REDUCTION",
+      "IDO_CSE",
+      "SREG_ALLOC",
+      "INSN_COUNT_GAP"
+    ],
+    "blocker_detail": "ASM-only: hidden t1/t2/t7/t9 registers + IDO CSE instruction count gap; target recomputes voice*168 offset 5 times in flag cleanup (237 insns); best compiled = 239 insns; IDO CSE-merges offset (saves 4 insns for reload from volatile voice ptr but gains 4 from volatile overhead); no s-registers used (only ra saved) but IDO always uses s-regs for cross-call values; 0% byte match at any position due to complete register mismatch",
+    "family": "voice168",
+    "region": "library",
+    "source_file": "src/main/wip/GetMetaEvent.c",
+    "has_wip_source": true
+  },
+  "_SpuMallocSeparateTo3": {
+    "func_name": "_SpuMallocSeparateTo3",
+    "address": "0x80097D7C",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "IDO_CSE",
+      "SREG_ALLOC",
+      "INSN_COUNT_GAP"
+    ],
+    "blocker_detail": "ASM-ONLY: 840B/210 insns library; body of _SpuMallocSeparateTo3 entered after cross-prologue (hidden t5=_SpuMemList); IDO52_CSE_MAX_REUSE=3 achieves 210=210 count match but structure is fundamentally different: target uses t5 (pre-loaded from cross-prologue) for heap pointer with 32-byte frame (only ra+a1 on stack), compiled loads _SpuMemList fresh into t3 with 64-byte frame (spills a1/a2/a3) \u2014 cascading register allocation difference yields 156/210 structural mismatches (different opcodes: slt vs subu, lw vs addu etc.); scheduler_normalizer+general_remap_postscheduler achieves 25.7% exact; code structure gap from hidden t5 cannot be bridged by any allowed PostProc",
+    "family": "heap_alloc",
+    "region": "library",
+    "source_file": "src/main/wip/_SpuMallocSeparateTo3.c",
+    "has_wip_source": true
+  },
+  "func_800984C4": {
+    "func_name": "func_800984C4",
+    "address": "0x800984C4",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [],
+    "blocker_detail": "Hidden register a3",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/wip/func_800984C4.c",
+    "has_wip_source": true
+  },
+  "func_80098538": {
+    "func_name": "func_80098538",
+    "address": "0x80098538",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "LAZY_SAVE"
+    ],
+    "blocker_detail": "ASM_ONLY: 188B/47 insns; UNIQUE lazy-save dual-epilogue pattern (only instance in library region); IDO saves s1+ra BEFORE bltz t6, then saves s0+s2+s3 AFTER (interleaved with global loads), creating 3 separate epilogue paths (bltz-exit: lw ra,lw s1,jr ra,addiu sp; and-exit: lw s0,s2,s3,b,lw ra; normal-exit: lw s0,s2,s3,nop,lw ra,lw s1,jr ra,addiu sp); C89 always generates one shared epilogue = 44 insns, 3 short; additional blockers: hidden t6 parameter (_print pre-entry), jal delay slot has `sw a3,16(sp)` (opcode change, not register swap), non-contiguous frame layout (s-saves at sp+32,36,44,48,52 with gap at sp+40 and local at sp+16); best achievable from C: 40.4% via scheduler_normalizer; matched via asm/main/matched/func_80098538.s",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/wip/func_80098538.c",
+    "has_wip_source": true
+  },
+  "valiable_init": {
+    "func_name": "valiable_init",
+    "address": "0x80099040",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "IDO_CSE",
+      "INSN_COUNT_GAP",
+      "UNALIGNED_ACCESS"
+    ],
+    "blocker_detail": "ASM-only: 572B/143 insns; two-blocker pattern: (1) hidden_vreg \u2014 v0 read before write at entry (bnez v0 div-by-zero check uses divisor v0 left by preceding valiable_init's `div zero,v1,v0` at 0x8009903c, which falls through with no jr ra); (2) hidden_hilo \u2014 mflo v1 at insn 95 retrieves LO from that cross-function division; no C89 mechanism expresses cross-boundary HI/LO reads or uses v0 at function entry before any assignment; additionally IDO -O2 generates symbol-based loads (lui+lw per field) for the 32-byte SoundStruct copy from GsIDMATRIX, adding 15 extra instructions vs target's pointer-based lw offset(a2) pattern; best C-only match 38.5% via scheduler_normalizer; tested: packed struct (144 insns, lwl/lwr unaligned), alias CSE-breaking, div-as-param, combined function, all IDO flags; instruction count gap (154 vs 143) and div-check pattern cannot be bridged by any allowed PostProc",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/wip/valiable_init.c",
+    "has_wip_source": true
+  },
+  "func_8009D334": {
+    "func_name": "func_8009D334",
+    "address": "0x8009D334",
+    "status": "matched",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "ASM-only: hidden v0/v1 live-in + cross-prologue lui a0 with 3-insn address pattern (lui+addiu+sh) vs compiler 2-insn (lui+sh); no compiler produces the target's address computation; 14 insns",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/wip/func_8009D334.c",
+    "has_wip_source": true,
+    "resolution": "Matched via asm_intercept + prepend_thunk (2026-04-03)"
+  },
+  "ResetGraph": {
+    "func_name": "ResetGraph",
+    "address": "0x8009F99C",
+    "status": "unmatchable",
+    "primary_blocker": "INSN_COUNT_GAP",
+    "secondary_blockers": [
+      "JUMP_TABLE",
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "BLOCKER: 528B/132 insns; thunk wrapper for func_8009F9A4 (adds 2 cross-prologue insns); target has 4-entry jump table at 0x800B9650 for switch(arg0&3); IDO 5.2 requires 5+ cases \u2192 adding dummy case 4 generates 5-entry table (wrong data bytes); best match 64.4% via 5-case+scheduler_normalize; instruction count gap (128 vs 132) plus wrong table size make this unmatchable from C; also has backward-branch inner mode switch (idx 100-108) that forward-branch if-else cannot replicate; all blockers present in func_8009F9A4 apply here too",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/wip/ResetGraph.c",
+    "has_wip_source": true
+  },
+  "func_8009F9A4": {
+    "func_name": "func_8009F9A4",
+    "address": "0x8009F9A4",
+    "status": "unmatchable",
+    "primary_blocker": "JUMP_TABLE",
+    "secondary_blockers": [],
+    "blocker_detail": "Jump table blocker, unmatchable from C",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/wip/func_8009F9A4.c",
+    "has_wip_source": true
+  },
+  "ClearOTag": {
+    "func_name": "ClearOTag",
+    "address": "0x800A0210",
+    "status": "unmatchable",
+    "primary_blocker": "DEAD_STORE",
+    "secondary_blockers": [
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "ASM-only: 420B/105 insns library; cross-prologue thunk (lui t6 / lbu t6 D_800EBD62); body is ContPortaTime; dead code artifact: target insn 25 (andi v0,a2,0x3) is unreachable dead code between unconditional branch and branch target; IDO 5.2 at -O2 with -Wo,-loopunroll,0 + volatile pointer produces 104 insns (1 short); no C construct or allowed PostProc can insert the dead instruction",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/wip/ClearOTag.c",
+    "has_wip_source": true
+  },
+  "LoadTPage": {
+    "func_name": "LoadTPage",
+    "address": "0x800A3320",
+    "status": "unmatchable",
+    "primary_blocker": "INSN_COUNT_GAP",
+    "secondary_blockers": [
+      "DELAY_SLOT",
+      "JUMP_TABLE"
+    ],
+    "blocker_detail": "ASM-only: 220B/55 insns; backward-dispatch switch pattern \u2014 target places case bodies BEFORE switch dispatch (b to dispatch, beqz/beq/beq backward to cases); IDO -O2 always generates forward-branching if-else chains; additionally target has 3 unfilled nop load-delay slots that IDO -O2 fills; compiled=52 vs target=55 (3-instruction gap from delay slot fills); no IDO flag or C construct produces backward-dispatch layout",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/wip/LoadTPage.c",
+    "has_wip_source": true
+  },
+  "_spu_init": {
+    "func_name": "_spu_init",
+    "address": "0x800957B0",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "IDO_CSE",
+      "SREG_ALLOC"
+    ],
+    "blocker_detail": "ASM-ONLY: 544B/136 insns; cross-prologue hidden at=0x800f from thunk at 0x800957B0; IDO52_CSE_MAX_REUSE=3 achieves correct insn count (136) but kills s0 allocation (uses stack-saved pointers instead); without hook s0 allocated but only 132 insns; fundamental tension between insn count (needs CSE hook) and register allocation (needs no hook); loop back-edge structural mismatch (compiled CSEs loop condition, target re-reads memory with lhu+andi); 4 unfixable structural instruction mismatches (lw-from-stack vs andi/ori); best: 96.3% masked via scheduler_normalizer+general_remap with CSE hook, 41.2% positional",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/wip/_spu_init.c",
+    "has_wip_source": true
+  },
+  "SetControlChange": {
+    "func_name": "SetControlChange",
+    "address": "0x80092FBC",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [],
+    "blocker_detail": "Hidden register pattern",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/wip/SetControlChange.c",
+    "has_wip_source": true
+  },
+  "CD_init": {
+    "func_name": "CD_init",
+    "address": "0x80098530",
+    "status": "unmatchable",
+    "primary_blocker": "LAZY_SAVE",
+    "secondary_blockers": [],
+    "blocker_detail": "ASM-ONLY: lazy-save pattern (s0/s2/s3 saved after bltz early-exit); IDO 5.2 always saves all s-regs before branch, producing 42 insns vs target 49; 7-insn structural gap from duplicated epilogue paths",
+    "family": "cd_hw",
+    "region": "library",
+    "source_file": "src/main/semi-matched/CD_init.c",
+    "has_semi_matched_source": true
+  },
+  "SpuMallocWithStartAddr": {
+    "func_name": "SpuMallocWithStartAddr",
+    "address": "0x800980D8",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [],
+    "blocker_detail": "ASM-ONLY: 816B/204 insns; 5-insn cross-prologue loads t6=1, a2=libspu_spuisinallocatearea_var_bd30, t7=D_800E3258 before function entry; function reads t6 and a2 at insn 1 (sllv v0,t6,a2) and t7 at insn 5 (bnez t7) as hidden live-ins; no C89 mechanism expresses hidden t-register inputs from a parent thunk; additionally target saves t1 to sp+60 (outside the 56-byte frame) as a cross-caller spill to parent stack area, not reproducible via any local variable allocation; matched via asm/main/matched/SpuMallocWithStartAddr.s",
+    "family": "cd_hw",
+    "region": "library",
+    "source_file": "src/main/semi-matched/SpuMallocWithStartAddr.c",
+    "has_semi_matched_source": true
+  },
+  "CdControlB": {
+    "func_name": "CdControlB",
+    "address": "0x80095D90",
+    "status": "unmatchable",
+    "primary_blocker": "BANNED",
+    "secondary_blockers": [
+      "IDO_CSE",
+      "ANDI_ELIM"
+    ],
+    "blocker_detail": "BLOCKER: 292B/73 insns; target contains 3 `andi reg,reg,0xffff` zero-extension instructions (idx 8, 19, 21) that IDO 5.2 -O2 eliminates via constant folding: (1) `andi t7,t6,0xffff` before `sh t7,422(t8)` \u2014 IDO knows lhu already zero-extends so skips; (2) `andi v0,v0,0xffff` between `andi 0xffcf` and `ori 0x20`; (3) `andi v0,v0,0xffff` after `ori 0x20` before `sh` \u2014 IDO combines all mask operations; tested: explicit u16 intermediate casts (u16)(expr), u32 intermediate with & 0xFFFF, -O1 (generates andi 0xffff but produces 80 insns with stack spills), all uopt flags (-no_unaryfold/-no_binaryfold/-no_constprop/-no_copyprop); IDO's constant-folding in the code-generator layer eliminates redundant andi-0xffff on lhu results regardless of C source or uopt flags; compiled=70 vs target=73 (3 short); insertion via custom_script is banned (instruction count change); best match 47.9% via scheduler_normalizer; matched via asm/main/matched/CdControlB.s",
+    "family": "cd_hw",
+    "region": "library",
+    "source_file": "src/main/semi-matched/CdControlB.c",
+    "has_semi_matched_source": true
+  },
+  "_spu_r": {
+    "func_name": "_spu_r",
+    "address": "0x80095EB4",
+    "status": "unmatchable",
+    "primary_blocker": "IDO_CSE",
+    "secondary_blockers": [
+      "ANDI_ELIM",
+      "INSN_COUNT_GAP",
+      "DELAY_SLOT"
+    ],
+    "blocker_detail": "BLOCKER: 276B/69 insns (_spu_r); same dual blocker as CdControlB: (1) target has 4 `andi v0,v0,0xffff` zero-extension instructions that IDO 5.2 -O2 eliminates via constant folding on lhu/andi results \u2014 tested explicit u16 casts, s32 intermediates with & 0xFFFF, all uopt flags, IDO 5.3; all fail; (2) IDO -O1 generates andi 0xffff but produces 80 insns (11 extra stack spills for base ptr + q variable) vs target 69; stripping 11 from -O1 gets to 69 insns but creates structural mismatches at idx 11 (andi t1,t0,0xffff vs target move a2,a1) and idx 21 jal delay (sh t9,426(t3) vs target sw a2,28(sp)) \u2014 different opcodes, not just register swaps; the move a2,a1 at target idx 11 is IDO -O2 cross-block scheduling of jal delay-slot arg save (hoisted 10 insns early); contradictory requirements: andi 0xffff needs -O1 but move a2,a1 scheduling needs -O2; instruction count gap cannot be bridged by any allowed PostProc; matched via asm/main/matched/_spu_r.s",
+    "family": "cd_hw",
+    "region": "library",
+    "source_file": "src/main/semi-matched/_spu_r.c",
+    "has_semi_matched_source": true
+  },
+  "_spu_writeByIO": {
+    "func_name": "_spu_writeByIO",
+    "address": "0x80095AF4",
+    "status": "unmatchable",
+    "primary_blocker": "IDO_CSE",
+    "secondary_blockers": [
+      "ANDI_ELIM",
+      "SREG_ALLOC",
+      "INSN_COUNT_GAP",
+      "LAZY_SAVE"
+    ],
+    "blocker_detail": "BLOCKER: 484B/121 insns at 0x80095AF4; two combined IDO 5.2 codegen blockers: (1) target has 4 redundant \"andi reg,reg,0xFFFF\" after u16 operations (lhu+andi 0x7ff \u2192 andi 0xffff; andi 0xffcf \u2192 andi 0xffff; ori 0x10 \u2192 andi 0xffff; andi 0xffcf \u2192 andi 0xffff) that IDO 5.2 -O2 eliminates (lhu guarantees zero-extension); IDO 5.1 may produce them but crashes on this complexity; -O1 produces 144 insns (too many); (2) target uses deferred s-register saves \u2014 s3/s5/s6 saved AFTER early-exit beqz (not at function entry), restored at loop exit; IDO 5.2 -O2 always saves all s-regs at function entry; compiled=112 vs target=121 (9-instruction gap from missing andi+deferred saves); no IDO flag or C construct produces redundant andi or deferred saves at -O2. TESTED 2026-04-01: IDO52_CSE_MAX_REUSE=4 gives 121 instructions (count match!) but wrong code structure: frame=-80 vs target -88, no deferred saves, 10 positions with different opcodes entirely, best result after full scheduler_normalizer+general_remap_postscheduler pipeline is 46.3% positional (56/121); hook adds spill-reload sequences not the target's deferred save pattern; REMAINS UNMATCHABLE",
+    "family": "cd_hw",
+    "region": "library",
+    "source_file": "src/main/semi-matched/_spu_writeByIO.c",
+    "has_semi_matched_source": true
+  },
+  "ContPortaTime": {
+    "func_name": "ContPortaTime",
+    "address": "0x800A0218",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP",
+      "DEAD_STORE",
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "ASM-only: 412B/103 insns library; body of ClearOTag (same code at 0x800A0218); hidden t6 register (D_800EBD62 preloaded by cross-prologue thunk); same dead code blocker as ClearOTag: target has unreachable andi v0,a2,3 at insn 25; best compiled = 104 insns with cross-prologue stripped vs 105 target (103+2 thunk); 1-insn gap from dead code cannot be bridged",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/semi-matched/ContPortaTime.c",
+    "has_semi_matched_source": true
+  },
+  "MouseRead": {
+    "func_name": "MouseRead",
+    "address": "0x80066688",
+    "status": "unmatchable",
+    "primary_blocker": "OVERLAP_MISATTR",
+    "secondary_blockers": [],
+    "blocker_detail": "OVERLAP: config address 0x80066688 falls inside func_8006646C (0x8006646C, 1776B, unmatchable); ASM file asm/main/matched/MouseRead.s has correct code at correct address; C implementation is correct but cannot be independently verified because address belongs to func_8006646C's range; already matched as ASM",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/func_80066700.c",
+    "has_semi_matched_source": true
+  },
+  "SD_BranchCTRL": {
+    "func_name": "SD_BranchCTRL",
+    "address": "0x80088C74",
+    "status": "unmatchable",
+    "primary_blocker": "DEAD_STORE",
+    "secondary_blockers": [
+      "GCC_ASPSX"
+    ],
+    "blocker_detail": "ASM-only: GCC 2.6.0 function (2 j insns, addu move); target has 2 dead `addiu v1,v1,4` ASPSX hazard/delay fills in epilogue that no C code produces; best compiled=102 insns vs target=103; tested all 3 GCC versions, 12+ flag combos, cc1-nocj, fill_gcc_delay_slots, *p++ patterns, volatile tricks; ASPSX scheduling artifacts cannot be reproduced from C",
+    "family": "sound_sequencer",
+    "region": "library",
+    "source_file": "src/main/semi-matched/SD_BranchCTRL.c",
+    "has_semi_matched_source": true
+  },
+  "SD_VABTransfer": {
+    "func_name": "SD_VABTransfer",
+    "address": "0x80088E68",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "DUAL_ENTRY"
+    ],
+    "blocker_detail": "ASM-only: dual-entry (j in thunk), count in v0 (non-standard ABI at Entry 2), extra move a2,v0 needed (21 vs 20 GCC insns), IDO-style load hoisting in loop; GCC 2.6.0/2.7.2/2.8.1 all tested at -O1/-O2",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/semi-matched/SD_VABTransfer.c",
+    "has_semi_matched_source": true
+  },
+  "SsUtSetReverbType": {
+    "func_name": "SsUtSetReverbType",
+    "address": "0x80099CA4",
+    "status": "unmatchable",
+    "primary_blocker": "OTHER",
+    "secondary_blockers": [],
+    "blocker_detail": "Not expressible in C89",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/semi-matched/SsUtSetReverbType.c",
+    "has_semi_matched_source": true
+  },
+  "byouki_hassei": {
+    "func_name": "byouki_hassei",
+    "address": "0x80072E30",
+    "status": "unmatchable",
+    "primary_blocker": "INSN_COUNT_GAP",
+    "secondary_blockers": [
+      "LAZY_SAVE"
+    ],
+    "blocker_detail": "BLOCKER: 1044B/261 insns game; TWO blockers: (1) IDO 5.2 keeps constant 11 in v1 (reloading li v1,11 after each jal) instead of s3; tried volatile, extern global, opaque trick, CONST_NOINREG hook \u2014 none force s-reg for small constant; (2) MAIN BLOCKER: `return` inside do-while loop causes IDO to emit duplicate epilogue (9 extra insns: lw ra/s0-s2 + jr ra + addiu sp + nop); target shares single epilogue via branch; goto/break restructuring cannot eliminate duplicate; -Wo,-moremotion gives 252 (too few); all other flags give 270; instruction count 270 vs 261 cannot be bridged by allowed PostProc",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/byouki_hassei.c",
+    "has_semi_matched_source": true
+  },
+  "CD_readsync": {
+    "func_name": "CD_readsync",
+    "address": "0x8008AE24",
+    "status": "unmatchable",
+    "primary_blocker": "INSN_COUNT_GAP",
+    "secondary_blockers": [
+      "CROSS_PROLOGUE",
+      "GCC_ASPSX"
+    ],
+    "blocker_detail": "BLOCKER: 228B/57 insns; target uses cross-prologue `lui s0,0x800e/addiu s0,s0,11760` (s0=&libcd_cd_readsync_tbl_2df0) + accesses libcd_read_sectors_left as `-4(s0)` and libcd_cd_readsync_tbl_2df0 as `0(s0)` with NO relocations at access points (7 total relocs); IDO 5.2 always generates separate lui+lw pairs for each of 6 global reads/writes (12 insns, 12 relocs) instead of target's 6-insn base-pointer pattern; per-section instruction count difference: copy loop 9 compiled vs 12 target (+3), global section 28 compiled vs 26 target (-2), epilogue 9 compiled vs 8 target (-1); custom_script cannot bridge cross-section instruction count differences; tested: separate externs, array `libcd_read_sectors_left[2]`, struct, pointer-to-DF0, volatile, all IDO experimental uopt hooks (COLOROFFSET/PROCINIT 1-4); GCC 2.6.0/2.7.2 all produce wrong instruction counts (58-60); GCC 2.8.1 -O1 produces 57 insns but opcode multiset mismatch (R-type: +2, addiu: +2, lui: -4) \u2014 structurally different; no compiler+flags combination produces the target's base-pointer global access pattern; instruction count gap between sections cannot be bridged by any allowed PostProc",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/semi-matched/CD_readsync.c",
+    "has_semi_matched_source": true
+  },
+  "srn_tpage_show": {
+    "func_name": "srn_tpage_show",
+    "address": "0x8004C750",
+    "status": "unmatchable",
+    "primary_blocker": "INSN_COUNT_GAP",
+    "secondary_blockers": [],
+    "blocker_detail": "BLOCKER: 3224B/806 insns; switch+signed-division pattern (bgez/sra/addiu/sra/sll for arg4/256<<2) produces 807 insns; >>8<<2 shift produces 804; no C expression variant found producing exactly 806; also frame=136 raw vs target 104 raw (IDO allocates 24 extra spill slots for complex volatile activeBuff table expressions); s2 used for arg2 by IDO vs table pointer in target; instruction count + frame size cannot be bridged by any allowed PostProc",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/srn_tpage_show.c",
+    "has_semi_matched_source": true
+  },
+  "schedule_mark_on": {
+    "func_name": "schedule_mark_on",
+    "address": "0x80068A10",
+    "status": "unmatchable",
+    "primary_blocker": "SREG_ALLOC",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP",
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "BLOCKER: 2532B/633 insns; two combined structural blockers: (1) func_800689FC missing jr ra \u2014 target ends with 6 insns ('addu v0,t8,t7' last, binary-verified at 0x80068A10), no jr ra, no nop; IDO fall-through optimization where func_800689FC uses cal_font_load's jr ra at runtime; compiled always produces 8 insns (jr ra + nop); custom_script cannot fix (removing 2 instructions violates no-count-change rule); (2) main body s-reg allocation mismatch \u2014 target requires exactly 9 s-reg variables: s0=256/element_ptr, s1=i/day, s2=3/m, s3=64/dp, s4=140/cnt, s5=&basyo_init_tbl1/d, s6=&basyo_init_tbl2/rep, s7=class_w, s8=68(stride) with screen_w cross-prologue spilled to sp+132; IDO always allocates different 9 variables generating ~13 extra 'move sX,sY' element-pointer backup instructions vs 0 in target; tested 28+ C variants, IDO52_CONST_NOINREG_VALUES=8 (gets 3/64/140 in s3/s4/s5 but wrong positions/count +8), IDO52_LDA_NOINREG_CLASSES, all uopt flags, -O1, -Wo,-no_r23; total gap: ~646 compiled vs 633 target (13 extra); root cause 1 alone is fatal (2-insn count change banned); matched via asm/main/matched/schedule_mark_on.s",
+    "family": "licm_address",
+    "region": "game",
+    "source_file": "src/main/semi-matched/schedule_mark_on.c",
+    "has_semi_matched_source": true
+  },
+  "ContRpn1": {
+    "func_name": "ContRpn1",
+    "address": "0x800939C8",
+    "status": "unmatchable",
+    "primary_blocker": "BANNED",
+    "secondary_blockers": [],
+    "blocker_detail": "BANNED (sh\u2192sb conversion needed)",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/semi-matched/ContRpn1.c",
+    "has_semi_matched_source": true
+  },
+  "girls_event_pick": {
+    "func_name": "girls_event_pick",
+    "address": "0x8006FBF0",
+    "status": "unmatchable",
+    "primary_blocker": "IDO_CSE",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP"
+    ],
+    "blocker_detail": "BLOCKER: 2916B/729 insns; target uses 5 s-regs (s0=100, s1=slot, s2=1, s3=1, s4=charPtr) but IDO 5.2 CSEs the two constant-1 variables into one s-reg, producing only 4 s-regs and 704 insns; 25-instruction count gap (704 vs 729) cannot be bridged by any allowed PostProc; exhaustive testing of variable ordering, address-taken tricks, opaque-zero, type variations, -Wo flags, and experimental uopt hooks all failed to force 5 s-regs",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/girls_event_pick.c",
+    "has_semi_matched_source": true
+  },
+  "draw_and_disp_env_init": {
+    "func_name": "draw_and_disp_env_init",
+    "address": "0x800410AC",
+    "status": "unmatchable",
+    "primary_blocker": "UNALIGNED_ACCESS",
+    "secondary_blockers": [],
+    "blocker_detail": "ASM_ONLY: 520B/130 insns; contains lwl/lwr/swl/swr unaligned memory access pairs for 20-byte DISPENV structure copy; these MIPS instructions cannot be generated by any C compiler; function copies 92-byte DRAWENV struct via aligned 12-byte loop + tail, then copies 20-byte DISPENV via 5 unaligned word copies; the aligned copy portion (lw/sw loop) could match IDO but the 5 unaligned lwl/lwr/swl/swr word-copy sequences (40 instructions total) are ASM-only",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/draw_and_disp_env_init.c",
+    "has_semi_matched_source": true
+  },
+  "parameter_init": {
+    "func_name": "parameter_init",
+    "address": "0x80041BBC",
+    "status": "unmatchable",
+    "primary_blocker": "IDO_CSE",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP",
+      "DEAD_STORE",
+      "OVERLAP_MISATTR"
+    ],
+    "blocker_detail": "BLOCKER: 560B/140 insns; target has 6 intermediate dead stores (2 to byouki_kind, 4 to byouki_state) that IDO 5.2 -O2 eliminates; compiled=134 vs target=140 (6 short); root causes: (1) IDO cfe constant-folds chained AND masks (0xFFF0 & 0xF \u2192 0, 0xFFFE & 0xFD & 0xFB \u2192 0xF8) before uopt runs \u2014 no uopt flag prevents frontend constant folding; (2) IDO uopt dead-store elimination removes byouki_kind=t8 before byouki_kind=t0 overwrites it \u2014 -Wo,-nordstore adds stack spills but doesn't preserve global dead stores; tested: named local temps, volatile locals, volatile globals (adds extra move insns, wrong structure), array access, struct pointer (adds lw reloads, wrong addressing), all uopt flags (-nordstore/-noPalias/-f77alias/-doassoc/-norlodrstropt), IDO 5.2p/5.3, -O1 (stack spills, wrong structure), -Wo,-Olimit,0; the 6-insn gap cannot be bridged by any allowed PostProc; matched via asm/main/matched/parameter_init.s",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/parameter_init.c",
+    "has_semi_matched_source": true
+  },
+  "girl_rec_init": {
+    "func_name": "girl_rec_init",
+    "address": "0x80041DEC",
+    "status": "unmatchable",
+    "primary_blocker": "IDO_CSE",
+    "secondary_blockers": [
+      "SREG_ALLOC",
+      "INSN_COUNT_GAP",
+      "DEAD_STORE"
+    ],
+    "blocker_detail": "BLOCKER: 796B/199 insns; three combined structural blockers: (1) loop constant folding \u2014 target loop body has 3 intermediate dead stores: `sb t8,456(v0)` (b8a), `sb t0,456(v0)` (b8b), `sb t2,400(v0)` (b8c pre-mask) \u2014 IDO cfe constant-folds `(b8 & 0xFFFD) & 0xF7 & 0xBF` into `b8 & 0xF5` and eliminates the first 2 dead stores (same root cause as parameter_init); loop is 18 compiled vs 22 target (4 short); volatile pointer trick adds only 2 of the 3 dead stores and produces wrong register allocation (a2/a3 for base pointers); (2) flag block dead stores \u2014 target has 4 sb to girl0_flag (0x2,0xa,0x4a,0xca) + 2 sb to girl12_flag (0x2,0xa) as intermediate dead stores; IDO uopt dead-store elimination combines `girl0_flag |= 2|8|0x40|0x80` into 1 store (ori|0xca) and `girl12_flag |= 2|8` into 1 store (ori|0xa); volatile extern forces stores but adds 2 extra move+lui instructions (move v0,t6 for EEBC8 chain + extra lui), giving 25 insns vs target 21 for flag block; (3) slot section halfword base pointer \u2014 target uses v0=screen_w as persistent base for all 14 halfword loads/stores (lhu/sh OFFSET(v0)); IDO's alias analysis cannot prove that byte12 stores via absolute externs (girl0_birth etc.) don't alias with pp=screen_w, so it reloads pp for each halfword = extra lui per slot (14 extra lui = 14 extra insns vs target); tested: named local chain (folds), volatile loop pointer (21 insns, wrong struct), pp=screen_w array for halfwords + separate externs for byte12 (pp reloads, still 160 insns for slots vs 143), all-array access (180 insns, over-optimized), IDO 5.1 (crashes runtime bounds), IDO 5.2p; combined net: loop -4, flag +4, slot +5 = total 204 vs 199; no C structure produces exactly 199 matching insns; instruction count gap cannot be bridged by any allowed PostProc; matched via asm/main/matched/girl_rec_init.s",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/girl_rec_init.c",
+    "has_semi_matched_source": true
+  },
+  "func_80042D50": {
+    "func_name": "func_80042D50",
+    "address": "0x80042D50",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP"
+    ],
+    "blocker_detail": "BLOCKER: 448B/112 insns (thunk) + 456B/114 insns (body pad_type_check); cross-prologue thunk (lbu a0,pad1_buf; lbu v1,pad_type) with hidden a0/v1 parameters; body has 2-instruction count gap (112 compiled vs 114 target) caused by IDO tail-merging two separate \"return 1\" paths (b epilogue; li v0,1) into one shared return point; target has .L_7 and .L_9 as separate \"b .L_9; li v0,1\" blocks but IDO always merges them; tested: goto, if-else restructure, -Wo,-notail, volatile result, separate return variables; no C structure prevents tail-merge; best match 83.3% with scheduler_normalizer+frame_patch+v0<->v1 swap",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/func_80042D50.c",
+    "has_semi_matched_source": true
+  },
+  "pad_type_check": {
+    "func_name": "pad_type_check",
+    "address": "0x80042D58",
+    "status": "unmatchable",
+    "primary_blocker": "IDO_CSE",
+    "secondary_blockers": [
+      "ANDI_ELIM",
+      "SREG_ALLOC",
+      "DEAD_STORE",
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "BLOCKER: 456B/114 insns; four combined structural blockers: (1) register alloc \u2014 IDO uses v0=limit/a1=newState but target needs a1=limit/v0=oldState; cross-prologue delay slot `move a1,v1` vs `move v0,v1`; (2) dead store elimination \u2014 target has 3 `sb v1,-2348(at)` stores to pad_type in common: section but IDO -O2 eliminates 2; CSE-breaking aliases preserve all 3 stores but produce 116 insns (not 114) because each alias requires new lui+sb pair instead of reusing at already loaded; (3) constant folding \u2014 `newState = limit & 0xFF` with limit=255 folds to `move v1,v0` but target has `andi v1,a1,0xff`; (4) branch type selection \u2014 target uses `beq v0,a1` with `sb v1` delay slot for early-return-0 paths + `move v0,zero` at epilogue start; compiled uses `bne/b/move v0,zero` pattern; changing bne\u2192beq and moving sb to delay slot requires opcode changes (banned); all four blockers are interrelated and no C89 construct addresses them simultaneously; best C match: 87.9% (100/114) with scheduler_normalizer",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/pad_type_check.c",
+    "has_semi_matched_source": true
+  },
+  "func_80043D80": {
+    "func_name": "func_80043D80",
+    "address": "0x80043D80",
+    "status": "unmatchable",
+    "primary_blocker": "INSN_COUNT_GAP",
+    "secondary_blockers": [
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "BLOCKER: 1728B/432 insns; thunk for palette_load_vram (2016B body, already in unmatchable); cross-prologue t7 input (palette_queue_n); body has 517 compiled vs 504 target (13-insn gap from sll+move patterns, extra move a0,v0, ra_cnt on stack vs $ra); instruction count cannot be bridged by any allowed PostProc; matched via asm/main/matched/func_80043D80.s",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/func_80043D80.c",
+    "has_semi_matched_source": true
+  },
+  "palette_load_vram": {
+    "func_name": "palette_load_vram",
+    "address": "0x80043D88",
+    "status": "unmatchable",
+    "primary_blocker": "INSN_COUNT_GAP",
+    "secondary_blockers": [
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "BLOCKER: 2016B/504 insns; compiled=517 vs target=504 (13 extra); requires -Wo,-loopunroll,0 + volatile u16 for no s-regs + byte-offset macros; remaining 13 extras: 4x sll+move (target uses sll-in-delay-slot), 2x move a0,v0 in set preambles, 4x common path (ra_cnt stack vs $ra, extra sll for t2<<2, extra t0 save/restore); cross-prologue t7 input (palette_queue_n); manually unrolled loops; instruction count cannot be bridged by any allowed PostProc",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/palette_load_vram.c",
+    "has_semi_matched_source": true
+  },
+  "func_8004580C": {
+    "func_name": "func_8004580C",
+    "address": "0x8004580C",
+    "status": "unmatchable",
+    "primary_blocker": "INSN_COUNT_GAP",
+    "secondary_blockers": [
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "ASM-only: 735-insn game function; cross-prologue beq t6,t7 requires caller-provided t7=-1 (+1 insn); target shares lui at,0x800f across stores to different globals in same 64KB page (~11 extra lui at); compiled=747 vs target=735 (+12 insns); no C source or allowed PostProc can bridge instruction count gap",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/func_8004580C.c",
+    "has_semi_matched_source": true
+  },
+  "don_move": {
+    "func_name": "don_move",
+    "address": "0x800478A0",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "IDO_CSE",
+      "INSN_COUNT_GAP",
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "ASM-only: 328B/82 insns game; cross-prologue thunk (lui a0 / lbu a0 don_timer); body at func_800478A8 (84 insns); IDO CSE blocker: target has TWO sll/sra sign-extends of mflo result (insns 39-40 and 41/43) for separate uses (disp_ofs_x vs D_800EE776/778/77A); IDO 5.2 CSE-merges identical (s16) casts producing 85 compiled vs 86 target body insns (1-insn gap); *(s16*)&quotient gives 86 insns but wrong opcode (lh vs sll); no C construct prevents IDO CSE of local variable casts",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/don_move.c",
+    "has_semi_matched_source": true
+  },
+  "sprite_slot_disp": {
+    "func_name": "sprite_slot_disp",
+    "address": "0x80047A00",
+    "status": "unmatchable",
+    "primary_blocker": "INSN_COUNT_GAP",
+    "secondary_blockers": [
+      "JUMP_TABLE",
+      "CROSS_PROLOGUE",
+      "OVERLAP_MISATTR"
+    ],
+    "blocker_detail": "BLOCKER: 3280B/820 insns; target has TWO switch jump tables (4 cases each: fv=1,2,4,8) stored in LIBRARY DATA REGION at 0x800b613c and 0x800b61c0; IDO 5.2 requires 5+ case labels to generate jump tables; with only 4 cases IDO uses if-else chains (748 vs 783 insns for sprite_slot_disp body = 35-insn gap); adding a 5th dummy case generates a 9-entry table in game .rodata (range 0-8) but target tables are 33-entry (range 0-32) at fixed library addresses; compiled code's `lui at,0x0; lw t8,0(at)` relocation cannot match target's `lui at,0x800b; lw t8,24892(at)` hardcoded address; even if .text patched via relocation fixup, the wrong-size .rodata at wrong address would break SHA1; also: cross-prologue base ptr spill (sp+236) requires volatile s32 trick but prevents cross-prologue scheduling; func_8004863C (tail function, 37 insns) is matchable via -Wo,-loopunroll,0 + v0/v1 register swap; matched via asm/main/matched/sprite_slot_disp.s",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/sprite_slot_disp.c",
+    "has_semi_matched_source": true
+  },
+  "sprite_set_gpu_sprt2": {
+    "func_name": "sprite_set_gpu_sprt2",
+    "address": "0x8004A004",
+    "status": "unmatchable",
+    "primary_blocker": "INSN_COUNT_GAP",
+    "secondary_blockers": [],
+    "blocker_detail": "BLOCKER: 848B/212 insns; target insn 6 is `sll t7,t6,0` (redundant move/copy) before `bltz t7` \u2014 IDO 5.2 -O2 optimizes away the copy and branches directly on t6 (emits `bltz t6`); no C89 pattern produces `sll rd,rs,0` from IDO at -O2 (tested: u32 cast, volatile, <<0, intermediate variable); instruction count matches (212=212 with patch_stack_complete --old 32 --new 48) but the sll-as-move cannot be produced from C; additionally 52 non-reloc immediate offset differences from struct field access order mismatch (IDO scheduler reorders lbu/sb in different vertex-copy interleaving); general_remap_postscheduler achieves 100% masked by semantically altering instructions (changing sll shift amount from 1 to 0), which is invalid",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/sprite_set_gpu_sprt2.c",
+    "has_semi_matched_source": true
+  },
+  "func_8004A780": {
+    "func_name": "func_8004A780",
+    "address": "0x8004A780",
+    "status": "unmatchable",
+    "primary_blocker": "IDO_CSE",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP",
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "BLOCKER: 1012B/253 insns game; circle fill with POLY_FT4 sprites; cross-prologue (sb t4); 241 compiled vs 252 target (11-insn gap); target has 11 separate lui 0x8012 loads for activeBuff in inner loop body (each reload computes screen_w + activeBuff<<1 base pointer); IDO 5.2 -O2 CSE-merges activeBuff loads into shared s-register across loop body; same CSE blocker family as schedule_make/Snd_SetPlayMode/SsSeqClose; instruction count gap cannot be bridged by any allowed PostProc",
+    "family": "voice168",
+    "region": "game",
+    "source_file": "src/main/semi-matched/func_8004A780.c",
+    "has_semi_matched_source": true
+  },
+  "sprite_scatter_show": {
+    "func_name": "sprite_scatter_show",
+    "address": "0x8004A784",
+    "status": "unmatchable",
+    "primary_blocker": "SREG_ALLOC",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP",
+      "DELAY_SLOT"
+    ],
+    "blocker_detail": "BLOCKER: 1024B/256 insns game; circle fill with sprites; 264 compiled vs 256 target (8 extra insns); NOT a CSE blocker \u2014 activeBuff has 11 separate loads in both target and compiled (no CSE merging); REAL BLOCKER: bgez delay slot pattern \u2014 target uses 4-insn bgez/sra pattern (sra in delay slot, at as temp) per halfW/halfH case (8 total); IDO generates 6-insn bgez pattern per case (sra before bgez, move for temp, 12 total) = 4 extra insns + 4 extra from screen_w per-access lui/addiu (not hoisted to s-reg without tbl var which breaks frame) = 8 extra; codegen-level scheduling/regalloc blocker",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/sprite_scatter_show.c",
+    "has_semi_matched_source": true
+  },
+  "spot_light": {
+    "func_name": "spot_light",
+    "address": "0x8004AB84",
+    "status": "unmatchable",
+    "primary_blocker": "IDO_CSE",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP"
+    ],
+    "blocker_detail": "BLOCKER: 1028B/257 insns game; IDO 5.2 CSE of base pointer computation (screen_w + activeBuff<<1) produces 256 insns vs 257 target; target reloads activeBuff separately for base[10] and base[12] accesses (lui+lw+sll+addu = 4 extra insns) but IDO reuses computed base pointer; compiled saves 4 insns from CSE but loses 3 from bgez pattern (hoisted sra + nop fill), net -1; CSE-breaking alias adds 4 insns (too many); all loop forms (do-while/while/for), pad variables, address-taken tricks, #line directives, -Wo flags, IDO 5.1 all produce exactly 256 insns; same documented blocker family as Snd_SetPlayMode/SsSepStop (IDO CSE instruction count gap)",
+    "family": "voice168",
+    "region": "game",
+    "source_file": "src/main/semi-matched/spot_light.c",
+    "has_semi_matched_source": true
+  },
+  "make_color_bar16": {
+    "func_name": "make_color_bar16",
+    "address": "0x8004BF08",
+    "status": "unmatchable",
+    "primary_blocker": "SREG_ALLOC",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP"
+    ],
+    "blocker_detail": "BLOCKER: 1540B/385 insns; Bresenham gradient fill; compiled=359 vs target=377 (18 short); target keeps 6 step values in s4-s8/ra and 6 on stack (sp+96..116) with 12 accumulator/offset values in a0-a3/t0-t5/s0-s2; IDO's register allocator cannot replicate this exact allocation \u2014 produces fewer stack stores in setup; scheduler_normalizer + general_remap achieves ~80% masked match but cannot bridge the 18-instruction gap; instruction count gap cannot be bridged by any allowed PostProc",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/make_color_bar16.c",
+    "has_semi_matched_source": true
+  },
+  "mod_trans_vram": {
+    "func_name": "mod_trans_vram",
+    "address": "0x8004D728",
+    "status": "unmatchable",
+    "primary_blocker": "SREG_ALLOC",
+    "secondary_blockers": [],
+    "blocker_detail": "BLOCKER: 752B/188 insns game; IDO 5.2 promotes switch result variable (cs) to s3 register, but target stores it on stack via sb tN,135(sp) with different temp regs per case; structural difference: 2 words/case (b+li) vs 3 words/case (li+b+sb); all approaches tested: volatile (too many insns), address-taken (ignored at -O2), IDO52_RESERVE_SREGS (no effect), MAX_SREGS (wrong frame), struct (too many insns)",
+    "family": "sprite_tile",
+    "region": "game",
+    "source_file": "src/main/semi-matched/mod_trans_vram.c",
+    "has_semi_matched_source": true
+  },
+  "mod_set_gpu": {
+    "func_name": "mod_set_gpu",
+    "address": "0x8004DF04",
+    "status": "unmatchable",
+    "primary_blocker": "SREG_ALLOC",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP"
+    ],
+    "blocker_detail": "BLOCKER: 804B/199 insns game; sprite/tile rendering; 202 compiled vs 199 target (3 extra instructions); IDO 5.2 -O2 inlines epilogue for early return path producing 3 extra insns; additionally frame 160 compiled vs 168 target (8 bytes off \u2014 C uses fewer stack slots); s-reg allocation differs (s8 vs s7 for retval); 45.1% best match with scheduler_normalizer; restructuring the loop/branch layout to eliminate the 3 extra instructions would require major C rewrite with no guarantee of success; instruction count gap cannot be bridged by any allowed PostProc",
+    "family": "sprite_tile",
+    "region": "game",
+    "source_file": "src/main/semi-matched/mod_set_gpu.c",
+    "has_semi_matched_source": true
+  },
+  "mod_set": {
+    "func_name": "mod_set",
+    "address": "0x8004E228",
+    "status": "unmatchable",
+    "primary_blocker": "SREG_ALLOC",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP",
+      "LAZY_SAVE"
+    ],
+    "blocker_detail": "BLOCKER: 780B/195 insns game; sprite/tile rendering with SpriteE2 struct; 200 compiled vs 195 target (5 extra instructions); IDO 5.2 -O2 produces 5 extra instructions from duplicate epilogue paths and different loop control; frame 232 correct but 12 dummy (void)& pad variables needed; s-reg allocation differs throughout (s8 vs v1 for info ptr); 42.0% best match with scheduler_normalizer; 5-instruction gap from structural C differences cannot be bridged by any allowed PostProc",
+    "family": "sprite_tile",
+    "region": "game",
+    "source_file": "src/main/semi-matched/mod_set.c",
+    "has_semi_matched_source": true
+  },
+  "srn_set": {
+    "func_name": "srn_set",
+    "address": "0x8004E54C",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP"
+    ],
+    "blocker_detail": "ASM-ONLY: 572B/139 insns; hidden v0 parameter (struct pointer from thunk at 0x8004E548 `addu v0,t6,t7`); body loads 14 fields directly from v0 (lbu v0+15, lbu v0+17, etc.); IDO compiles with a0 as parameter producing 146 insns vs target 139 (7-insn gap from v0-as-address having no lui overhead); no C89 mechanism expresses v0 as function input; instruction count gap cannot be bridged by any allowed PostProc",
+    "family": "sprite_tile",
+    "region": "game",
+    "source_file": "src/main/semi-matched/srn_set.c",
+    "has_semi_matched_source": true
+  },
+  "vload_font": {
+    "func_name": "vload_font",
+    "address": "0x8004F7A0",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [],
+    "blocker_detail": "ASM_ONLY: 376B/94 insns; cross-prologue mflo reads lo register from CALLER's multiply operation (line 4: mflo t7, before any multu in this function); lui v1/addiu v1 loads font_buf base address cross-prologue (before sw ra); a0 is hidden parameter passed through from caller; the mflo from caller context cannot be reproduced from C \u2014 no C expression can read the lo register value left by a previous function's multiply",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/vload_font.c",
+    "has_semi_matched_source": true
+  },
+  "func_8004F91C": {
+    "func_name": "func_8004F91C",
+    "address": "0x8004F91C",
+    "status": "unmatchable",
+    "primary_blocker": "IDO_CSE",
+    "secondary_blockers": [
+      "SREG_ALLOC",
+      "INSN_COUNT_GAP",
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "ASM_ONLY: 432B/108 insns; cross-prologue entry at melt_font (sll t6,a0,3) passes t6 into body; IDO body uses t6 for src pointer computation (addu t6,t6,a0; sll t6,t6,1; addu a2,t6,t7 = a2 as src); compiled produces 112 insns (body: 111 after strip) vs target 108 (3-insn gap); both IDO52_CONST_NOINREG_VALUES=32 and IDO52_LDA_NOINREG_CLASSES=1 hooks verified working (debug prints confirmed) but produce no change to instruction count; tried all CSE hook combinations (NO_CSE=all/op, all 25 opcodes); root cause: cross-prologue t6 forces different register allocation in body \u2014 compiled assigns v0/t7/t9 for src ptr while target uses a2/t6/t7 (fewer instructions due to t6 reuse); matched via asm/main/matched/melt_font.s; file in src/main/semi-matched/func_8004F91C.c",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/func_8004F91C.c",
+    "has_semi_matched_source": true
+  },
+  "nearest_menu_marker_find": {
+    "func_name": "nearest_menu_marker_find",
+    "address": "0x80050828",
+    "status": "unmatchable",
+    "primary_blocker": "IDO_CSE",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP"
+    ],
+    "blocker_detail": "BLOCKER: 1784B/446 insns; Duff's device with manually unrolled 4x loops; IDO static-recomp eliminates 4x \"sll tX,$zero,N\" peel setup instructions that real IRIX IDO kept; compiled=441 vs target=446 (5 short); constant folding happens in ugen/as1 (not uopt); tested all IDO versions (5.2/5.2prod/5.3), all uopt flags, disabling unaryfold/binaryfold/copypropagate, volatile/address-of/opaque-zero tricks; compiler-driven unrolling produces sll $zero but wrong loop bodies; instruction count cannot be bridged by any allowed PostProc",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/nearest_menu_marker_find.c",
+    "has_semi_matched_source": true
+  },
+  "sndi": {
+    "func_name": "sndi",
+    "address": "0x80051430",
+    "status": "unmatchable",
+    "primary_blocker": "SREG_ALLOC",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP"
+    ],
+    "blocker_detail": "BLOCKER: 1052B/263 insns; string formatting with P/G substitution; compiled=264 vs target=263 (1 extra); target uses 0 s-registers (only ra saved, frame 280) despite ~15 jal calls; IDO -O2 always promotes call-surviving variables to s-regs (best: 7 s-regs s0-s6, frame 320); struct approach gets 264 insns (+14 s-reg save/restore vs target, -13 body insns = net +1); -O1 gets 0 s-regs but 312 insns (49 extra); custom_script cannot fix because instruction count change is banned; instruction count gap cannot be bridged by any allowed PostProc",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/sndi.c",
+    "has_semi_matched_source": true
+  },
+  "grp_table_calc": {
+    "func_name": "grp_table_calc",
+    "address": "0x80053374",
+    "status": "unmatchable",
+    "primary_blocker": "SREG_ALLOC",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP"
+    ],
+    "blocker_detail": "BLOCKER: 1148B/287 insns; stat calculation with nested bit-processing loops; compiled=289 vs target=283 (6 extra); IDO -O2 promotes grp_table_calc_tbl3 base and loop bound 11 to s3/s4, producing 5 s-regs instead of target's 3 (s0-s2); instruction count gap from 2 extra s-reg save/restore pairs; tested: block-scoped j loop (5 s-regs), countdown loop (5 s-regs), pointer increment (5 s-regs), direct array indexing (same); every restructuring of j-loop and pointer declarations produces 5 s-regs; instruction count gap cannot be bridged by any allowed PostProc",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/grp_table_calc.c",
+    "has_semi_matched_source": true
+  },
+  "func_80057A80": {
+    "func_name": "func_80057A80",
+    "address": "0x80057A80",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP"
+    ],
+    "blocker_detail": "ASM-ONLY: 476B/119 insns; hidden v0 parameter from thunk at 0x80057A78 (`lui v0,0x8013; lbu v0,fade_bri`); body uses v0 directly as fade_bri value; IDO with a0 param produces 134 insns vs target 119 (15-insn gap); massive structural mismatch from missing lui+lbu for fade_bri reload + different frame (56 vs 72 byte); instruction count gap cannot be bridged by any allowed PostProc",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/func_80057A80.c",
+    "has_semi_matched_source": true
+  },
+  "object3d_sort": {
+    "func_name": "object3d_sort",
+    "address": "0x8005970C",
+    "status": "unmatchable",
+    "primary_blocker": "SREG_ALLOC",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP"
+    ],
+    "blocker_detail": "BLOCKER: IDO 5.2 register allocation hoists loop bound (&srn_w) and ot_work into s-regs (s5/s8); target uses s4=obj+24 and s5=obj+4 instead; 192 compiled vs 191 target (1 extra addiu for s-reg setup); all loop forms, volatile, -Wo flags, struct copy, pointer indirection tested \u2014 IDO 5.2 consistently produces 192 insns",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/object3d_sort.c",
+    "has_semi_matched_source": true
+  },
+  "main_data_vram_load": {
+    "func_name": "main_data_vram_load",
+    "address": "0x80059E48",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "DUAL_ENTRY",
+      "IDO_CSE",
+      "INSN_COUNT_GAP",
+      "CROSS_PROLOGUE",
+      "OVERLAP_MISATTR"
+    ],
+    "blocker_detail": "ASM-ONLY: 536B/134 insns; dual_entry_thunk: 2-insn cross-prologue prefix (`lui t6,0x800d / lw t6,-976(t6)` = load _sys_default_tpage_set_tbl2[0] into t6) falls through to func_80059E50 body; target insns [2..133] are byte-identical to func_80059E50 insns [0..131] (verified); func_80059E50 reads t6 as hidden live-in at its first instruction `sll t7,t6,0xc` \u2014 the cross-prologue prefix provides _sys_default_tpage_set_tbl2[0] in t6 for the no-arg entry point; additionally IDO const-folds the block-of-4 index (idx=60) and generates separate `lui at` per store (138 compiled vs 134 target) due to page-relative direct addressing instead of the target's `li a0,60; sll t0,a0,2; addu v0,t0,t1` runtime base-pointer pattern; tested: volatile idx (137 insns, stack spill), global D_800_IDX60 (136 insns, correct v0 pattern but 2 extra from global load), IDO 5.3 (133 insns, wrong structure), address-taken trick; no C pattern prevents const-fold while maintaining exact instruction count; instruction count gap (138 vs 134) cannot be bridged by any allowed PostProc; matched via asm/main/matched/main_data_vram_load.s",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/main_data_vram_load.c",
+    "has_semi_matched_source": true
+  },
+  "func_80059E50": {
+    "func_name": "func_80059E50",
+    "address": "0x80059E50",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "IDO_CSE",
+      "INSN_COUNT_GAP",
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "BLOCKER: 528B/132 insns; hidden t6 parameter (cross-prologue thunk main_data_vram_load loads _sys_default_tpage_set_tbl2[0] into t6) + IDO const-folding instruction count gap; target uses runtime index computation `li a0,60; sll t0,a0,2; addu v0,t0,t1` for block-of-4 access at screen_w[60+1162..+1165], but IDO 5.2 const-folds idx=60 and generates separate lui+addiu per address (4 stores via absolute addressing); compiled=136 vs target=132 (4 extra); tested: volatile idx (137 insns, stack spill), global idx variable (136 insns), address-taken trick, IDO 5.3 (133 insns, wrong structure); no C pattern prevents const-fold while maintaining exact instruction count; 4-instruction gap cannot be bridged by any allowed PostProc",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/func_80059E50.c",
+    "has_semi_matched_source": true
+  },
+  "save_format_main": {
+    "func_name": "save_format_main",
+    "address": "0x8005C3CC",
+    "status": "unmatchable",
+    "primary_blocker": "SREG_ALLOC",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP",
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "BLOCKER: 704B/176 insns game; menu state machine with cross-prologue (v0=D_800EF88D); target saves only ra (48-byte frame, no s-registers) but sets v0=andi result as return value in 4 switch cases; with s32 return type IDO spills v0 to s-register producing 188 insns (12 over); with void return type IDO omits the 4 andi+move v0 pairs producing 168 insns (8 short); no C89 construct makes IDO set v0 without promoting to s-register when function calls exist; 8-instruction gap cannot be bridged by any allowed PostProc",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/save_format_main.c",
+    "has_semi_matched_source": true
+  },
+  "mascot_sel": {
+    "func_name": "mascot_sel",
+    "address": "0x800605F8",
+    "status": "unmatchable",
+    "primary_blocker": "OTHER",
+    "secondary_blockers": [],
+    "blocker_detail": "Cannot produce correct instruction count (81 insns)",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/mascot_sel.c",
+    "has_semi_matched_source": true
+  },
+  "title_obj_move": {
+    "func_name": "title_obj_move",
+    "address": "0x80062AEC",
+    "status": "unmatchable",
+    "primary_blocker": "SREG_ALLOC",
+    "secondary_blockers": [],
+    "blocker_detail": "PARTIAL: 736B/180 insns; IDO52_CONST_NOINREG_VALUES=12 IDO52_LDA_NOINREG_CLASSES=1 achieves exact 180/180 instruction count (was 197 without hooks); frame 192 raw vs target 208; 35.3% match after scheduler_normalize; remaining blocker: s-reg allocation differs (compiled s5=AC80ptr/s6=ten/s8=13 vs target s6=AC80ptr/s8=ten/uses-at-for-13); needs heavy custom_script per-block remap + frame 192->208 patch; potentially matchable but requires significant custom_script work",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/title_obj_move.c",
+    "has_semi_matched_source": true
+  },
+  "func_8006385C": {
+    "func_name": "func_8006385C",
+    "address": "0x8006385C",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "SREG_ALLOC",
+      "INSN_COUNT_GAP"
+    ],
+    "blocker_detail": "BLOCKER: 468B/117 insns; IDO 5.2 -O2 produces 120 insns (3 extra); root causes: (1) IDO reloads frame_counter (lui+lw = 2 insns) inside the `!(t0&1)` check after the for loop \u2014 register allocator does not keep the value live across 47 instructions spanning two loops; (2) IDO generates extra `lui at` for bustup_kuchi_ani_tbl1 write path (1 insn) because `at` is consumed by D_80129CBF stores before the branch; target achieves 117 via cross-block scheduling that hoists `lui at,0x800c` before the `beqz` and keeps frame_counter live in t0; tested: sll+subu (vs sll+addu), address-taken a0_max, register keyword, address alias for bustup_kuchi_ani_tbl1, precomputed t0&1 bit, various scope restructurings, p_bbf98 pointer, -O1/-Wo,-loopunroll,0/-Wo,-no_r23/-Wo,-notail, IDO 5.1 (crashes)/5.2p; instruction count gap of 3 cannot be bridged by any allowed PostProc; function uses hidden registers (t5,t4,v0,t2 as parameters) with non-standard 56-byte frame; matched via asm/main/matched/func_8006385C.s",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/func_8006385C.c",
+    "has_semi_matched_source": true
+  },
+  "parameter_show_init": {
+    "func_name": "parameter_show_init",
+    "address": "0x80063B78",
+    "status": "unmatchable",
+    "primary_blocker": "IDO_CSE",
+    "secondary_blockers": [
+      "LICM",
+      "INSN_COUNT_GAP",
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "BLOCKER: 3324B/831 insns; IDO 5.2 LICM hoists &basyo_init_tbl1/basyo_init_tbl2/_sys_default_tpage_set_tbl2 address-of operations out of 28-iteration do-while loop; compiled=826 vs target=829+2 cross-prologue; 3-instruction gap from pre-loop address setup (6 extra) vs post-loop CSE (9 fewer); no IDO flag, C pattern, or experimental uopt hook (CONST_NOINREG, LDA_NOINREG) prevents address-of LICM; instruction count cannot be bridged by any allowed PostProc",
+    "family": "licm_address",
+    "region": "game",
+    "source_file": "src/main/semi-matched/parameter_show_init.c",
+    "has_semi_matched_source": true
+  },
+  "func_80064D00": {
+    "func_name": "func_80064D00",
+    "address": "0x80064D00",
+    "status": "unmatchable",
+    "primary_blocker": "BANNED",
+    "secondary_blockers": [],
+    "blocker_detail": "Previously used insert_instruction_and_shift + patch_instruction",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/func_80064D00.c",
+    "has_semi_matched_source": true
+  },
+  "icon_atari_check": {
+    "func_name": "icon_atari_check",
+    "address": "0x80065ACC",
+    "status": "unmatchable",
+    "primary_blocker": "IDO_CSE",
+    "secondary_blockers": [
+      "SREG_ALLOC",
+      "INSN_COUNT_GAP",
+      "DEAD_STORE"
+    ],
+    "blocker_detail": "BLOCKER: 424B/106 insns; target uses s0 (other ptr) and s1 (other->y) as callee-saved in loop body over 15 PosEntry entries; IDO 5.2 at -O2 only generates ~10 simultaneously-live caller-saved values (left,right,top,bottom,v1,i,idx,other_x,loop_base,flag) leaving no pressure to spill to s-regs; tested IDO52_CONST_NOINREG_VALUES=15 (gets li at,15 inline but still 101 insns), all uopt flags (-noprecolor/-noheurAB/-do_opt_saved_regs/-nogenvreg/-nordstore), -O1, address-taken tricks, ox/oy locals (gives 89 insns wrong structure), 8-boundary-var duplicate trick (CSE'd back), opaque (u32)i*0 trick (CSE'd for global arrays); instruction count gap of 5 (101 vs 106) cannot be bridged by any allowed PostProc; s-reg structure requires 12+ live caller-saved simultaneously which no C89 variant achieves",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/icon_atari_check.c",
+    "has_semi_matched_source": true
+  },
+  "func_800679A8": {
+    "func_name": "func_800679A8",
+    "address": "0x800679A8",
+    "status": "unmatchable",
+    "primary_blocker": "DELAY_SLOT",
+    "secondary_blockers": [],
+    "blocker_detail": "BLOCKER: delay slot duplication; switch() fixes 1st dispatch (beq/beq/b) but 2nd dispatch beq delay slot duplicates andi v0,a1,0xa000 which IDO cannot produce; 96.2% masked (229/238) 1 structural diff at idx 167; C logic correct, semi-matched as olh_check.c",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/func_800679A8.c",
+    "has_semi_matched_source": true
+  },
+  "func_80068A10": {
+    "func_name": "func_80068A10",
+    "address": "0x80068A10",
+    "status": "unmatchable",
+    "primary_blocker": "CROSS_PROLOGUE",
+    "secondary_blockers": [],
+    "blocker_detail": "BLOCKER: 664B/166 insns; cross-prologue thunk (addu v0,t8,t7) + cal_font_load body; same blockers as cal_font_load plus cross-prologue instruction; matched via asm/main/matched/func_80068A10.s",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/func_80068A10.c",
+    "has_semi_matched_source": true
+  },
+  "touzyou_check": {
+    "func_name": "touzyou_check",
+    "address": "0x8006EC08",
+    "status": "unmatchable",
+    "primary_blocker": "OTHER",
+    "secondary_blockers": [],
+    "blocker_detail": "Would require insert_instruction_and_shift",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/touzyou_check.c",
+    "has_semi_matched_source": true
+  },
+  "func_8006FB9C": {
+    "func_name": "func_8006FB9C",
+    "address": "0x8006FB9C",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "DEAD_STORE"
+    ],
+    "blocker_detail": "ASM-only: dead tail fragment of get_param_top_girl; no prologue, uses t0/t1/t2 hidden regs, epilogue is caller's frame (addiu sp,120), last 2 insns are next function's prologue (girls_event_pick)",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/func_8006FB9C.c",
+    "has_semi_matched_source": true
+  },
+  "func_8006c3d4": {
+    "func_name": "func_8006c3d4",
+    "address": "0x8006C3D4",
+    "status": "unmatchable",
+    "primary_blocker": "SREG_ALLOC",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP"
+    ],
+    "blocker_detail": "BLOCKER: 972B/243 insns; IDO 5.2 allocates s0 for count (cross-call live range) producing 249 insns; target uses a1=count/a2=flags/a3=sin2 with arg-home spilling (sw a1/a2/a3 before each of 3 abs calls + 3 lw restores after) and no s-registers; compiled has sw s0/lw s0 in prologue/epilogue (+2), redundant li s0,1/addiu s0,s0,1/move a1,s0 sequences (+3), flags=1 via li+sw vs li-in-delay (+1), flags loads in count==1/2/3 checks (+6); target saves from arg-home pattern (-6) giving net 6-insn gap; tested -O1, volatile base/count/flags, explicit multiply chains, reduced variables, register pressure tricks; no compiler+flags combination forces a1=count allocation; instruction count gap cannot be bridged by any allowed PostProc",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/func_8006c3d4.c",
+    "has_semi_matched_source": true
+  },
+  "schedule_day_main": {
+    "func_name": "schedule_day_main",
+    "address": "0x800713EC",
+    "status": "unmatchable",
+    "primary_blocker": "IDO_CSE",
+    "secondary_blockers": [
+      "ANDI_ELIM",
+      "SREG_ALLOC"
+    ],
+    "blocker_detail": "BLOCKER: 4132B/1033 insns; IDO52_CSE_MAX_REUSE=6 fixes insn count to 1033; scheduler+remap gives 99.6% masked (1029/1033, 4 mismatches); blockers: [706,713] switch guard sltiu eliminated by range propagation, [780] s-reg allocation (stack spill vs register), [1031] func_800723F8 andi vs jr-ra (IDO optimizes out andi before sb); Very High Confidence C logic",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/schedule_day_main.c",
+    "has_semi_matched_source": true
+  },
+  "func_8007240C": {
+    "func_name": "func_8007240C",
+    "address": "0x8007240C",
+    "status": "unmatchable",
+    "primary_blocker": "IDO_CSE",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP",
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "BLOCKER: 592B/148 insns; calendar day advance with cross-prologue (sb t6,-6239(at)); IDO 5.2 constant-folds \"month=1; if((month%3)==0)\" (dead code: 1%3!=0 always) removing 6 instructions (divu+mfhi+bnez+nop+jal+nop); target has this dead code (li v0,1; li at,3; divu zero,v0,at; mfhi t7; bnez t7; nop; jal season_last_date_spot_clear; nop); CSE-breaking alias to re-read now_month prevents fold but adds 2 extra lui+lbu instructions (152 vs 148); no IDO 5.x version tested (5.0/5.2/5.3/5.3) avoids this constant fold; additional issue: switch case blocks re-read now_day from memory (CSE-breaking needed for 4 case blocks); 140 compiled vs 148 target without divu fix; fundamental codegen blocker",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/func_8007240C.c",
+    "has_semi_matched_source": true
+  },
+  "collect_distinct_active_entry_ids": {
+    "func_name": "collect_distinct_active_entry_ids",
+    "address": "0x80076544",
+    "status": "unmatchable",
+    "primary_blocker": "SREG_ALLOC",
+    "secondary_blockers": [
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "ASM_ONLY: 380B/95 insns; cross-prologue thunk (func_8007653C) loads t6=reserved_date before entry; switch on (t6&0x1F)-16; target instruction idx 5 (offset 0x14 after strip_leading --count 2) is `move a2,a0` (0x00803025) \u2014 IDO allocates outPtr to a2 because a0 is needed for counts element pointer (addu a0,t0,t4) in first-pass loop body; this register allocation circular dependency cannot be reproduced from C89: IDO would need to pre-allocate a2 for outPtr before the function body starts, but the pressure only arises inside the loop; all compiled variants produce `addiu a2,sp,N` instead of `move a2,a0`; instruction count matched (97 raw \u2192 95 after strip=2), frame=176 correct, counts[32] at sp+44 correct, loop structure correct; single remaining blocker: delay-slot `move a2,a0` at idx 5 requires banned patch_instruction to fix",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/collect_distinct_active_entry_ids.c",
+    "has_semi_matched_source": true
+  },
+  "scene_entry_set": {
+    "func_name": "scene_entry_set",
+    "address": "0x80079104",
+    "status": "unmatchable",
+    "primary_blocker": "OTHER",
+    "secondary_blockers": [],
+    "blocker_detail": "ASM-only (addiu vs ori, bodies-inside-switch, register cycling)",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/scene_entry_set.c",
+    "has_semi_matched_source": true
+  },
+  "SD_CmdDispatch": {
+    "func_name": "SD_CmdDispatch",
+    "address": "0x8007A118",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "ANDI_ELIM",
+      "INSN_COUNT_GAP",
+      "JUMP_TABLE"
+    ],
+    "blocker_detail": "ASM-ONLY: 460B/115 insns; hidden v0 parameter from thunk at 0x8007A110 (`andi a1,a0,0xffff; andi v0,a1,0xf0`); body uses v0 as cmd, a1 as flags; target spills flags via `sh a1,40(sp)` / `lhu a1,40(sp)` (halfword, not word); IDO produces sw/lw (word ops) for u16 param spill; 120 compiled vs 115 target (5-insn gap from IDO duplicating epilogue for each switch return path); jump table at 0x800C85F0; instruction count gap cannot be bridged by any allowed PostProc",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/SD_CmdDispatch.c",
+    "has_semi_matched_source": true
+  },
+  "scroll_poly_disp": {
+    "func_name": "scroll_poly_disp",
+    "address": "0x8008612C",
+    "status": "unmatchable",
+    "primary_blocker": "STRENGTH_REDUCTION",
+    "secondary_blockers": [
+      "IDO_CSE"
+    ],
+    "blocker_detail": "BLOCKER: 760B/190 insns library; IDO 5.2 strength reduction merges aacc+arg0 into single accumulator (s5); target keeps separate: s5=aacc (starts 0, +=32), lw t0,128(sp) reloads arg0; target: lw+addu+srl+sll (4 insns), compiled: sra+sll (2 insns, merged); volatile trick gets 190 insns but still strength-reduced; no uopt flag/hook exists to disable induction variable optimization; IDO 5.1 crashes; -O1 generates 231 insns; IDO52_NO_CSE has no effect (strength reduction != CSE); or-encoding moves (no convert_or_to_addu)",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/semi-matched/scroll_poly_disp.c",
+    "has_semi_matched_source": true
+  },
+  "func_80087208": {
+    "func_name": "func_80087208",
+    "address": "0x80087208",
+    "status": "unmatchable",
+    "primary_blocker": "DELAY_SLOT",
+    "secondary_blockers": [
+      "CROSS_PROLOGUE",
+      "GCC_ASPSX"
+    ],
+    "blocker_detail": "ASM-only: GCC 2.6.0 Huffman decoder (952B/238 insns); dual blocker: (1) target insn 11 is `move a2,a0` (00803021) \u2014 GCC chooses a2 for incrementing src ptr because a0 is needed for printf call; 2-arg variants use absolute a0 offsets, 3-arg variant skips it \u2014 no variant produces this instruction; (2) prologue has `lhu v0,0(a2); lhu s2,0(a2)` (two loads of same address for delay-slot filling) \u2014 GCC 2.6.0 CSEs both to one load; also cross-prologue prefix (lui at/sw zero libpress_ivlc_dct_dc_size_var_0af8 = 2 insns before prologue); tested GCC 2.6.0/2.7.2/2.8.1 all variants; 190/228 diffs are instruction-type; shares body with MDEC_vlc2",
+    "family": "sound_sequencer",
+    "region": "library",
+    "source_file": "src/main/semi-matched/func_80087208.c",
+    "has_semi_matched_source": true
+  },
+  "MDEC_vlc2": {
+    "func_name": "MDEC_vlc2",
+    "address": "0x80087210",
+    "status": "unmatchable",
+    "primary_blocker": "GCC_ASPSX",
+    "secondary_blockers": [],
+    "blocker_detail": "ASM-only: GCC 2.6.0 Huffman decoder (944B/236 insns); same dual blocker as func_80087208: (1) `move a2,a0` at prologue insn 9 absent from all compiled variants; (2) `lhu v0,0(a2); lhu s2,0(a2)` double-load pattern not reproducible by GCC 2.6.0; 3-arg version gets 79% masked multiset but missing `move a2,a0` makes exact match impossible (would require banned instruction insertion); prologue ordering diff (global stores interleaved with saves); bs_curt uses register a1 in target vs a0 in compiled throughout main loop; 190/228 instruction-type diffs exceed legitimate PostProc scope",
+    "family": "sound_sequencer",
+    "region": "library",
+    "source_file": "src/main/semi-matched/MDEC_vlc2.c",
+    "has_semi_matched_source": true
+  },
+  "SsSetMVol": {
+    "func_name": "SsSetMVol",
+    "address": "0x8008B2B8",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "ASM-only: hidden HI/LO + hidden $at/$t9 from pre-prologue; mflo t8 reads LO set before prologue, div zero,t9,at uses $at=127 and t9=a3*16383 set in pre-prologue code at 0x8008B290-0x8008B2B4; no C89 mechanism can express cross-boundary HI/LO reads or $at as data register",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/semi-matched/SsSetMVol.c",
+    "has_semi_matched_source": true
+  },
+  "_SsStart": {
+    "func_name": "_SsStart",
+    "address": "0x8008BB24",
+    "status": "unmatchable",
+    "primary_blocker": "IDO_CSE",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP",
+      "DELAY_SLOT"
+    ],
+    "blocker_detail": "BLOCKER: 680B/170 insns; callers only pass 1 argument (a0) but function needs volatile u16 freq at sp+32 and u32 cmd at sp+36 in a 40-byte frame with ra at sp+28; IDO 5.2 with any 1-3 param signature generates 164 insns (ra at sp+20, freq at sp+30, cmd at sp+32) \u2014 6 short; with 4-5 params IDO generates 166 insns but adds 3 unwanted arg home stores (sw a1,44(sp)/sw a2,48(sp)/sw a3,52(sp)) and still misses 4; the 6-insn gap with 1-param arises from IDO's different epilogue structure \u2014 target uses `b+lw_ra_in_delay_slot` shared-epilogue trick (early-return path loads ra in branch delay slot, then falls into tail addiu sp/jr ra/nop) producing 5 epilogue insns total; IDO generates separate 4-insn epilogue per path; additionally target has `move v0,v1` (insn 10, state copy) that IDO eliminates via CSE; tested: 1/2/3/4/5 param variants, volatile u16 arg, all uopt flags, address-taken tricks, -O1 (184 insns, wrong structure); instruction count gap cannot be bridged by any allowed PostProc",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/semi-matched/_SsStart.c",
+    "has_semi_matched_source": true
+  },
+  "SsVabOpenHeadWithMode": {
+    "func_name": "SsVabOpenHeadWithMode",
+    "address": "0x8008C114",
+    "status": "unmatchable",
+    "primary_blocker": "INSN_COUNT_GAP",
+    "secondary_blockers": [
+      "DELAY_SLOT"
+    ],
+    "blocker_detail": "BLOCKER: 1236B/309 insns; 289 compiled vs 309 target \u2014 20-instruction gap; 15 unfilled load-delay nops in target (IDO fills each = -15 insns after scheduling) + 8 extra in-place sra sign-extension instructions in target that IDO optimizes to sra-via-temp-register (3-insn pattern vs 2-insn in-place); combined 20-instruction count gap cannot be bridged by any allowed PostProc; delay slot unhoists could recover 15 but the 5 sra-in-place differences are structural; frame 1112 correct; not GCC (0 j-instructions)",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/semi-matched/SsVabOpenHeadWithMode.c",
+    "has_semi_matched_source": true
+  },
+  "SsVabTransBody": {
+    "func_name": "SsVabTransBody",
+    "address": "0x8008C5F0",
+    "status": "unmatchable",
+    "primary_blocker": "INSN_COUNT_GAP",
+    "secondary_blockers": [
+      "DELAY_SLOT"
+    ],
+    "blocker_detail": "BLOCKER: 53 compiled vs 56 target; IDO 5.2 generates `sll s0,a1,16; sra t6,s0,16; move s0,t6` (3 insns) for sign-extension where target has `sll s0,a1,16; sra s0,s0,16` (2 insns, in-place); also IDO fills 2 branch delay slots that target leaves as nop; combined 3-insn body excess leaves no room for epilogue at correct positions \u2014 trailing slots [53-55] remain nop vs target lw s0/jr ra/addiu sp; 94.6% masked match achieved via scheduler_normalizer+general_remap_postscheduler but epilogue misalignment is structurally unresolvable; instruction count gap cannot be bridged by any allowed PostProc",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/semi-matched/SsVabTransBody.c",
+    "has_semi_matched_source": true
+  },
+  "SpuVmInit": {
+    "func_name": "SpuVmInit",
+    "address": "0x8008D7BC",
+    "status": "unmatchable",
+    "primary_blocker": "OTHER",
+    "secondary_blockers": [],
+    "blocker_detail": "ASM-only, C implementation is reference only",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/semi-matched/SpuVmInit.c",
+    "has_semi_matched_source": true
+  },
+  "SpuVmPitchBend": {
+    "func_name": "SpuVmPitchBend",
+    "address": "0x8008DB90",
+    "status": "unmatchable",
+    "primary_blocker": "SREG_ALLOC",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP"
+    ],
+    "blocker_detail": "BLOCKER: 560B/138 insns; library sound/note handler; compiled=154 vs target=138 (16-insn gap); target has 104-byte frame saving s0-s8+ra (10 saves) with s2/s3/s4 as array base pointers (_svm_voice/_svm_sreg_buf/_svm_sreg_dirty); IDO allocates different s-reg count and produces 64-byte frame; register allocation structural mismatch persists across all tested C variants (direct array indexing, base pointer locals, reordered declarations); best match 22.4% via scheduler_normalizer; instruction count gap cannot be bridged by any allowed PostProc",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/semi-matched/SpuVmPitchBend.c",
+    "has_semi_matched_source": true
+  },
+  "SsUtKeyOnV": {
+    "func_name": "SsUtKeyOnV",
+    "address": "0x8008F054",
+    "status": "unmatchable",
+    "primary_blocker": "SREG_ALLOC",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP",
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "BLOCKER: 832B/208 insns library; SPU voice setup (debug symbol: xa_wait from o.bin, thunk at 0x8008F04C); target uses NO s-registers (frame=40, ra at 36(sp), stores arg0 as `sh v1,40(sp)` halfword local); IDO -O2 allocates s0 for arg0 cross-call live range (frame=48); compiled=209 total (2 cross-prologue + 207 body) vs target 208 body; after strip_leading 2, compiled=207 vs target=208 (1 short); -O1 produces 232 insns; (void)&arg0 doesn't prevent s0 allocation; 1-instruction gap cannot be bridged by any allowed PostProc",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/semi-matched/SsUtKeyOnV.c",
+    "has_semi_matched_source": true
+  },
+  "func_8008FF08": {
+    "func_name": "func_8008FF08",
+    "address": "0x8008FF08",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "IDO_CSE"
+    ],
+    "blocker_detail": "ASM-only: cross-prologue thunk (lui t7) + hidden t1/t2/t9 registers + IDO CSE; 54 insns target; same body as SsPlayBack with leading lui; shares all blockers with SsPlayBack",
+    "family": "voice168",
+    "region": "library",
+    "source_file": "src/main/semi-matched/func_8008FF08.c",
+    "has_semi_matched_source": true
+  },
+  "SsPlayBack": {
+    "func_name": "SsPlayBack",
+    "address": "0x8008FF0C",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "STRENGTH_REDUCTION",
+      "IDO_CSE"
+    ],
+    "blocker_detail": "ASM-only: hidden t1/t2/t7/t9 registers + IDO CSE offset gap + delay slot store pattern; target recomputes a1*168 offset 3 times (53 insns); compiled with backup-after-call gets 53 insns but opcode multiset only 83.9% (4 extra lw/sw for save/restore vs 4 addu/sll for offset recompute); structural mismatch unfixable by custom_script",
+    "family": "voice168",
+    "region": "library",
+    "source_file": "src/main/semi-matched/SsPlayBack.c",
+    "has_semi_matched_source": true
+  },
+  "func_8008FFF4": {
+    "func_name": "func_8008FFF4",
+    "address": "0x8008FFF4",
+    "status": "unmatchable",
+    "primary_blocker": "CROSS_PROLOGUE",
+    "secondary_blockers": [],
+    "blocker_detail": "ASM-only: cross-prologue thunk (lui t7) + same blocker as Snd_SetPlayMode; 73 target vs 65 compiled; shares body with Snd_SetPlayMode",
+    "family": "voice168",
+    "region": "library",
+    "source_file": "src/main/semi-matched/func_8008FFF4.c",
+    "has_semi_matched_source": true
+  },
+  "Snd_SetPlayMode": {
+    "func_name": "Snd_SetPlayMode",
+    "address": "0x8008FFF8",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "IDO_CSE",
+      "INSN_COUNT_GAP"
+    ],
+    "blocker_detail": "ASM-only: hidden t1/t2/t7/t9 registers + IDO CSE instruction count gap; target recomputes ((t1*4+t1)*4+t1)*8 offset from hidden t1 for each of 4 D_80131380[t2]+offset accesses (72 insns); IDO at -O2 CSEs offset to single computation (64 insns); CSE-breaking aliases get to 68 but offset CSE unbreakable; volatile generates multu (wrong opcode); no C89 construct or IDO flag prevents CSE",
+    "family": "voice168",
+    "region": "library",
+    "source_file": "src/main/semi-matched/Snd_SetPlayMode.c",
+    "has_semi_matched_source": true
+  },
+  "SsSetSerialAttr": {
+    "func_name": "SsSetSerialAttr",
+    "address": "0x8008BEE8",
+    "status": "matched",
+    "primary_blocker": null,
+    "secondary_blockers": [],
+    "blocker_detail": "MATCHED via asm_intercept: in-place sign extension, delay slot unfilling, dead store preservation",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/matched/SsSetSerialAttr.c",
+    "has_semi_matched_source": false
+  },
+  "func_800901C8": {
+    "func_name": "func_800901C8",
+    "address": "0x800901C8",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "IDO_CSE",
+      "INSN_COUNT_GAP",
+      "DEAD_STORE",
+      "DELAY_SLOT",
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "ASM-only: 216B/54 insns; hidden t9 register (pre-computed a1*4 in cross-prologue at func_800901C4) + IDO CSE instruction count gap; target recomputes ((a1*4+a1)*4+a1)*8 offset 4 times with dead `addiu v0,v0,144` in load delay slots (54 insns); CSE-breaking aliases get to 53 insns but IDO fills the delay slot with useful code instead of dead addiu; same family as SsSepStop/Snd_SetPlayMode/SsSeqClose; 1-instruction gap cannot be bridged",
+    "family": "voice168",
+    "region": "library",
+    "source_file": "src/main/semi-matched/func_800901C8.c",
+    "has_semi_matched_source": true
+  },
+  "SsSepStop": {
+    "func_name": "SsSepStop",
+    "address": "0x800901CC",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "IDO_CSE",
+      "INSN_COUNT_GAP"
+    ],
+    "blocker_detail": "ASM-only: hidden t9 register (pre-computed a1*4) + IDO CSE instruction count gap; target recomputes ((a1*4+a1)*4+a1)*8 offset 4 times (53 insns); IDO -O2 CSEs to single computation (44 insns); 9-instruction gap cannot be bridged",
+    "family": "voice168",
+    "region": "library",
+    "source_file": "src/main/semi-matched/SsSepStop.c",
+    "has_semi_matched_source": true
+  },
+  "Snd_stop": {
+    "func_name": "Snd_stop",
+    "address": "0x800902D0",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP",
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "ASM-only: 256B/64 insns library; cross-prologue hidden t7/t8/v1 registers set by Snd_stop; t7=D_80131380[arg0], t8=arg1*21, v1=(s16)arg0; compiled recomputes these producing 72 insns vs 64 target (8-insn gap); same documented blocker family as Snd_SetPlayMode/SsSepStop (IDO cannot receive hidden register values from cross-prologue)",
+    "family": "voice168",
+    "region": "library",
+    "source_file": "src/main/semi-matched/Snd_stop.c",
+    "has_semi_matched_source": true
+  },
+  "SsSeqClose": {
+    "func_name": "SsSeqClose",
+    "address": "0x800903D0",
+    "status": "unmatchable",
+    "primary_blocker": "STRENGTH_REDUCTION",
+    "secondary_blockers": [
+      "IDO_CSE",
+      "INSN_COUNT_GAP"
+    ],
+    "blocker_detail": "ASM-only: IDO CSE/strength-reduction of i*168 offset; target recomputes ((i*4+i)*4+i)*8 offset 13 times in voice init loop + reloads base ptr 13 times (144 insns); IDO -O2 strength-reduces to 168-increment per iteration (93 insns); volatile i gives multu (wrong opcode vs shift chain); same documented blocker as Snd_SetPlayMode/SsSepStop/Snd_nextseq; 51-instruction gap cannot be bridged by any allowed PostProc",
+    "family": "voice168",
+    "region": "library",
+    "source_file": "src/main/semi-matched/SsSeqClose.c",
+    "has_semi_matched_source": true
+  },
+  "func_800908F8": {
+    "func_name": "func_800908F8",
+    "address": "0x800908F8",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "IDO_CSE",
+      "INSN_COUNT_GAP"
+    ],
+    "blocker_detail": "ASM-only: 224B/56 insns; cross-prologue thunk for func_800908FC (lui t7 before prologue); 49 compiled vs 56 target (7-instruction gap from IDO CSE of stride computation + hidden t7/t9 registers); same family as Snd_SetPlayMode/SsSepStop/SsSeqClose; instruction count gap cannot be bridged",
+    "family": "voice168",
+    "region": "library",
+    "source_file": "src/main/semi-matched/func_800908F8.c",
+    "has_semi_matched_source": true
+  },
+  "func_800908FC": {
+    "func_name": "func_800908FC",
+    "address": "0x800908FC",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "IDO_CSE",
+      "SREG_ALLOC",
+      "INSN_COUNT_GAP",
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "ASM-only: 220B/55 insns; hidden t7/t9 registers (pre-computed in cross-prologue at func_800908F8) + IDO CSE instruction count gap; target recomputes stride 3 times after SpuVmGetSeqVol call + uses stack sh/lh for a3 instead of s-register; compiled uses different frame (32 vs 48) and missing stride recomputations; same family as SsSepStop/Snd_SetPlayMode; structural mismatch unfixable",
+    "family": "voice168",
+    "region": "library",
+    "source_file": "src/main/semi-matched/func_800908FC.c",
+    "has_semi_matched_source": true
+  },
+  "SsVoKeyOff": {
+    "func_name": "SsVoKeyOff",
+    "address": "0x80090B58",
+    "status": "unmatchable",
+    "primary_blocker": "OTHER",
+    "secondary_blockers": [],
+    "blocker_detail": "Structurally unmatchable from C",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/semi-matched/SsVoKeyOff.c",
+    "has_semi_matched_source": true
+  },
+  "SsVoKeyOn": {
+    "func_name": "SsVoKeyOn",
+    "address": "0x80090BA8",
+    "status": "unmatchable",
+    "primary_blocker": "BANNED",
+    "secondary_blockers": [],
+    "blocker_detail": "Wholesale instruction replacement needed (BANNED)",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/semi-matched/SsVoKeyOn.c",
+    "has_semi_matched_source": true
+  },
+  "SsSeqCalledTbyT": {
+    "func_name": "SsSeqCalledTbyT",
+    "address": "0x80090DA8",
+    "status": "unmatchable",
+    "primary_blocker": "STRENGTH_REDUCTION",
+    "secondary_blockers": [
+      "IDO_CSE",
+      "INSN_COUNT_GAP"
+    ],
+    "blocker_detail": "ASM-ONLY: 724B/181 insns library; main sound sequencer update (debug symbol: start_card from o.bin, thunk at 0x80090DA0); IDO CSEs s0*168 offset computation into s-register s1, producing 138 insns vs target 181; target recomputes ((s0*4+s0)*4+s0)*8 offset after each of 7 function calls; same documented blocker as SsSeqClose/Snd_nextseq; 43-instruction gap cannot be bridged by any allowed PostProc",
+    "family": "voice168",
+    "region": "library",
+    "source_file": "src/main/semi-matched/SsSeqCalledTbyT.c",
+    "has_semi_matched_source": true
+  },
+  "Snd_crescendo": {
+    "func_name": "Snd_crescendo",
+    "address": "0x80091BA0",
+    "status": "unmatchable",
+    "primary_blocker": "INSN_COUNT_GAP",
+    "secondary_blockers": [],
+    "blocker_detail": "BLOCKER: 1480B/370 insns; sound volume fade; compiled=364 vs target=370 (6 short); CORRECTED: uasm does NOT eliminate the 10 'b' branches (all 10 present in compiled output, verified with -Wa,-r); actual gap is different instruction patterns: target keeps entry ptr in t0 with 15x sw/lw save/restore plus lh a0,72(sp) in delay slots, compiled keeps entry on stack with fewer sw/lh but more lw/nop; opcode diff: lh+12 sw+14 vs lw-11 nop-8; 43.5% match after scheduler_normalizer; asm_intercept gives 374 (4 over) with all-nop delay slots but needs full uasm scheduling replication; instruction count gap cannot be bridged by any allowed PostProc",
+    "family": "sound_sequencer",
+    "region": "library",
+    "source_file": "src/main/semi-matched/Snd_crescendo.c",
+    "has_semi_matched_source": true
+  },
+  "ContNrpn1": {
+    "func_name": "ContNrpn1",
+    "address": "0x800937B0",
+    "status": "unmatchable",
+    "primary_blocker": "SREG_ALLOC",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP",
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "BLOCKER: 224B/56 insns; s-reg promotion; target uses NO s-registers (a0/a1 survive jalr v0 and jal ReadDeltaValue via halfword stack saves sh/lh, v1 via sw/lw at 28(sp)); IDO -O2 promotes a0/a1/v1 to s1/s2/s3 (6 extra save/restore insns), producing 62 body insns vs 56 target; cross-prologue (t7/t8 from D_80131380); cannot prevent IDO s-reg promotion from C; instruction count gap cannot be bridged by any allowed PostProc",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/semi-matched/ContNrpn1.c",
+    "has_semi_matched_source": true
+  },
+  "Snd_nextseq": {
+    "func_name": "Snd_nextseq",
+    "address": "0x80095058",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "IDO_CSE",
+      "INSN_COUNT_GAP"
+    ],
+    "blocker_detail": "ASM-only: hidden t7/t9 registers + IDO CSE instruction count gap; target recomputes ((a3*4+a3)*4+a3)*8 offset from a3 for each of 7 flag operations after SpuVmSetSeqVol call (95 insns); IDO at -O2 CSEs offset (76 insns); 19-instruction gap cannot be bridged",
+    "family": "voice168",
+    "region": "library",
+    "source_file": "src/main/semi-matched/Snd_nextseq.c",
+    "has_semi_matched_source": true
+  },
+  "SpuClearReverbWorkArea": {
+    "func_name": "SpuClearReverbWorkArea",
+    "address": "0x80095310",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [],
+    "blocker_detail": "ASM-ONLY: hidden_at pattern; `srl s0,s0,1` at 0x80095330 reads $at set by the LATER `slti at,v1,10` at 0x80095334 (cross-instruction register scheduling); also size=96 in build system is artificial (first 24 insns of a 500B function body that continues through 0x80095504 but is split at function boundary 0x80095370); cross-boundary branch at insn 17 (b 0x800954F4) jumps past function end; cannot match the hidden_at ordering from C89 or any IDO version; matched via asm/main/matched/SpuClearReverbWorkArea.s",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/semi-matched/SpuClearReverbWorkArea.c",
+    "has_semi_matched_source": true
+  },
+  "func_80095628": {
+    "func_name": "func_80095628",
+    "address": "0x80095628",
+    "status": "unmatchable",
+    "primary_blocker": "OTHER",
+    "secondary_blockers": [],
+    "blocker_detail": "IDO 5.2 -O2 generates lw v0,24(sp) (1 insn) for return arg0 where arg0 is address-taken at sp+24; target has lw a0,24(sp)+nop+move v0,a0 (net +1 insn); compiled body=26, target=27; no allowed PostProc bridges gap",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/semi-matched/func_80095628.c",
+    "has_semi_matched_source": true
+  },
+  "_gcSPU": {
+    "func_name": "_gcSPU",
+    "address": "0x80097770",
+    "status": "unmatchable",
+    "primary_blocker": "SREG_ALLOC",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP",
+      "CROSS_PROLOGUE",
+      "GCC_ASPSX",
+      "OVERLAP_MISATTR"
+    ],
+    "blocker_detail": "BLOCKER: 708B/177 insns library; GCC-compiled (confirmed: addu moves, no j, s0/s1 saves); heap compaction leaf function (no jal); target: 16-byte frame, s0=HEAP_ADDR_MASK(0x0FFFFFFF), s1=HEAP_END(0x40000000), cross-prologue (v1=_spu_AllocLastNum); GCC tried: gcc260/272/281 at -O1/-O2 all produce wrong code structure; 'register asm(\"s0\")' trick forces s-reg saves but code body only 4-8% match to target; gcc272 -O2 + address-taken locals = 176 insns 16-byte frame (closest) but code structure fundamentally different; instruction count cannot be matched (176 vs 177 or wrong code structure); no available GCC version produces the target's specific loop form; instruction count gap and structure mismatch cannot be bridged by any allowed PostProc",
+    "family": "heap_alloc",
+    "region": "library",
+    "source_file": "src/main/semi-matched/_gcSPU.c",
+    "has_semi_matched_source": true
+  },
+  "SpuMalloc": {
+    "func_name": "SpuMalloc",
+    "address": "0x80097AB4",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [
+      "IDO_CSE",
+      "INSN_COUNT_GAP"
+    ],
+    "blocker_detail": "BLOCKER: 704B/176 insns library; heap allocation with hidden t6/t7 registers; t6=1 used for sllv (1<<shift), t7=alignment flag; IDO generates li+sllv (2 insns) vs target sllv (1 insn, t6 from caller); frame mismatch: IDO allocates 80-byte frame (with IDO52_CSE_MAX_REUSE=2) or 136-byte (default) with s0 save vs target 48-byte frame (ra only at sp+20); IDO52_CSE_MAX_REUSE=2 achieves 176=176 instruction count match but structure differs: compiled 'li t6,1; sllv v0,t6,a3; addiu sp,-80' vs target 'addiu sp,-48; sllv v1,t6,a3 (t6=hidden input)'; s0 usage throughout compiled (for addr) vs t0 in target; no C89 signature can receive args in t6/t7; code structure gap cannot be bridged by any allowed PostProc; auto_fix best 18.8% (convert_or_to_addu + scheduler_normalizer)",
+    "family": "heap_alloc",
+    "region": "library",
+    "source_file": "src/main/semi-matched/SpuMalloc.c",
+    "has_semi_matched_source": true
+  },
+  "SpuSetReverbModeParam": {
+    "func_name": "SpuSetReverbModeParam",
+    "address": "0x80098800",
+    "status": "semi-matched",
+    "primary_blocker": "OTHER",
+    "secondary_blockers": [],
+    "blocker_detail": "Status: SEMI-MATCHED - 99.1% masked match (349/352) via scheduler pipeline. 3 masked mismatches at end of function (indices 339-341): Target has: nop; beqz t6,epilogue; move v0,zero Compiled has: lui t0 (D_800E3250 pre-load); lw t2,4(a3); lw t7,132(sp) The compiled checks local_64 earlier in function and eliminates the late beqz t6 here. IDO pre-hoists global loads for the jal call instead. This is a control-flow + scheduling structural difference (not just branch polarity), caused by volatile locals forcing different optimization paths. All volatile locals needed to force stack save/reload pattern. 69.9% exact match after general_remap (remaining are relocation offsets). CD audio command processing. 160-byte frame, only ra saved. (void)&local_68;",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/semi-matched/SpuSetReverbModeParam.c"
+  },
+  "MoveImage": {
+    "func_name": "MoveImage",
+    "address": "0x800A0180",
+    "status": "unmatchable",
+    "primary_blocker": "OTHER",
+    "secondary_blockers": [],
+    "blocker_detail": "addu v1,a0,zero pattern (ASM-only option)",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/semi-matched/MoveImage.c",
+    "has_semi_matched_source": true
+  },
+  "PutDrawEnv": {
+    "func_name": "PutDrawEnv",
+    "address": "0x800A04E0",
+    "status": "unmatchable",
+    "primary_blocker": "IDO_CSE",
+    "secondary_blockers": [
+      "SREG_ALLOC",
+      "INSN_COUNT_GAP",
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "BLOCKER: 232B/58 insns; function = {2-insn cross-prologue lui t6/lbu t6} + {ContResetAll body (56 insns, 0x800A04E8)}; IDO -O2 compiles ContResetAll.c to 56 insns including cross-prologue; ContResetAll body = 54 compiled vs 56 target insns; 2-insn gap: (1) target `addiu v1,s0,28; move a0,v1` (hdr into v1 then moved to a0) but IDO constant-folds to `addiu a0,s0,28` (1 insn); (2) target reloads hdr as `lw v1,36(sp); move a1,v1` (2 insns) but IDO reloads directly as `lw a1,32(sp)` (1 insn); IDO allocates hdr to a0 and uses a0 directly instead of routing via v1; tested: volatile hdr, (u8*)cast, address-taken, early declaration, static helper func (produces 2 jal calls), explicit end var, dummy stack var, -Wo,-no_r23, IDO52_CONST_NOINREG_VALUES=28, IDO52_LDA_NOINREG_CLASSES; all produce 56 insns; register allocation difference cascades to loop (compiled: v1=src/a0=dest/t4=end/t1-t3=temps vs target: t4=src/t2=dest/t3=end/at=temp); instruction count gap of 2 cannot be bridged by any allowed PostProc; ContResetAll.c body (0x800A04E8) is already matched; matched via asm/main/matched/PutDrawEnv.s",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/semi-matched/PutDrawEnv.c",
+    "has_semi_matched_source": true
+  },
+  "func_800A2B60": {
+    "func_name": "func_800A2B60",
+    "address": "0x800A2B60",
+    "status": "unmatchable",
+    "primary_blocker": "OTHER",
+    "secondary_blockers": [],
+    "blocker_detail": "~36% match, candidate ASM-only",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/semi-matched/func_800A2B60.c",
+    "has_semi_matched_source": true
+  },
+  "LoadClut": {
+    "func_name": "LoadClut",
+    "address": "0x800A33FC",
+    "status": "unmatchable",
+    "primary_blocker": "OTHER",
+    "secondary_blockers": [],
+    "blocker_detail": "IDO \"move a1,a0\" vs target \"sw a0,40(sp)+lw a1,40(sp)\"; also lw t7,48(sp) missing from compiled; ra at sp+28 vs sp+20; no compiler produces target pattern",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/semi-matched/LoadClut.c",
+    "has_semi_matched_source": true
+  },
+  "SetDefDrawEnv": {
+    "func_name": "SetDefDrawEnv",
+    "address": "0x800A345C",
+    "status": "unmatchable",
+    "primary_blocker": "INSN_COUNT_GAP",
+    "secondary_blockers": [
+      "DEAD_STORE",
+      "GCC_ASPSX"
+    ],
+    "blocker_detail": "BLOCKER: 160B/40 insns; IDO always uses s0 (callee-saved) to keep ptr alive across jal GetTPage; target uses v1 (caller-saved) with explicit sw v1,24(sp)/lw v1,24(sp) stack spill; target has 24-byte frame with only ra saved, no s-reg saves; compiled has 32-byte frame with s0 save; additionally target loads h via `lw t0,40(sp)` and keeps x/y as `move t1,a1; move t2,a2` (no sign extension), but compiled uses `lh t8/t9,N(sp)` (sign-extends from stack); these are different opcodes (lh vs move/addu) unreachable via register renaming; tested IDO 5.2 -O1/-O2/-Wo,-no_r23, GCC 2.6.0 -O1, IDO 5.1 (crashes); all IDO versions use s0; instruction opcode difference cannot be bridged by any allowed PostProc",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/semi-matched/SetDefDrawEnv.c",
+    "has_semi_matched_source": true
+  },
+  "func_800A463C": {
+    "func_name": "func_800A463C",
+    "address": "0x800A463C",
+    "status": "unmatchable",
+    "primary_blocker": "INSN_COUNT_GAP",
+    "secondary_blockers": [
+      "DELAY_SLOT",
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "BLOCKER: 212B/53 insns; IDO 5.2 at -O2 generates `bne a0,t1` loop bound check (uses preloaded constant 3 in t1) but target has `slti v0,a0,3; bne v0,zero` (2 insns per loop); 2 loops \u00d7 1 extra insn = 2 extra in target; also target has 8 unfilled `nop` load-delay slots in init phase (lh v0,N(a0); nop; sw v0,N(sp)) but IDO -O2 fills delay slots, reducing instruction count; combined gap: compiled=47 (after strip_leading_1 cross-prologue) vs target=52 = 5-insn deficit; to close the gap would require inserting nops (BANNED); tested IDO 5.2 while/for/do-while all variants, -O1 (78 insns, wrong structure), -Wo,-loopunroll,0; instruction count cannot be bridged by any allowed PostProc",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/semi-matched/func_800A463C.c",
+    "has_semi_matched_source": true
+  },
+  "reserved_date_sort": {
+    "func_name": "reserved_date_sort",
+    "address": "0x8006B174",
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [],
+    "blocker_detail": "ra-as-data-pointer pattern",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/reserved_date_sort.c",
+    "has_semi_matched_source": true
+  },
+  "GetClut": {
+    "func_name": "GetClut",
+    "address": "0x8004F238",
+    "status": "unmatchable",
+    "primary_blocker": "IDO_CSE",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP",
+      "DEAD_STORE",
+      "DELAY_SLOT",
+      "GCC_ASPSX"
+    ],
+    "blocker_detail": "BLOCKER: 1112B/278 insns; target has dead index computation (move v0,zero; sll t8,v0,3; addu s1,t8,t9) that IDO 5.2 constant-folds away + unfilled load delay nop in loop control that IDO fills; compiled=274 vs target=278 (4 short); tested all uopt hooks (NO_COPYPROP/NO_BINARYFOLD/NO_UNARYFOLD), IDO 5.1/5.2/5.3, volatile/address-of/opaque-zero/self-assignment/parameter tricks; constant folding of 0*8=0 happens in frontend (cfe), not uopt; GCC 2.6.0 gives 239 insns, GCC 2.8.1 gives 235 insns (both wrong); volatile dead code trick (4x g_fake_zero blocks) considered but register+position remapping for 4 dispersed dead insns (idx14/24/28/236) in 278-insn function via custom_script is impractical; with scheduler_normalizer reaches 68.3% (190/278); instruction count cannot be bridged by any allowed PostProc",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/GetClut.c",
+    "has_semi_matched_source": true
+  },
+  "MDEC_report": {
+    "func_name": "MDEC_report",
+    "address": "0x80086EA0",
+    "status": "unmatchable",
+    "primary_blocker": "INSN_COUNT_GAP",
+    "secondary_blockers": [
+      "CROSS_PROLOGUE",
+      "GCC_ASPSX"
+    ],
+    "blocker_detail": "BLOCKER: 204B/51 insns; IDO 5.2 uses t-regs+stack spill (56 insns, 48-byte frame) but target uses v0/v1 sequential loads with s0 callee-saved (51 insns, 40-byte frame); same body/blocker as MDEC_report WIP; gap=4 insns (IDO) or 1 insn (GCC 2.8.1 volatile, 52 insns); cross-prologue lui saves 1 instruction only in IDO which otherwise produces wrong regs; no compiler+flags combination yields 51 insns with lw+srl structure; instruction count gap cannot be bridged by any allowed PostProc",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/semi-matched/MDEC_report.c",
+    "has_semi_matched_source": true
+  },
+  "mem_card_check": {
+    "func_name": "mem_card_check",
+    "address": "0x80081398",
+    "status": "unmatchable",
+    "primary_blocker": "ANDI_ELIM",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP",
+      "DELAY_SLOT",
+      "GCC_ASPSX",
+      "UNALIGNED_ACCESS"
+    ],
+    "blocker_detail": "BLOCKER: 7656B/1914 insns at 0x80081398; 4 sub-functions (msg_str_disp+func_80082970+func_80082F64+func_800830C0); WAS MISCLASSIFIED AS GCC 2.6.0 (actually IDO 5.2: 109 or-moves, 0 addu-moves); contains 5 lwl/swl pairs from S3 struct copies (3-byte { u8 d[3]; }); 10-instruction count gap across sub-functions: msg_str_disp -4 insns (different loop structure for pair byte comparisons), func_80082970 +4 insns, func_80082F64 +3 insns (delay slot filling: target fills 3 branch delay slots with useful instructions that IDO leaves as nops), func_800830C0 +7 insns (extra register copies: IDO generates move v1,t6 + move a0,t6 vs target single move v0,t6 + redundant andi in case rem==1); also 40-byte frame excess (784 compiled vs 744 target raw); 71.8% match after scheduler normalization; instruction count gap cannot be bridged by any allowed PostProc",
+    "family": "andi_ffff",
+    "region": "game",
+    "source_file": "src/main/semi-matched/mem_card_check.c",
+    "has_semi_matched_source": true
+  },
+  "SsSetSerialVol": {
+    "func_name": "SsSetSerialVol",
+    "address": "0x8008BF98",
+    "status": "unmatchable",
+    "primary_blocker": "IDO_CSE",
+    "secondary_blockers": [
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "ASM-only: 248B/62 insns library; 3 structural blockers: (1) cross-prologue sll/sra sign-extend of a1/a2 in-place (IDO uses t6-t9 temps + extra moves); (2) duplicate sll t7,a1,0xf at both delay slot AND fallthrough (IDO CSEs away); (3) target uses li at,127 separately for each of 3 divisions (IDO pre-loads and reuses v0=127); strip_div_checks reduces 97\u219276 but still 14 insns over target 62; complete scheduling mismatch unfixable by PostProc",
+    "family": null,
+    "region": "library",
+    "source_file": "src/main/semi-matched/SsSetSerialVol.c",
+    "has_semi_matched_source": true
+  },
+  "olh_check": {
+    "func_name": "olh_check",
+    "address": "0x800679A0",
+    "status": "semi-matched",
+    "primary_blocker": "DELAY_SLOT",
+    "secondary_blockers": [
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "[167] Target: andi v0,a1,0xA000 Compiled: lh t8,0(t8)       (structural blocker) [208] Target: sltiu at,t6,513   Compiled: sltiu at,t6,14    (imm swapped by remap) [216] Target: slti at,t7,-512   Compiled: slti at,t7,513    (imm swapped by remap) [223] Target: sltiu at,t9,513   Compiled: sltiu at,t9,-512  (imm swapped by remap) Mismatches 17/208/216/223 are general_remap artifacts (immediate swap during register rename). These 4 could be fixed by a custom_script patching immediates. Mismatch 167 is the structural blocker: target has andi in delay slot of 2nd 0x5000 dispatch (delay slot optimization duplicates the andi instruction). IDO 5.2 cannot produce this delay slot duplication from any C construct. Even fixing the 4 immediate swaps still leaves 1 mismatch (idx 167). BLOCKED. NOTE: str",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/olh_check.c"
+  },
+  "SD_CDLevelRead": {
+    "func_name": "SD_CDLevelRead",
+    "address": null,
+    "status": "unmatchable",
+    "primary_blocker": "SREG_ALLOC",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP",
+      "DEAD_STORE",
+      "DELAY_SLOT"
+    ],
+    "blocker_detail": "BLOCKER: 736B/184 insns; IDO delay-slot hoist prevention gap \u2014 IDO reuses dead 1st-switch discriminant register v1 for x (info[0]), forcing 2nd-switch discriminant to v0; case 0x400 starts with `li a1,0x9999` (threshold, where a1 = one of the x/y/flags regs that is dead at dispatch); IDO hoists this into the `beq v0,at,case400` delay slot (a1 is dead there), producing 185 insns; target has discriminant in v1, `li v1,0x9999` CANNOT be hoisted (v1 is live for next `beq v1,at,case800` check), so threshold stays at natural position = 184 insns; tested 35+ C variants: different variable declaration order, disc-before-x/y ordering (IDO defers disc computation to switch point regardless), volatile disc2 (stack spill +8 insns), volatile flags (stack spill +8 insns), address-taken x (stack spill +8 insns), u16 flags type (+2 insns), if-else for 1st switch (184 but wrong structure), IDO52_CONST_NOINREG_VALUES=39321/6/13107/45875 (no effect or wrong count), -O1 (far too many insns); no C structure found that allocates disc2 to v1 instead of v0; instruction count gap of 1 cannot be bridged by any allowed PostProc",
+    "family": null,
+    "region": "unknown",
+    "source_file": "src/main/semi-matched/SD_CDLevelRead.c",
+    "has_semi_matched_source": true
+  },
+  "show_packet_use_box": {
+    "func_name": "show_packet_use_box",
+    "address": "0x8004FC90",
+    "status": "unmatchable",
+    "primary_blocker": "IDO_CSE",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP",
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "BLOCKER: 276B/69 insns; IDO 5.2 -O2 CSE-merges all 3 screen_w loads into one register, giving enough caller-saved temporaries that s0 is never needed \u2014 compiled=68 insns (frameless, no s0 save/restore); target has 24-byte frame with cross-prologue `lui t6` before `sw s0,20(sp)` + `andi s0,a1,0xff` (s0=arg1 u8), 3 separate screen_w loads (t6/t7/t9) consuming temporaries; CSE-breaking alias trick (D_800EE760b/D_800EE760c) generates 3 separate lui/addiu pairs (72 insns, 3 extra) but IDO still allocates only caller-saved regs (no s0); root cause: even with 3 loads, IDO has enough t-regs (t0-t9) to keep all loop variables live without spilling to s0; no C89 structure can force s0 allocation without adding extra instructions; address-taken, volatile, -Wo,-no_r23, -O1 (129 insns) all fail; instruction count gap (68 compiled vs 69 target) cannot be bridged by any allowed PostProc \u2014 adding s0 frame requires +4 insns (prologue/epilogue) but saves only +3 elsewhere; matched via asm/main/matched/show_packet_use_box.s",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/show_packet_use_box.c",
+    "has_semi_matched_source": true
+  },
+  "start_card": {
+    "func_name": "start_card",
+    "address": "0x8005FDA0",
+    "status": "unmatchable",
+    "primary_blocker": "STRENGTH_REDUCTION",
+    "secondary_blockers": [
+      "OVERLAP_MISATTR"
+    ],
+    "blocker_detail": "MISATTRIBUTED: config address 0x8005FDA0 is INSIDE matched cursor_speed.c (0x8005FC58-0x8005FFD8); actual debug symbol maps to 0x80090DA0 (sound sequencer thunk for SsSeqCalledTbyT); ASM file asm/main/matched/start_card.s contains code from 0x80090DA0, not 0x8005FDA0; SsSeqCalledTbyT is confirmed unmatchable (CSE of voice*168)",
+    "family": "voice168",
+    "region": "game",
+    "source_file": "src/main/semi-matched/start_card.c",
+    "has_semi_matched_source": true
+  },
+  "get_fnt": {
+    "func_name": "get_fnt",
+    "address": "0x8004DA18",
+    "status": "unmatchable",
+    "primary_blocker": "STRENGTH_REDUCTION",
+    "secondary_blockers": [
+      "SREG_ALLOC",
+      "DEAD_STORE"
+    ],
+    "blocker_detail": "BLOCKER: 1036B/259 insns; three combined structural blockers: (1) Phase2 loop LSR \u2014 IDO -O2 always applies loop strength reduction to the `do { func(dest+n*count,...); n--; ptr+=count; } while (k++!=count)` loop, hoisting `n*count` out via `negu s5,s4` stride + pre-loop multu; target has `multu s1,s4` inside loop + direct `bne s3,s4` + `addiu s3,s3,1` (delay slot); compiled has `negu s5,s4` (extra instruction) + `xor v0,s0,s4` + `bnez v0` pattern; removing negu changes instruction count (banned); xor\u2192bne opcode change is banned; tested: -Wo,-loopunroll,0, -Wo,-doassoc, -Wo,-noPalias, -Wo,-nordstore, separate ptr variable, n=n-1 form, IDO 5.1 (crashes), IDO 5.3 (same negu), -O1 (1624B too large), -Wo,-Olimit,N (all same), IDO52_CONST_NOINREG/LDA_NOINREG hooks; (2) global s-register allocation mismatch \u2014 compiled uses s1=divisor/s2=acc/s5=dest/s6=srcPtr/s7=srcBase but target needs s2=divisor/s1=acc/s7=dest/s6=srcPtr/s5=srcBase; prologue sw save ordering pervasively differs (sw at different sp offsets); custom_script can patch register fields but prologue save ordering difference means sp-relative loads throughout function need different offset adjustments; (3) check_flag2 base register \u2014 compiled uses sp-relative lbu (e.g., lbu t9,147(sp)) but target uses s6-register-relative lbu (e.g., lbu t6,3(s6) where s6=&localBuf[0]=sp+140); different addressing modes, different instruction encoding, not patchable by register-field changes; best match 50% with scheduler_normalizer+remap_stack_slots+strip_trailing; instruction count structurally equivalent (259=259 after strip) but content differs in 153 positions due to combined blockers",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/get_fnt.c",
+    "has_semi_matched_source": true
+  },
+  "config_screen_init": {
+    "func_name": "config_screen_init",
+    "address": "0x8006A378",
+    "status": "unmatchable",
+    "primary_blocker": "IDO_CSE",
+    "secondary_blockers": [
+      "LICM",
+      "INSN_COUNT_GAP"
+    ],
+    "blocker_detail": "BLOCKER: 3064B/766 insns; IDO 5.2 LICM hoists &basyo_init_tbl1/basyo_init_tbl2/_sys_default_tpage_set_tbl2 address-of ops out of 32-iteration do-while loop into s2/s3/s4; s0=loop_ptr, s1=sp60 gives 770 insns vs target 766; the 4-instruction gap is from s0/s1 saves (sw s1 pre-first-jal + sw s0 in jal delay slot replacing nop) + s0/s1 restores in epilogue; target has NO s-register saves and computes addresses fresh each iteration (lui t5,0x800d; addiu t5,t5,-932 etc.); tested: volatile vars, CSE-breaking aliases, readback-from-globals, address-taken, -Wo,-loopunroll,0, -Wo,-no_const_in_reg, IDO 5.0/5.3 all same; IDO LICM of compile-time-constant addresses is unconditional at -O2; 4-instruction gap cannot be bridged by any allowed PostProc; same LICM blocker as parameter_show_init",
+    "family": "licm_address",
+    "region": "game",
+    "source_file": "src/main/semi-matched/config_screen_init.c",
+    "has_semi_matched_source": true
+  },
+  "schedule_make": {
+    "func_name": "schedule_make",
+    "address": "0x8006D8A4",
+    "status": "unmatchable",
+    "primary_blocker": "IDO_CSE",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP",
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "BLOCKER: IDO CSE instruction count gap (1153 compiled vs 1168 target = 15-insn gap); target has 85 separate sll v1,0x2 (v1_idx<<2) for screen_w array indexing; IDO -O2 CSEs consecutive uses of same v1_idx into one sll (compiled: 63 sll); 26 CSE-able pairs where target recomputes but IDO shares shift; CSE-breaking alias on base array adds addu but not separate sll; no IDO flag disables CSE at -O2; volatile generates excess instructions; same blocker class as Snd_SetPlayMode/SsSepStop; 4672B/1168 insns game region; cross-prologue 5 insns; best match 38.2%",
+    "family": "voice168",
+    "region": "game",
+    "source_file": "src/main/semi-matched/schedule_make.c",
+    "has_semi_matched_source": true
+  },
+  "vram_full_move": {
+    "func_name": "vram_full_move",
+    "address": "0x80064510",
+    "status": "unmatchable",
+    "primary_blocker": "OTHER",
+    "secondary_blockers": [],
+    "blocker_detail": "BLOCKED, ASM-only",
+    "family": "dual_entry_game",
+    "region": "game",
+    "source_file": "src/main/semi-matched/func_80064510.c",
+    "has_semi_matched_source": true
+  },
+  "xa_wait": {
+    "func_name": "xa_wait",
+    "address": "0x8005E04C",
+    "status": "unmatchable",
+    "primary_blocker": "SREG_ALLOC",
+    "secondary_blockers": [
+      "OVERLAP_MISATTR"
+    ],
+    "blocker_detail": "MISATTRIBUTED: config address 0x8005E04C has wrong binary content; actual debug symbol maps to 0x8008F04C (SPU voice setup thunk for SsUtKeyOnV); ASM file asm/main/matched/xa_wait.s contains code from 0x8008F04C, not 0x8005E04C; SsUtKeyOnV is confirmed unmatchable (s-reg allocation gap)",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/semi-matched/func_8005E04C.c",
+    "has_semi_matched_source": true
+  },
+  "icon_slot_clear_step": {
+    "func_name": "icon_slot_clear_step",
+    "address": null,
+    "status": "unmatchable",
+    "primary_blocker": "HIDDEN_REGS",
+    "secondary_blockers": [],
+    "blocker_detail": "ASM-only, hidden t9/t0/at registers set by thunk before prologue; sw t9,1600(at) and sw t0,1604(at) unproducible from C",
+    "family": null,
+    "region": "unknown",
+    "source_file": "src/main/matched/icon_slot_clear_step.c"
+  },
+  "title_show_init": {
+    "func_name": "title_show_init",
+    "address": "0x80062424",
+    "status": "unmatchable",
+    "primary_blocker": "OTHER",
+    "secondary_blockers": [],
+    "blocker_detail": "Candidate ASM-only",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/matched/title_show_init.c"
+  },
+  "func_8007D9F8": {
+    "func_name": "func_8007D9F8",
+    "address": "0x8007D9F8",
+    "status": "unmatchable",
+    "primary_blocker": "ANDI_ELIM",
+    "secondary_blockers": [
+      "INSN_COUNT_GAP",
+      "CROSS_PROLOGUE"
+    ],
+    "blocker_detail": "BLOCKER: 2788B/697 insns; s1 variable type conflict: s16 gives frame=88 (correct) but 698 body insns (3 too many due to 3 sll/sra truncation pairs in default case); s32 gives 692 body (3 too few) + frame=96 (wrong); u16 gives 695 body + frame=88 (correct) but produces andi reg,0xffff instead of nop (3 opcode mismatches); trailing cross-prologue (lui v1/lw v1 step_counter for func_8007E4DC) solvable via dummy function but body instruction count cannot be matched with any s1 type; original likely compiled in multi-function unit with s32 s1 + different frame layout",
+    "family": null,
+    "region": "game",
+    "source_file": "src/main/matched/func_8007D9F8.c"
+  }
+}

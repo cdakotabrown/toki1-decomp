@@ -1,0 +1,70 @@
+# Nothing made from the disc is ever committed.
+
+# Your disc and what is extracted from it
+/disks/
+/assets/
+/data/
+/include/overlay_text/
+*.bin
+*.BIN
+*.cue
+*.iso
+
+# Generated listings (make asm-overlays asm-main).  Tracked under asm/:
+# asm/overlay/README.md and the hand-kept windows listed below.
+/asm/*
+!/asm/overlay/
+/asm/overlay/*/*.s
+/asm/overlay/*/SUMMARY.md
+!/asm/overlay/README.md
+!/asm/overlay/BUNKASAI/bunkasai_main4e.s
+!/asm/overlay/EN_NICHI/func_80134240.s
+!/asm/overlay/ETC/func_80140DC4.s
+!/asm/overlay/ETC/func_80140E7C.s
+!/asm/overlay/ETC/func_80140F8C.s
+!/asm/overlay/ETC/func_80140FD0.s
+!/asm/overlay/ETC/func_8014A2D8.s
+!/asm/overlay/EVENT/func_80136FA0_thunk.s
+!/asm/overlay/EVENT/func_80152E90_thunk.s
+!/asm/overlay/EVENT/func_8015B530.s
+!/asm/overlay/NAME_ENT/name_ent_dummy.s
+!/asm/overlay/NAME_ENT/name_ent_dummy2.s
+!/asm/overlay/OPTION/option_menu_in.s
+!/asm/overlay/OPTION/option_nop0.s
+!/asm/overlay/OPTION/option_value_step.s
+!/asm/overlay/RPG_BAT/func_801447D4.s
+!/asm/overlay/RPG_BAT/func_80144C7C.s
+!/asm/overlay/TACO/func_801420E8.s
+!/asm/overlay/TACO/taco_unused_nop_stub.s
+!/asm/overlay/TACO/taco_view_nop_hook.s
+!/asm/overlay/TAIIKU/bg_layer_scroll.s
+!/asm/overlay/TAIIKU/func_8013FD78.s
+!/asm/overlay/TAIIKU/taiiku_balance_advance.s
+!/asm/overlay/TAIIKU/taiiku_pose_advance.s
+!/asm/overlay/TT/tt_box_overlap_check.s
+!/asm/overlay/TT/tt_ent_move.s
+!/asm/overlay/TT/tt_hold_check.s
+!/asm/overlay/TT/tt_pad_timeout_step.s
+!/asm/overlay/TT/tt_ready_check.s
+!/asm/overlay/TT/tt_seq_step.s
+!/asm/overlay/TT/tt_shot_sprite_set.s
+!/asm/overlay/TT/tt_time_set.s
+!/asm/overlay/TT/tt_unused_nop_stub.s
+
+# Build output and fetched tools
+/build/
+/tools/ido-static-recomp/build
+/tools/ido-static-recomp/tools/rabbitizer/build/
+*.o
+*.elf
+
+# Python, editors, OS
+.venv
+__pycache__/
+*.pyc
+.pytest_cache/
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store

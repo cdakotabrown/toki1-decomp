@@ -1,0 +1,10 @@
+# Core dependencies for toki1-decomp decompilation tools
+capstone>=5.0       # MIPS disassembly
+pyelftools>=0.30    # ELF parsing for PostProc tools
+click>=8.0          # CLI argument parsing
+PyYAML>=6.0         # Config file parsing
+colorama>=0.4       # Colored terminal output
+tqdm>=4.60          # Progress bars
+requests>=2.28      # HTTP requests (decomp.me integration)
+Pillow>=10.0        # English patch: font/sprite art (tools/patch/*.py)
+numpy>=1.24         # English patch: NBN art injector and scanners

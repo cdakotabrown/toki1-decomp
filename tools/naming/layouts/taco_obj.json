@@ -1,0 +1,1 @@
+{"host": "0x8012F0F0", "type": "LIBGS_DOBJ2", "size": 16, "count": 64, "leaves": [[0, "attribute", "u32"], [4, "coord2", "ptr"], [8, "tmd", "ptr"], [12, "id", "u32"]], "header": "tokimeki/libgs_types.h"}

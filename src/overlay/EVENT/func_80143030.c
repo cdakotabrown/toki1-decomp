@@ -1,0 +1,20 @@
+/* Address: 0x80143030 */
+/* Size: 96 bytes (24 instructions) */
+#include "types.h"
+
+extern u8 D_800B1AF5;
+extern u8 D_800B1AF6;
+extern s32 D_8011F9C0;
+
+extern void func_80078950(s32 *a0, u8 a1, u8 a2);
+extern void func_80107090(void);
+extern void func_80015FE0(void);
+
+void func_80143030(void) {
+    func_80078950(&D_8011F9C0, D_800B1AF5, D_800B1AF6);
+    if (D_800B1AF5 == 0) {
+        func_80107090();
+    } else {
+        func_80015FE0();
+    }
+}

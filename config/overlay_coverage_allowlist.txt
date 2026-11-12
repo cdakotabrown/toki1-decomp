@@ -1,0 +1,33 @@
+# Non-code ranges inside the overlay CODE sections that
+# tools/overlay/audit_overlay_coverage.py must not report as uncovered code.
+#
+# Format (one per line, END exclusive, addresses in .sym/map space =
+# file offset + 0x80132000):
+#     OVERLAY 0xSTART 0xEND CATEGORY evidence...
+# CATEGORY is `data` or `padding` -- nothing else is accepted.  Code NEVER goes
+# here: real code with no honest C is an asm_only listing with a blocker in
+# config/c_unmatchable.txt, or open work.  An entry overlapping a verified
+# window is an error.
+#
+# 2026-10-03, first run of the gate: every entry below is the run of string
+# .rodata that IDO placed between an overlay's last function and the first
+# datum its code LOADS (the gate's code-end rule): strings are only ever
+# address-formed (lui/addiu) or reached through pointer tables, never loaded
+# directly, so the load rule stops a little late.  Each END is that overlay's
+# derived code end, each START is right after the last verified window.
+BUNKA_SD  0x80139880 0x80139F48 data rodata before the first loaded datum 0x80139F48: 100% of non-zero bytes Shift-JIS/ASCII text; 16 lui/addiu refs from verified code (lowest 0x80139E88); 61 pointer words in the data section point into it (first at 0x8013B5E0); no jr ra / prologue / jal target
+DATE      0x8015AB10 0x8015AEA0 data rodata before the first loaded datum 0x8015AEA0: 100% of non-zero bytes Shift-JIS/ASCII text; 76 lui/addiu refs from verified code (lowest 0x8015AB10); no jr ra / prologue / jal target
+ENDING    0x8013BF30 0x8013BF70 data rodata before the first loaded datum 0x8013BF70: 100% of non-zero bytes Shift-JIS/ASCII text; 10 lui/addiu refs from verified code (lowest 0x8013BF30); no jr ra / prologue / jal target
+ETC       0x8014C2F0 0x8014C3A0 data rodata before the first loaded datum 0x8014C3A0: 100% of non-zero bytes Shift-JIS/ASCII text; 10 lui/addiu refs from verified code (lowest 0x8014C2F0); no jr ra / prologue / jal target
+GEKO      0x80144640 0x80144654 data rodata before the first loaded datum 0x80144654: 100% of non-zero bytes Shift-JIS/ASCII text; 2 lui/addiu refs from verified code (lowest 0x80144640); no jr ra / prologue / jal target
+KANGEI    0x80139610 0x80139678 data rodata before the first loaded datum 0x80139678: 100% of non-zero bytes Shift-JIS/ASCII text; 11 lui/addiu refs from verified code (lowest 0x80139610); no jr ra / prologue / jal target
+MASTER    0x8013B9B0 0x8013BA24 data rodata before the first loaded datum 0x8013BA24: 100% of non-zero bytes Shift-JIS/ASCII text; 7 lui/addiu refs from verified code (lowest 0x8013B9B0); no jr ra / prologue / jal target
+NAME_ENT  0x8014B080 0x8014B5E8 data rodata before the first loaded datum 0x8014B5E8: 100% of non-zero bytes Shift-JIS/ASCII text; 53 lui/addiu refs from verified code (lowest 0x8014B3E4); 79 pointer words in the data section point into it (first at 0x8014CD28); no jr ra / prologue / jal target
+OLH       0x80136F20 0x80136F6C data rodata before the first loaded datum 0x80136F6C: 100% of non-zero bytes Shift-JIS/ASCII text; 3 lui/addiu refs from verified code (lowest 0x80136F20); no jr ra / prologue / jal target
+OMIMAI    0x801348B0 0x801348C0 data rodata before the first loaded datum 0x801348C0: 100% of non-zero bytes Shift-JIS/ASCII text; 2 lui/addiu refs from verified code (lowest 0x801348B0); no jr ra / prologue / jal target
+OPTION    0x8013C8A0 0x8013CB30 data rodata before the first loaded datum 0x8013CB30: 100% of non-zero bytes Shift-JIS/ASCII text; 26 lui/addiu refs from verified code (lowest 0x8013C8A0); no jr ra / prologue / jal target
+RENSYU    0x801340D0 0x801340E4 data rodata before the first loaded datum 0x801340E4: 100% of non-zero bytes Shift-JIS/ASCII text; 2 lui/addiu refs from verified code (lowest 0x801340D0); no jr ra / prologue / jal target
+RPG_BAT   0x8015A9A0 0x8015A9B8 data rodata before the first loaded datum 0x8015A9B8: 100% of non-zero bytes Shift-JIS/ASCII text; 1 lui/addiu refs from verified code (lowest 0x8015A9A0); no jr ra / prologue / jal target
+TAIIKU    0x80148AF0 0x80148B00 data rodata before the first loaded datum 0x80148B00: 100% of non-zero bytes Shift-JIS/ASCII text; 1 lui/addiu refs from verified code (lowest 0x80148AF0); no jr ra / prologue / jal target
+TEL       0x8013E370 0x8013EF68 data rodata before the first loaded datum 0x8013EF68: 100% of non-zero bytes Shift-JIS/ASCII text; 167 lui/addiu refs from verified code (lowest 0x8013E370); no jr ra / prologue / jal target
+VALEN     0x80134270 0x80134310 data rodata before the first loaded datum 0x80134310: 74% of non-zero bytes Shift-JIS/ASCII text + 11 words addressing this overlay's code (jump table); 12 lui/addiu refs from verified code (lowest 0x80134270); no jr ra / prologue / jal target

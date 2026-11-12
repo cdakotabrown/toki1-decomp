@@ -1,0 +1,1176 @@
+# Functions confirmed unmatchable from C
+# These have documented codegen blockers. Do not start conversion work on them.
+# Each entry includes the blocker category.
+#
+# Categories:
+#   BANNED     = Previously used insert_instruction_and_shift (now banned)
+#   ASM_ONLY   = Structural codegen pattern impossible in C (hidden regs, dual entry, etc.)
+#   BLOCKER    = Specific IDO codegen blocker documented in WIP header
+# Last updated: 2026-06-06
+# To check: grep for BANNED/ASM-only/BLOCKED/unmatchable in src/main/wip/*.c
+# 2026-06-05 cleanup: removed 73 stale entries:
+#   - 65 functions that have byte-perfect asm in asm/main/matched/ or c in src/main/matched/ (no longer unmatchable)
+#   - 8 orphaned entries (functions no longer exist in any bucket; renamed/deleted)
+# Verified by tools/conversion/audit_unmatchable.py (file added 2026-06-05).
+
+# --- BANNED (previously used insert_instruction_and_shift) ---
+# --- ASM-ONLY (structural codegen patterns) ---
+# RETIRED 2026-10-04: func_80067490 byte_perfect (main matched_c; 0x80067490 covered by registered src/main/matched/update_anim_state.c (0x80066D38+1968))
+#   Original entry: func_80067490        # Dual-entry thunk + hidden treg
+# RETIRED 2026-10-04: func_8005DF34 byte_perfect (main matched_c; 0x8005DF34 covered by registered src/main/matched/system_config_menu_init.c (0x8005DE8C+360))
+#   Original entry: func_8005DF34        # ASM-only: dual-entry thunk; first 6 insns are loop-tail continuation from menu_girl_taku_set with no prologue; second entry at 0x8005DFF4 is internal callable subroutine; overlaps menu_girl_taku_set (0x8005DF34-0x8005DFF0); matched via asm/main/matched/func_8005DF34.s
+# RETIRED 2026-10-04: scene_entry_set byte_perfect (main matched_c; 0x80079104 is by registered src/main/matched/scene_entry_set.c (0x800790FC+1204))
+#   Original entry: scene_entry_set        # ASM-only (addiu vs ori, bodies-inside-switch, register cycling)
+# --- BLOCKER (specific codegen issues documented) ---
+# AMENDED 2026-09-22: now 216/216 count-exact at 53/216 (the filed 217 is stale); a uopt NO_BINFOLD(ior) prototype blocks all four folds but ugen refolds them -- the wall is in ugen.
+# RETIRED 2026-09-17: holiday_club is not a separate function -- it is the cross-prologue
+#   HEAD of holiday_club. Retail calls 0x8007892C (jal at 0x80075460); 0x80078934, the
+#   prologue the old holiday_club.c was written against, has ZERO callers and zero address
+#   words in disks/SLPS_000.65. holiday_club.c now owns the whole 0x8007892C+132 window and
+#   is BYTE-PERFECT 33/33; the duplicate src/main/semi-matched/holiday_club.c was deleted.
+#   The blocker was filed against the SYMPTOM of a banned directive pair, not a compiler wall:
+#   same accumulator fix as week_day_init. Honest baseline before the fix: 30/31.
+#   Original entry: holiday_club        # BLOCKER spill_reload_vs_register (filed 2026-09-17): 132B/33 insns. Our allocator spills the return value and reloads it (`lw v0,28(sp)` before the epilogue); retail keeps it in a register and has no such load. Was REGISTERED byte-perfect only because `propagate_stack_to_reg --lw-offset 0x78` rewrote the pair and `@PostProc: strip_arg_homes --offsets 0x78` then DELETED the reload. Deleting a real compiled instruction to force the count is fabrication by subtraction. De-registered 2026-09-17. Also note our frame is 32 against retail's 40 and our epilogue fills the `jr ra` delay slot where retail leaves a nop.
+# RETIRED 2026-09-17: func_80072A08 is NOT a function.  config/main_symbol_boundaries.json
+#   records 0x80072A08 as a `head` with true_start 0x80072A04, i.e. it is the second word of
+#   _schedule_main38's own hoisted `lui v1,%hi(now_sub_sub_step); lbu v1,%lo(...)` cross-prologue pair.
+#   The whole 84-byte window 0x80072A04..0x80072A58 is now BYTE-PERFECT 21/21 (Fixup 0) from
+#   src/main/matched/_schedule_main38.c with no PostProc but the region-standard thunk strip, so
+#   the spill_reload_vs_register blocker filed against the phantom head has no subject.
+#   Its .c (and the sibling phantom src/main/semi-matched/func_80072A0C.c) were deleted.
+#   Original entry: func_80072A08        # BLOCKER spill_reload_vs_register (filed 2026-09-17): 80B/20 insns. Same shape as holiday_club -- `propagate_stack_to_reg --lw-offset 0x44` followed by `@PostProc: strip_arg_homes --offsets 0x44` DELETING the reload at exactly that offset. Without the directive the body carries a memory access retail does not have. De-registered 2026-09-17.
+# RETIRED 2026-09-17: week_day_init is BYTE-PERFECT 32/32 and REGISTERED at 0x800739D4+128.
+#   The blocker was filed against the SYMPTOM of a banned directive pair, not against a
+#   compiler wall. `propagate_stack_to_reg` (now armed in banned_postproc) had been used to
+#   rewrite the spill into a register copy; the spill itself came from `return mode;`, which
+#   keeps the switch selector live across the arm calls. Retail's return value is an
+#   ACCUMULATOR each arm overwrites with its callee's result, so with `ret = func_...();` in
+#   every arm nothing is live across a call and there is no spill to rewrite or delete.
+#   IDO52_PRECOLOR_WEB=v0:10 pins the return web. Honest baseline before the fix: 29/32.
+#   Original entry: week_day_init        # BLOCKER spill_reload_vs_register (filed 2026-09-17): 128B/32 insns. Same shape -- `propagate_stack_to_reg --lw-offset 0x74` then `@PostProc: strip_arg_homes --offsets 0x74` DELETING the reload at that offset. De-registered 2026-09-17.
+# RETIRED 2026-10-04: func_80064D00 byte_perfect (main matched_c; 0x80064D00 covered by registered src/main/matched/hizuke_init.c (0x80064B74+1048))
+#   Original entry: func_80064D00        # Previously used insert_instruction_and_shift + patch_instruction
+# RETIRED 2026-10-04: func_8009F9A4 byte_perfect (main matched_c; 0x8009F9A4 covered by registered src/main/matched/ResetGraph.c (0x8009F99C+528))
+#   Original entry: func_8009F9A4        # Jump table blocker, unmatchable from C
+# RETIRED 2026-10-04: func_8006c3d4 byte_perfect (main matched_c; 0x8006C3D4 is by registered src/main/matched/func_8006c3d4.c (0x8006C3D4+972))
+#   Original entry: func_8006c3d4  # BLOCKER: 972B/243 insns; IDO 5.2 allocates s0 for count (cross-call live range) producing 249 insns; target uses a1=count/a2=flags/a3=sin2 with arg-home spilling (sw a1/a2/a3 before each of 3 abs calls + 3 lw restores after) and no s-registers; compiled has sw s0/lw s0 in prologue/epilogue (+2), redundant li s0,1/addiu s0,s0,1/move a1,s0 sequences (+3), flags=1 via li+sw vs li-in-delay (+1), flags loads in count==1/2/3 checks (+6); target saves from arg-home pattern (-6) giving net 6-insn gap; tested -O1, volatile base/count/flags, explicit multiply chains, reduced variables, register pressure tricks; no compiler+flags combination forces a1=count allocation; instruction count gap cannot be bridged by any allowed PostProc
+# RETIRED 2026-10-03: change_yoshio (0x80092BDC) is NOT a function -- it is the PROLOGUE of
+#   GetSeqData (libsnd _SsGetSeqData), registered byte-perfect C at 0x80092BAC+652
+#   (src/main/matched/GetSeqData.c, 163/163, Fixup 0, plain_vs_shipped SAME). The 12 words
+#   0x80092BAC-0x80092BD8 are IDO's hoisted head: the in-place s16 extensions of a0/a1 and
+#   t7=_ss_score[a0] (lw 0x80131380+a0*4), t8=a1*21 -- the "hidden t7/t8" are computed by the
+#   same function's own first statements, record = t7 + (t8<<3) (stride 168). Retail's only
+#   reference is `jal 0x80092BAC` at 0x80092B58; 0x80092BDC has zero jal/j targets and zero
+#   address words in disks/SLPS_000.65. audit_main_functions already classifies it `covered`
+#   (enclosed_by 0x80092BAC). The name came from an o.bin proximity guess (asm README: LIKELY).
+#   Original entry: change_yoshio        # ASM-ONLY: 604B/151 insns library; MIDI event dispatcher with hidden t7/t8 parameters; t0=t7+(t8<<3) computed inside function body from caller-provided t7=track base ptr and t8=track index; function also uses a0/a1 as normal args (MIDI channel/key); 132 compiled vs 151 target (19-insn gap from missing hidden param computation and different switch structure); no C89 function signature can receive args in t7/t8 registers
+# --- MISATTRIBUTED ADDRESS / OVERLAPPING ENTRIES ---
+# These entries in config/level3_functions.json have wrong addresses.
+# The debug symbols map to different addresses than declared in the config.
+# Already matched via ASM at their (wrong) declared addresses.
+# RETIRED 2026-10-04: MouseRead byte_perfect (main matched_c; 0x80066688 covered by registered src/main/matched/basyo_show.c (0x80066464+1784))
+#   Original entry: MouseRead            # OVERLAP: config address 0x80066688 falls inside func_8006646C (0x8006646C, 1776B, unmatchable); ASM file asm/main/matched/MouseRead.s has correct code at correct address; C implementation is correct but cannot be independently verified because address belongs to func_8006646C's range; already matched as ASM
+# RETIRED 2026-10-04: _gcSPU byte_perfect (main matched_c; 0x80097778 is by registered src/main/matched/_gcSPU.c (0x80097770+708))
+#   Original entry: _gcSPU        # RE-AUDIT 2026-07-27: "hidden v1" REFUTED -- head 0x80097770 (v1 = _spu_AllocLastNum) absorbed; honest semi 172 vs 154, body re-derivation remains
+# --- Overlay functions blocked by banned PostProc tools (2026-05-11) ---
+# These previously relied on insert_instruction_and_shift or
+# patch_insn_word (both BANNED) to achieve byte-perfect match.
+# They are confirmed functionally correct but cannot match
+# with allowed PostProc tools only.
+# Blocker categories:
+#   BANNED_PP  = Required banned PostProc tool for byte-perfect match
+#   DEAD_LOAD  = IDO generates dead load that C source can't reproduce
+#   REG_ALLOC  = Register allocation difference needing full-instruction replace
+# BANNED_PP: required insert_instruction_and_shift
+# RETIRED 2026-10-04: TAIIKU/taiiku_racer_stumble2 byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: TAIIKU/taiiku_racer_stumble2    # BANNED_PP: insert_instruction_and_shift
+# RETIRED 2026-10-04: TAIIKU/taiiku_runner_anim byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: TAIIKU/taiiku_runner_anim    # BANNED_PP: insert_instruction_and_shift
+# RETIRED 2026-10-04: TAIIKU/taiiku_lane_drop byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: TAIIKU/taiiku_lane_drop    # BANNED_PP: insert_instruction_and_shift
+# RETIRED 2026-10-04: TAIIKU/taiiku_race_scroll_disp byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: TAIIKU/taiiku_race_scroll_disp    # BANNED_PP: insert_instruction_and_shift
+# RETIRED 2026-10-04: DATE/date_cdload_wait byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: DATE/date_cdload_wait      # BANNED_PP: insert_instruction_and_shift
+# BANNED_PP: required patch_instruction / patch_insn_word
+# RETIRED 2026-10-04: DATE/date_hizuke_serifu_run byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: DATE/date_hizuke_serifu_run      # BANNED_PP: insert_instruction_and_shift
+# RETIRED 2026-10-04: DATE/date_basyo19_init byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: DATE/date_basyo19_init      # BANNED_PP: patch_instruction
+# RETIRED 2026-10-04: DATE/date_planetarium_step byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: DATE/date_planetarium_step      # BANNED_PP: patch_instruction
+# RETIRED 2026-10-04: DATE/date_basyo17_init byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: DATE/date_basyo17_init      # BANNED_PP: patch_instruction
+# DEAD_LOAD: IDO keeps dead load into $t7 that C source can't reproduce
+# --- Overlay functions blocked by IDO codegen (2026-05-24) ---
+# --- Main binary function blocked by banned PostProc tool (2026-05-11) ---
+# RETIRED 2026-10-04: _SpuIsInAllocateArea_ byte_perfect (main matched_c; 0x80098490 is by registered src/main/matched/_SpuIsInAllocateArea_.c (0x80098490+44))
+#   Original entry: _SpuIsInAllocateArea_               # BANNED_PP: insert_move_and_shift required for match; as1 peephole eliminates move $v1,$a0
+# --- Overlay functions blocked by epilogue-tail-merge (2026-05-24) ---
+# IDO generates separate epilogues per return path; target shares one.
+# Requires C source restructuring + banned insert_instruction_and_shift.
+# --- Overlay functions blocked by register/opcode structural diffs (2026-05-24) ---
+# These have mismatches involving fundamentally different opcodes (not just registers)
+# that cannot be fixed with patch_insn_reg_field, swap_registers, etc.
+# RETIRED 2026-10-04: EN_NICHI/en_nichi_work_clear byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: EN_NICHI/en_nichi_work_clear # STRUCTURAL: ori vs sltiu; fundamentally different codegen
+# RETIRED 2026-10-04: NAME_ENT/name_ent_names_set byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: NAME_ENT/name_ent_names_set # hi_register_arg: 2nd arg arrives via HI register (mfhi v1 at entry); standard C cannot place an incoming arg in HI. 94.4% masked, 2 OTHER diffs (mfhi + spill)
+# RETIRED 2026-10-04: NAME_ENT/name_ent_hizuke_button_step byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: NAME_ENT/name_ent_hizuke_button_step # frame_slot_arg: posX/posY read from fixed caller-frame slots sp+48/sp+44 (not ABI arg slots), buttonId spilled to sp+56; non-standard convention, IDO homes args + picks 24-byte frame. Logic fully decoded.
+# RETIRED 2026-10-04: NAME_ENT/name_ent_fuji_confirm_input byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: NAME_ENT/name_ent_fuji_confirm_input # cascading_flag_delayslot_window: target hoists each of 3 sequential `input & MASK` button-flag checks (Cross/L1/Circle) into the PRECEDING guard branch's delay slot (Cross's beqz delay computes L1's flag, L1's beqz delay computes Circle's flag); our recompile only carries the hoist one level (Cross->L1), leaving Circle's ANDI near its actual use 14 words later and shifting every subsequent branch offset. Source C already matches target's flat if/if/if structure -- likely an ido-static-recomp scheduler lookahead-window limit given the large nested Cross-button body. 90.0% masked, 73/80 exact (was garbled by a stale swap_registers/reg_field pileup + 2 wrong-global bugs, both now fixed).
+# RETIRED 2026-10-04: func_801436D8 byte_perfect (overlay function (bare name; ETC) byte_perfect in overlay_match_status.json)
+#   Original entry: func_801436D8
+# RETIRED 2026-10-04: func_80133118 byte_perfect (overlay function (bare name; EVENT/GYOZI) byte_perfect in overlay_match_status.json)
+#   Original entry: func_80133118
+# RETIRED 2026-10-04: func_8014227C byte_perfect (overlay function (bare name; EVENT) byte_perfect in overlay_match_status.json)
+#   Original entry: func_8014227C
+# RETIRED 2026-10-04: func_80143420 byte_perfect (overlay function (bare name; EVENT) byte_perfect in overlay_match_status.json)
+#   Original entry: func_80143420
+# RETIRED 2026-10-04: func_8014DE94 byte_perfect (overlay function (bare name; EVENT) byte_perfect in overlay_match_status.json)
+#   Original entry: func_8014DE94
+# RETIRED 2026-10-04: func_8013C520 byte_perfect (overlay function (bare name; GEKO) byte_perfect in overlay_match_status.json)
+#   Original entry: func_8013C520
+# RETIRED 2026-10-04: func_801352DC byte_perfect (overlay function (bare name; EN_NICHI) byte_perfect in overlay_match_status.json)
+#   Original entry: func_801352DC
+# Cross-prologue getter functions (ETC overlay)
+# Target binary has next-function code hoisted into these tiny getters
+# Cannot be produced from C — the cross-prologue scheduling is an IDO inter-function optimization
+# Duplicate epilogue functions — IDO merges two return paths into single epilogue
+# C source generates separate epilogues with duplicate lw $ra restores
+# Only fixable with nop_at_offset (banned as patch_insn_word in disguise)
+# SHOUGATU nop_at_offset regression — compiled has NOPs where target has real code
+# These previously used nop_at_offset to insert real instructions, which is banned
+# SHUGAKU severely mismatched function (72mm)
+# Cross-prologue / register allocation issue (first 3 instructions differ)
+# RETIRED 2026-10-04: GEKO/geko_state_set byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: GEKO/geko_state_set CROSS_PROLOGUE_REGISTER
+# Scheduler NOP vs real instruction (delay slot or non-delay-slot)
+# RETIRED 2026-10-04: BUNKASAI/bunkasai_main4b byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: BUNKASAI/bunkasai_main4b SCHEDULER_NOP
+# No NOP available for unfill — scheduler_normalizer filled the delay slot but
+# there's no trailing NOP to swap with
+# Epilogue share into non-NOP delay slot — epilogue_share_into_branches
+# requires NOP slot but compiled has move $v0,$zero there
+# Structural opcode diff (sltiu vs sra) — needs patch_insn_word (banned)
+# Mixed register + immediate diffs + cross-prologue trailing — C source needs work
+# GYOZI cross-prologue hidden-param shared-lui (de-registered banned prepend_thunk):
+# leading store writes a hidden incoming register param (t2/t3/t6/t7/t8/t9/t0)
+# to a global through a single lui at shared across the prologue boundary.
+# Standalone C cannot place a param in a non-arg register nor reproduce the
+# single cross-prologue lui at -> only closable with the BANNED prepend_thunk.
+# 2026-06-20 SHOUGATU cross-prologue cluster (39 funcs): all CRACKED to
+# reloc_only via the @SymbolStart globals-first recipe (the prior "hidden
+# register param" diagnosis was wrong -- the hoisted values are global
+# loads/constants, not caller-threaded registers). See git history.
+# --- 2026-06-20 cross-prologue hidden-param lui (prepend_thunk de-registered) ---
+# A store to a 0x80xx global sits at body offset 0x04, BEFORE the body's `lui $at`
+# (0x0C) it shares with a second store in the jal delay slot; the first store needs
+# $at hoisted above the prologue (live at entry). IDO -O2 from C emits one lui per
+# store and cannot reference an out-of-body $at -> 1-word residual. Only the BANNED
+# prepend_thunk faked these.
+# RETIRED 2026-10-04: EVENT/func_8013B61C byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: EVENT/func_8013B61C cross_block_scheduling  # CONFIRMED (2026-07-01, re-verified prior semi analysis): 55/61 masked-exact, 6 residual diffs via resolve_overlay_relocs.py. IDO globally hoists the 2nd `charId=D_800B1AF6` reload's `lui` ABOVE the flag if/else block, and fills the if/else merge-point beq's delay slot with the D_800EB02F brightness store from inside the `if` branch -- both are cross-basic-block instruction motions scheduler_normalizer (local/single-block) cannot replicate. Confirmed the 2 `lui hi16`/`addiu lo16` swaps (idx31<->37, idx40<->43) are exactly this hoist, not a wrong-global bug (same names appear correctly elsewhere in the function). No C reordering changes the result (tried moving the 2nd charId read earlier). Already at 96.7% masked; genuine codegen blocker.
+# RETIRED 2026-10-04: EVENT/func_80141C8C byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: EVENT/func_80141C8C redundant_sign_extend  # flag=9 scene-setup, 89/91 faithful; 2 irreducible: IDO emits a redundant move+sra to re-sign-extend the s16 D_800B0BDE across the v<0x50 test+v+1 store; target reuses the lh value directly (target nops at idx86/90)
+# EVENT/func_80151714 held_constant -- CRACKED 2026-08-08 by Hook 30 IDO52_FORM_SITE=const:2:28:0 (statement-keyed formation denial splits the compare literal from the held web; the query-site-discriminating window it asked for). BYTE-PERFECT 48/48. See the file header + UOPT-HOOKS-REFERENCE Hook 30.
+# RETIRED 2026-10-04: EVENT/func_8013B61C byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: EVENT/func_8013B61C cross_block_schedule  # charId-table dispatcher; faithful, 57/61 resolved after fixing 2 reloc-masked wrong globals (D_80120744->D_8011F744 arg, D_800EEEE0->ev_flag14 flag) + idx24 addu rd + branch offsets. 4 residual: IDO global code motion hoists the charId reload `lui` above the if/else (idx31) and fills the merge-beq delay slot with the D_800EB02F store (idx43); scheduler_normalizer is local (won't cross branches) so idx31<->37 & idx40<->43 stay symbol-swapped. Statement reorder + --block-aware don't help.
+# DATE/DATE2 cross-prologue hidden-param lui (prepend_thunk strip 2026-06-20):
+# each begins with `s{b,h,w} <reg>, off($at)` using the CALLER's $at (no local
+# lui at precedes it). GENUINE blockers store a hidden incoming register (t9/t0/v0)
+# whose value comes from the caller, AND the function's true start equals its .sym
+# address (delta 0) so there is no prior-function dead space to hold a hoisted
+# `lui at`. IDO emits its own `lui at` before any $at use, so this cannot be C-made.
+# (NOTE 2026-06-20: the entries whose true start lies 8-52 bytes BEFORE the .sym
+# address — i.e. IDO parked `li tN; lui at` of a globals-first store in the prior
+# function's dead space after its `jr ra; nop` — were CRACKED to reloc_only via the
+# @SymbolStart + globals-first recipe: func_80135C08, func_80145DEC, func_801495A8,
+# func_80149C44, func_80154614. Removed below.)
+# RETIRED 2026-10-04: DATE/date_palette_cycle10 byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: DATE/date_palette_cycle10      # hidden HI-register input: 2nd instruction (offset 0x1C, right after the
+                         # `lw ra` prologue-adjacent slot) is `mfhi $t7` -- reads the CPU's special
+                         # HI register (the remainder of a divide/mod the CALLER did just before
+                         # this call) with NO C89 syntax to express "read whatever's currently in
+                         # the hardware HI register" (not a GPR; needs inline asm, which this
+                         # codebase does not use). Also the existing .c is a raw-address-cast
+                         # register-as-locals stub (needs full named-extern rewrite regardless);
+                         # even with a full rewrite the mfhi read blocks a match. 58 insns,
+                         # verified via asm/overlay/DATE/date_palette_cycle10.s.
+                         # `sw $t6,40($sp)` filling the jal-delay-slot of the tail-call to
+                         # fade_out_step -- a genuine 5th argument arrives caller-threaded in
+                         # $t6 (not via the o32 stack-arg convention real MIPS uses for args
+                         # 5+). Declaring a normal 5th `s32` C param makes IDO emit an `lw` to
+                         # load it from OUR OWN incoming stack (verified: produces a totally
+                         # different, longer sequence, 0% match) since C has no syntax for "this
+                         # value is already in $t6, don't load it". Fixing needs either
+                         # `insert_instruction_and_shift`-class instruction fabrication (BANNED)
+                         # or a `prepend_thunk`-style entry-register capture (already the
+                         # BANNED_PP class for the other DATE cross-prologue-thunk entries
+                         # above). 87.5% masked (7/8), single-instruction residual, genuine
+                         # architectural blocker.
+                         # materialization for the else-branch (t2=2,t3=3) UP PAST the enclosing `if`
+                         # branch into the predecessor block; target keeps them local to their own block.
+                         # scheduler_normalizer is block-local by design and cannot sink/hoist across a
+                         # branch boundary; `--block-aware` and marking t2/t3 volatile were both tried and
+                         # made it dramatically worse (30%->11%/25% exact), confirming this needs actual
+                         # cross-block code motion, not a scheduling-order fixup. 92.5% masked (49/53),
+                         # 4 residual diffs all attributable to this one hoist. Verified against
+                         # asm/overlay/DATE/date_basyo17_girl6_skip.s.
+                         # in EACH of the 3 identical case bodies' own jal-delay slot (case0/3/4/9, case5,
+                         # case8 each independently spill+reload v0 around fade_up_main()); IDO 5.2 -O2
+                         # instead recognizes v0's live range as safely coalescable in some instances and
+                         # omits the spill/reload pair there (compiled shows literal nop where target has
+                         # `sw`/`lui`/`lbu`). 91.5% masked (65/71), verified via full target disassembly
+                         # (asm/overlay/DATE/date_fade_up.s) cross-referenced against 3 case bodies in the
+                         # .c; decode (2 hidden params v0+t6, jr-table dispatch, shared bodies) is correct.
+                         # IDO 5.2 -O2 instead materializes bound 2 into a callee-saved reg + direct `bne i,bound`.
+                         # That register steal cascades into s-reg allocation for the rest of the function
+                         # (attr/payload/chan bank shift) -> 4 more residuals. 90.3% masked (56/62), frame fixed
+                         # (patch_stack_complete 48->64); confirmed genuine codegen blocker, not C-fixable.
+# 2026-06-20 cross-prologue hidden-param lui (was de-registered for banned
+# prepend_thunk). Hidden param(s) stored to a global ABOVE the prologue, sharing
+# one lui $at across the function (store precedes its own base lui). IDO will not
+# place a store before its address-base lui from C; only closable with the BANNED
+# prepend_thunk. Confirmed empirically via access-global-first (still residual).
+# 2026-06-20 multiple hidden-param register inputs (>2) — a3/t6/t7/t8 incoming
+# args with home-slot spills; cannot express in C signature within insn budget.
+# 2026-06-20 cross-prologue / hidden-param thunk pass (g6_small list).
+# All confirmed: faithful C body but the cross-prologue store / hidden-param
+# register placement can only be reproduced by the BANNED prepend_thunk.
+# Hidden-v0 incoming pointer: param arrives in $v0, not $a0; extra preserve-move.
+# 1-word delay-slot hoist across paths (shared compare insn, differing operand).
+# g7_fab_append: genuinely-incomplete bodies that needed banned append; real blockers
+# RETIRED 2026-10-04: SHUGAKU/shugaku_scene_init3 byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: SHUGAKU/shugaku_scene_init3 STACK_BUFFER_FRAMESLOT
+# --- cross_prologue (de-registered 2026-06-20: BANNED prepend_thunk; cross-prologue thunk heads + alt-entry fragments — bodies matched separately, heads only closable with prepend_thunk; biorhythm/don_move are self-contained but register-allocation/CSE blocked) ---
+# RETIRED 2026-10-04: func_80041A34 byte_perfect (main matched_c; 0x80041A34 covered by registered src/main/matched/game_system_init.c (0x80041A00+56))
+#   Original entry: func_80041A34        # cross_prologue: BLOCKER (alt-entry fragment): 1-insn head `sw t9,-18960(at)` (stores hidden t9 to D_800EB5F0 using a cross-function `at` base) with no prologue/jr, falling through into _game_work_init_set (matched). A C function always sets up a frame and returns; not expressible from standalone C.
+# RETIRED 2026-10-04: func_800425E4 byte_perfect (main matched_c; 0x800425E4 covered by registered src/main/matched/rand_next.c (0x800425D0+24))
+#   Original entry: func_800425E4        # cross_prologue: BLOCKER (alt-entry fragment): 1-insn head `sw v0,496(at)` (hidden v0 to global via cross-function at) falling into input_events_init (body); not a standalone C function.
+# RETIRED 2026-10-04: func_8004497C byte_perfect (main matched_c; 0x8004497C covered by registered src/main/matched/device_port_error_set.c (0x80044960+32))
+#   Original entry: func_8004497C        # cross_prologue: BLOCKER (alt-entry fragment): 1-insn head `sb t6,-23996(at)` (hidden t6 store) falling through into the next function; not a standalone C function.
+# RETIRED 2026-10-04: func_8004E92C byte_perfect (main matched_c; 0x8004E92C covered by registered src/main/matched/mod_init.c (0x8004E884+172))
+#   Original entry: func_8004E92C        # cross_prologue: BLOCKER (alt-entry fragment): 1-insn head `sh t7,18(v0)` (hidden t7 store via caller-provided v0 base) falling into the body; not a standalone C function.
+# RETIRED 2026-10-04: func_8007240C byte_perfect (main matched_c; 0x8007240C covered by registered src/main/matched/hizuke_advance.c (0x800723F8+612))
+#   Original entry: func_8007240C        # cross_prologue: BLOCKER (alt-entry fragment): 1-insn head `sb t6,-6239(at)` (hidden t6 store via cross-function at) falling into hizuke_advance (body); not a standalone C function.
+# RETIRED 2026-10-04: cal_bio_disp byte_perfect (main matched_c; 0x80068F6C is by registered src/main/matched/cal_bio_disp.c (0x80068F6C+616))
+#   Original entry: cal_bio_disp        # cross_prologue: BLOCKER (alt-entry fragment): 1-insn head `sh v1,-6238(at)` (hidden v1 store via cross-function at) falling into the body; not a standalone C function.
+# RETIRED 2026-10-04: album_message_set byte_perfect (main matched_c; 0x8006C804 covered by registered src/main/matched/get_pass_days.c (0x8006C7A0+104))
+#   Original entry: album_message_set        # cross_prologue: BLOCKER (alt-entry fragment): 1-insn head `move v0,v1` (copies hidden v1) with no prologue, falling through into konami_mark_set (body); not a standalone C function.
+# RETIRED 2026-10-04: title_show_init byte_perfect (main matched_c; 0x80073B88 covered by registered src/main/matched/week_day_bg_load.c (0x80073AF4+152))
+#   Original entry: title_show_init        # cross_prologue: BLOCKER (alt-entry fragment): 1-insn head `move v0,v1` (copies hidden v1) falling through into week_day_init0 (matched body); not a standalone C function.
+# melt_font (0x8004F918, formerly listed under its address name): RESOLVED -- the 1-insn head `sll t6,a0,3` is melt_font's own first instruction; the registered byte-perfect C covers 0x8004F918 (head absorbed).  Stale entry retired 2026-09-27 (naming batch 2).  Old text: cross_prologue BLOCKER (alt-entry fragment), falling through into func_8004F91C.
+# RETIRED 2026-10-04: pad_scan byte_perfect (main matched_c; 0x80043330 is by registered src/main/matched/pad_scan.c (0x80043330+856))
+#   Original entry: pad_scan        # cross_prologue: BLOCKER (cross-prologue thunk head): symbol covers func_80043338 (body@+8, matched separately) plus pre-prologue hoist `lui a1; lw a1,-2336(a1)`; only closable with BANNED prepend_thunk.
+# RETIRED 2026-09-17: SpuVmNoiseOff is SpuVmNoiseOff's cross-prologue head, not a
+# function. ABSORBED: src/main/matched/SpuVmNoiseOff.c windows 0x8008DAD0/148 and is
+# byte-perfect 37/37. No prepend_thunk was needed -- the old note was wrong.
+# RETIRED 2026-10-04: holiday_icon_check byte_perfect (main matched_c; 0x800760B4 is by registered src/main/matched/holiday_icon_check.c (0x800760B4+1160))
+#   Original entry: holiday_icon_check        # cross_prologue: BLOCKER (cross-prologue thunk head): symbol covers func_800760BC (body@+8) plus pre-prologue hoist `lui t6; lbu t6,-2356(t6)`; only closable with BANNED prepend_thunk.
+# RETIRED 2026-10-04: func_800908F8 byte_perfect (main matched_c; 0x800908F8 covered by registered src/main/matched/SsSepPause.c (0x800908E4+244))
+#   Original entry: func_800908F8        # cross_prologue: BLOCKER (cross-prologue thunk head): symbol covers func_800908FC (body@+4, matched separately) plus pre-prologue hoist `lui t7,0x8013`; only closable with BANNED prepend_thunk.
+# RETIRED 2026-10-04: EVENT/func_80139828 byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: EVENT/func_80139828 cross_prologue  # 85-insn complex fn; head is D_800B1746=12 cross-prologue but body has its own blockers
+# RETIRED 2026-10-04: ETC/etc_week_score_clear byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: ETC/etc_week_score_clear BASE_REGISTER_CSE
+# RETIRED 2026-10-04: ETC/etc_card_save byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: ETC/etc_card_save register_caching  # 98.5% semi (134/136); found+fixed a real structural bug (dec_bg_show(2) is the UNCONDITIONAL tail call after the switch for ALL cases, not case-5-local -- was previously miscoded as case-5-only, causing 13 mismatches from cases 0/1/3/4 branching to the wrong post-switch target). After the fix only 2 residuals remain in case 2: IDO -O2 speculatively copies the table-index n from t3 into v1 in the not-taken branch's delay slot (or v1,t3,zero) purely as a scheduler filler, then sources the 2nd set_XAsector call's 3rd arg from v1 instead of t3 in the else arm -- a dead-slot-fill/register-source choice with no equivalent-value instruction elsewhere in the compiled output to relocate via allowed PostProc (would require synthesizing a new instruction = banned). Verified irreducible from clean C (tried volatile-cast hint, no effect).
+# RETIRED 2026-10-04: GYOZI/func_8013F798 byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: GYOZI/func_8013F798  # mixed_jumptable_dispatch: BLOCKER - IN-EXN jr-table (NOT runtime-relocated; does NOT need ram.bin) mixing external main fn-ptrs (0x8008xxxx) + overlay-local labels (0x8013xxxx) = tail-call dispatch; C cannot jr to a mix of external funcs and local labels uniformly.
+# RETIRED 2026-10-04: GYOZI/func_80132938 byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: GYOZI/func_80132938  # mixed_jumptable_dispatch: BLOCKER - IN-EXN tail-call jr-table (does NOT need ram.bin) mixing external main fn-ptrs + overlay-local labels.
+# RETIRED 2026-10-04: GYOZI/func_801382F4 byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: GYOZI/func_801382F4  # mixed_jumptable_dispatch: BLOCKER - IN-EXN nested jr-table (does NOT need ram.bin) mixing external main fn-ptrs + overlay-local labels; map recovered via extract_jr_table.
+# 2026-06-20 TT overlay cross-prologue alt-entry bodies:
+# CORRECTION (2026-06-27): the previous header ("only closable with BANNED
+# prepend_thunk") is WRONG and disproven. The 2-insn `lui;lw` head is NOT a
+# separate function — it is the body's OWN global-load head that IDO -O2 HOISTED
+# above the prologue; the .sym mislabeled it as a standalone 8-byte symbol. It is
+# recoverable HONESTLY (compiler emits the bytes) by:
+#   (1) @SymbolStart 0x<frag> + @SymbolSize <frag..body end> to window head+body;
+#   (2) declaring the global a POINTER type (`extern u8 *D_xxxx;`) and loading it
+#       FIRST in the C — the pointer type is what triggers IDO's pre-prologue
+#       lui;lw hoist (an s32 cast does NOT hoist; it lands after the prologue);
+#   (3) patch_stack_complete + scheduler_normalizer + gen_reg_patches +
+#       gen_frame_remap as usual.
+# PROVEN: TT/tt_orbit_step cracked 13.8% semi -> reloc_only (67/67 byte-perfect
+# via resolve_overlay_relocs). MOST of this old list is ALREADY reloc_only.
+# The ones still semi are blocked NOT by the alt-entry pattern but by SECONDARY
+# blockers documented per-line below (LICM-rematerialization, stack-buffer frame
+# slot, held-constant scheduling, divu-by-3). Re-attempt any without a secondary
+# blocker note before treating as unmatchable.
+# RETIRED 2026-10-04: TT/tt_record_copy byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: TT/tt_record_copy  # cross_prologue head recoverable (@SymbolStart); residual = global-load CSE/ordering (10 diffs)
+# RETIRED 2026-10-04: TT/tt_pad_config_cursor byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: TT/tt_pad_config_cursor  # cross_prologue alt-entry: hidden global-ptr reg from frag func_8013CA0C
+# RETIRED 2026-10-04: TT/tt_roster_init byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: TT/tt_roster_init  # cross_prologue alt-entry: hidden global-ptr reg from frag func_8013F3A4
+# RETIRED 2026-10-04: TT/tt_menu_player_init byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: TT/tt_menu_player_init  # cross_prologue alt-entry: hidden global-ptr reg from frag func_80149D54
+# RETIRED 2026-10-04: TT/tt_sprite_pos_init byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: TT/tt_sprite_pos_init  # cross_prologue alt-entry: hidden global-ptr reg from preceding fragment
+# RETIRED 2026-10-04: TT/tt_obj_prim_disp byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: TT/tt_obj_prim_disp  # cross_prologue alt-entry: hidden global-ptr reg from frag func_8014CFE4-8
+# Painting custom_script removed 2026-06-20 (was patch_insn_word in disguise, missed by old detector)
+# RETIRED 2026-10-04: holiday_girl_init byte_perfect (main matched_c; 0x80077428 is by registered src/main/matched/holiday_girl_init.c (0x80077428+760))
+#   Original entry: holiday_girl_init  # painting custom_script removed (was patch_insn_word-class); needs honest decomp
+# RETIRED 2026-10-04: _wipe_main byte_perfect (main matched_c; 0x8007D9F0 is by registered src/main/matched/_wipe_main.c (0x8007D9F0+2788); 0x8007D9F8 is by registered src/main/matched/_wipe_main.c (0x8007D9F0+2788))
+#   Original entry: _wipe_main  # painting custom_script removed (was patch_insn_word-class); needs honest decomp
+# RETIRED 2026-10-04: SHOUGATU/shougatu_case2_cal_cw_step byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: SHOUGATU/shougatu_case2_cal_cw_step DUPLICATE_EPILOGUE  # 92.9% masked (4/56); faithful bare-return C matches raw+scheduled compile exactly except the tail's duplicate `lw ra` scheduling choice (target duplicates it for BOTH early-exit bnez branches; compile only duplicates for the 2nd, merges the 1st into the nearer shared point). Confirmed not C-controllable: swapping check order reproduces the identical asymmetry.
+# RETIRED 2026-10-04: SHOUGATU/shougatu_case1_cal_cw_step byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: SHOUGATU/shougatu_case1_cal_cw_step DUPLICATE_EPILOGUE  # rewritten from fake pad_trailing_nop stub to faithful struct-copy dispatcher + step-tail C (88.1% masked, 7/59); same confirmed duplicate-lw-ra tail pattern as func_8013E400.
+# RETIRED 2026-10-04: SHOUGATU/shougatu_case5_girl_dispatch byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: SHOUGATU/shougatu_case5_girl_dispatch CODEGEN_RESIDUAL  # fixed 2 real C bugs (wrong idx*57->56 multiplier, switch wrongly gated by t6 param); 76.8% masked residual is the same duplicate-lw-ra tail scheduling artifact as func_8013E400, confirmed not C-controllable via several return-statement variants.
+# RETIRED 2026-10-04: GEKO/geko_init byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: GEKO/geko_init  # painting custom_script removed (patch_insn_word-class); residual is reg-alloc/scheduling
+# RETIRED 2026-10-04: GEKO/geko_serifu_tbl_save byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: GEKO/geko_serifu_tbl_save  # painting custom_script removed (patch_insn_word-class); residual is reg-alloc/scheduling
+# RETIRED 2026-10-04: ENDING/ending_mode_init byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: ENDING/ending_mode_init  # painting custom_script removed (patch_insn_word-class); residual is reg-alloc/scheduling
+# RETIRED 2026-10-04: GYOZI/func_80133520 byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: GYOZI/func_80133520  # painting custom_script removed (patch_insn_word-class); residual is reg-alloc/scheduling
+# RETIRED 2026-10-04: GYOZI/func_80140D40 byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: GYOZI/func_80140D40  # painting custom_script removed (patch_insn_word-class); residual is reg-alloc/scheduling
+# RETIRED 2026-10-04: TEL/tel_ring0 byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: TEL/tel_ring0  # painting custom_script removed (patch_insn_word-class); residual is reg-alloc/scheduling
+# RETIRED 2026-10-04: BUNKAKEN/bunkaken_girl0_cl_bk0_97_show_main byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: BUNKAKEN/bunkaken_girl0_cl_bk0_97_show_main  # cross-prologue thunk head: jr dispatcher selector pre-loaded in v0 from prior func tail (now_sub_sub_step), outside symbol; needs BANNED prepend_thunk
+# RETIRED 2026-10-04: BUNKAKEN/bunkaken_girl0_cl_bk1_show_main byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: BUNKAKEN/bunkaken_girl0_cl_bk1_show_main  # cross-prologue thunk head: jr dispatcher selector pre-loaded in v0 from prior func tail (now_sub_sub_step), outside symbol; needs BANNED prepend_thunk
+# RETIRED 2026-10-04: BUNKAKEN/bunkaken_girl0_cl_bk3_96_tt_main byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: BUNKAKEN/bunkaken_girl0_cl_bk3_96_tt_main  # cross-prologue thunk head: jr dispatcher selector pre-loaded in v1 from prior func tail (now_sub_sub_step), outside symbol; needs BANNED prepend_thunk
+# 2026-06-20 TT particle-update cluster: faithful C, IDO scheduler store-ordering tiebreak
+# (interleaves posX/posY <<16 stores + a deferred constant store / two *15*2 calcs in a way
+# the normalizer cannot reproduce). Down to 1-4 store-reorder residuals after full reg-paint.
+# RETIRED 2026-10-04: GEKO/func_80132B24 byte_perfect (no such symbol: absorbed head of GEKO/girl_date_near_set (.sym 0x80132B24:480, @SymbolStart 0x80132B24), byte_perfect)
+#   Original entry: GEKO/func_80132B24   alt_entry_fragment  # 4-insn alt-entry getter (sll t6,a0,2; lui;addu;lw a1) NO jr ra, falls into next func; was FALSELY byte_perfect via banned custom_volatile_load_getter.py (fabricated addiu+lw at). De-registered 2026-06-23.
+# RETIRED 2026-10-04: GEKO/geko_week_end_get byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: GEKO/geko_week_end_get   alt_entry_fragment  # 4-insn alt-entry getter (sll t6,a0,2; lui;addu;lw a1) NO jr ra, falls into next func; was FALSELY byte_perfect via banned custom_volatile_load_getter.py (fabricated addiu+lw at). De-registered 2026-06-23.
+# RETIRED 2026-10-04: BUNKAKEN/bunkaken_main2f byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: BUNKAKEN/bunkaken_main2f   painting_fabrication  # was FALSE win via banned painting custom_script (TARGET[] overwrite / opcode-PATCHES / arg-home-delete-and-shift / live-insn-nop). De-registered 2026-06-24; detector-missed. Genuine regalloc/scheduling blocker.
+
+# --- PAINTING_REMOVED (de-registered 2026-06-28) ---
+# AUTOFIX-CLASSIFIED 2026-06-29: the PAINTING_REMOVED + semi-matched blockers were run through
+# the autonomous autofix pipeline (scheduler + patch_insn_reg_field + remap_stack +
+# patch_stack). 23 recovered to byte-perfect (now in src/main/matched/). The rest
+# carry genuine residuals after all ALLOWED postproc -- per-function verdicts in
+# docs/reference/SEMI-BLOCKER-CLASSIFICATION-2026-06-29.md (count/restore=lazy-save/
+# dup-lw-ra/cross-prologue count mismatch; held-const=li/move remat; opcode/rtype=
+# real op divergence; imm=often wrong-global-decl, C-fixable on manual review).
+# These 56 functions were 'matched' via a BANNED painting custom_script
+# (hardcoded instruction words / .text overwrite). The scripts were deleted
+# and the functions de-registered from level3_functions.json, so the build
+# now uses the ORIGINAL ROM bytes for them (SHA1 unaffected). The painted .c
+# bodies are preserved in src/main/archive/<name>_painted.c for reference.
+# STATUS: needs an honest from-scratch faithful-C rewrite (or a confirmed
+# blocker verdict). A genuine matched C rewrite is welcome (then remove from
+# this list); do NOT re-paint them.
+#
+# TRIAGE 2026-06-28 (docs/reference/PAINTING-REWRITE-TRIAGE.md): recompiled the
+# faithful archived C of all 104 with ONLY allowed PostProc -- ZERO have a
+# register-only residual; every one carries a genuine structural/codegen
+# residual (they were painted precisely because clean C does not match).
+# Six hand-decomped smallest-first, ALL confirmed genuine codegen blockers
+# (caller-threaded registers, filled-branch-delay-slot duplication, s16-entry
+# sign-extend, dead-tail instructions) -- see the per-line CONFIRMED BLOCKER
+# notes below. The remaining entries are very likely the same hard tier.
+# RETIRED 2026-10-04: system_init byte_perfect (main matched_c; 0x8004C50C is by registered src/main/matched/col2sepia.c (0x8004C50C+572))
+#   Original entry: system_init                  # PAINTING_REMOVED 2026-06-28 (0x8004C50C); archived painted .c
+# RETIRED 2026-10-04: show_vcnt_info byte_perfect (main matched_c; 0x80050038 is by registered src/main/matched/menu_cursor_move.c (0x80050030+1812))
+#   Original entry: show_vcnt_info               # PAINTING_REMOVED 2026-06-28 (0x80050038); archived painted .c
+# RETIRED 2026-10-04: xa_wait_m byte_perfect (main matched_c; 0x8005257C is by registered src/main/matched/xa_wait_m.c (0x8005257C+1260))
+#   Original entry: xa_wait_m                     # PAINTING_REMOVED 2026-06-28 (0x8005257C); archived painted .c
+# RETIRED 2026-10-04: mozaiku_show2 byte_perfect (main matched_c; 0x800563DC is by registered src/main/matched/save_name_set.c (0x800563DC+532))
+#   Original entry: mozaiku_show2                # PAINTING_REMOVED 2026-06-28 (0x800563DC); CONFIRMED BLOCKER: dead unreachable `li v0,1` at [128] in jr-table dispatcher (each case branches to epilogue with own li v0,1 in delay; the trailing copy is unreachable) -- dead-instruction artifact unreproducible from C
+# RETIRED 2026-10-04: col2mono byte_perfect (main matched_c; 0x800579B8 is by registered src/main/matched/vram_full_move.c (0x800579A8+208))
+#   Original entry: col2mono                     # PAINTING_REMOVED 2026-06-28 (0x800579B8); archived painted .c
+# RETIRED 2026-10-04: model_slot_set byte_perfect (main matched_c; 0x8005931C is by registered src/main/matched/model_slot_set.c (0x8005931C+172))
+#   Original entry: model_slot_set                # PAINTING_REMOVED 2026-06-28 (0x8005931C); archived painted .c
+# RETIRED 2026-10-04: disp_mode_set byte_perfect (main matched_c; 0x8005944C is by registered src/main/matched/disp_mode_set.c (0x8005944C+268))
+#   Original entry: disp_mode_set                # PAINTING_REMOVED 2026-06-28 (0x8005944C); archived painted .c
+# RETIRED 2026-10-04: srn_vram_set byte_perfect (main matched_c; 0x80059558 is by registered src/main/matched/disp_mode_set2.c (0x80059558+304))
+#   Original entry: srn_vram_set                 # PAINTING_REMOVED 2026-06-28 (0x80059558); archived painted .c
+# RETIRED 2026-10-04: func_8005BD70 byte_perfect (main matched_c; 0x8005BD70 covered by registered src/main/matched/menu_step_maine0.c (0x8005BD68+164))
+#   Original entry: func_8005BD70                   # PAINTING_REMOVED 2026-06-28 (0x8005BD70); archived painted .c
+# RETIRED 2026-10-04: menu_girl_taku_set byte_perfect (main matched_c; 0x8005DE8C is by registered src/main/matched/system_config_menu_init.c (0x8005DE8C+360))
+#   Original entry: menu_girl_taku_set           # PAINTING_REMOVED 2026-06-28 (0x8005DE8C); archived painted .c
+# RETIRED 2026-10-04: mascot_sel_init byte_perfect (main matched_c; 0x800603B0 is by registered src/main/matched/mascot_sel_init.c (0x800603B0+584))
+#   Original entry: mascot_sel_init                # PAINTING_REMOVED 2026-06-28 (0x800603B0); archived painted .c
+# RETIRED 2026-10-03: uwasa0 (0x80060E20, 84 B, head absorbed) is BYTE-PERFECT C, registered (src/main/matched/uwasa0.c).  The dead_selector_copy_placement filing was a source-shape miss: the entry-block `move v0,v1` is the seed of a return accumulator (`ret = mode; switch (mode) { case 0: ret = uwasa_main0(); ... } return ret;`), the same shape and Hook 30 recipe (IDO52_PRECOLOR_WEB=v0:6) as the matched sibling uwasa_init.  21/21, Body == target.
+# RETIRED 2026-10-04: bustup_sprite_init byte_perfect (main matched_c; 0x80062F5C is by registered src/main/matched/bustup_sprite_init.c (0x80062F5C+1856))
+#   Original entry: bustup_sprite_init                # PAINTING_REMOVED 2026-06-28 (0x80062F5C); archived painted .c
+# RETIRED 2026-10-04: icon_cursor_move byte_perfect (main matched_c; 0x80065C74 is by registered src/main/matched/icon_cursor_move.c (0x80065C74+1008))
+#   Original entry: icon_cursor_move                     # PAINTING_REMOVED 2026-06-28 (0x80065C74); archived painted .c
+# RETIRED 2026-10-04: system_config_icon_mode_exit byte_perfect (main matched_c; 0x80069788 is by registered src/main/matched/album_info_disp.c (0x80069788+2408))
+#   Original entry: system_config_icon_mode_exit # PAINTING_REMOVED 2026-06-28 (0x80069788); archived painted .c
+# RETIRED 2026-10-04: uwasa_init byte_perfect (main matched_c; 0x8006B66C covered by registered src/main/matched/reserved_date_add.c (0x8006B668+132))
+#   Original entry: uwasa_init                   # PAINTING_REMOVED 2026-06-28 (0x8006B66C); archived painted .c
+# RETIRED 2026-10-04: pre_syogatu0 byte_perfect (main matched_c; 0x8006BE64 is by registered src/main/matched/biorhythm_sf_set.c (0x8006BE48+1376))
+#   Original entry: pre_syogatu0                 # PAINTING_REMOVED 2026-06-28 (0x8006BE64); archived painted .c
+# RETIRED 2026-10-04: file_select_main4e byte_perfect (main matched_c; 0x8006F5C8 is by registered src/main/matched/get_param_top_girl.c (0x8006F5C8+1576))
+#   Original entry: file_select_main4e           # PAINTING_REMOVED 2026-06-28 (0x8006F5C8); archived painted .c
+# RETIRED 2026-10-04: file_select_main byte_perfect (main matched_c; 0x80070910 is by registered src/main/matched/date_sasoi_judge.c (0x80070910+644))
+#   Original entry: file_select_main             # PAINTING_REMOVED 2026-06-28 (0x80070910); archived painted .c
+# RETIRED 2026-10-04: cursor_select byte_perfect (main matched_c; 0x80073D8C is by registered src/main/matched/week_day_bustup_set.c (0x80073D64+1288))
+#   Original entry: cursor_select                # PAINTING_REMOVED 2026-06-28 (0x80073D8C); archived painted .c
+# RETIRED 2026-10-04: machiawase_init byte_perfect (main matched_c; 0x800766E0 is by registered src/main/matched/machiawase_init.c (0x800766C0+368))
+#   Original entry: machiawase_init          # PAINTING_REMOVED 2026-06-28 (0x800766E0); archived painted .c
+# RETIRED 2026-10-04: func_80076D10 byte_perfect (main matched_c; 0x80076D10 covered by registered src/main/matched/machiawase_show.c (0x80076D08+292))
+#   Original entry: func_80076D10                # PAINTING_REMOVED 2026-06-28 (0x80076D10); archived painted .c
+# RETIRED 2026-10-04: fade_up byte_perfect (main matched_c; 0x8007E5B4 is by registered src/main/matched/fade_up.c (0x8007E5AC+200))
+#   Original entry: fade_up                # PAINTING_REMOVED 2026-06-28 (0x8007E5B4); archived painted .c
+# RETIRED 2026-10-04: serifu_cmd_exec byte_perfect (main matched_c; 0x8007F08C is by registered src/main/matched/serifu_cmd_exec.c (0x8007F08C+8868))
+#   Original entry: serifu_cmd_exec                # PAINTING_REMOVED 2026-06-28 (0x8007F08C); archived painted .c
+# RETIRED 2026-10-04: scroll_poly_disp byte_perfect (main matched_c; 0x8008612C is by registered src/main/matched/scroll_poly_disp.c (0x8008612C+760))
+#   Original entry: scroll_poly_disp              # PAINTING_REMOVED 2026-06-28 (0x8008612C); archived painted .c
+# RETIRED 2026-10-04: SD_BufferUpdate byte_perfect (main matched_c; 0x80088F90 is by registered src/main/matched/CdSearchFile.c (0x80088F90+724))
+#   Original entry: SD_BufferUpdate              # PAINTING_REMOVED 2026-06-28 (0x80088F90); archived painted .c
+# RETIRED 2026-10-04: normal_date_bg_in_sub byte_perfect (main matched_c; 0x8008B060 is by registered src/main/matched/CD_getsector.c (0x8008B060+204))
+#   Original entry: normal_date_bg_in_sub        # PAINTING_REMOVED 2026-06-28 (0x8008B060); archived painted .c
+# RETIRED 2026-10-04: SsEnd byte_perfect (main matched_c; 0x8008BE0C is by registered src/main/matched/SsEnd.c (0x8008BE0C+176))
+#   Original entry: SsEnd                # PAINTING_REMOVED 2026-06-28 (0x8008BE0C); archived painted .c
+# RETIRED 2026-10-04: SpuVmNoiseOnWithAdsr byte_perfect (main matched_c; 0x8008DA50 is by registered src/main/matched/SpuVmNoiseOnWithAdsr.c (0x8008DA50+128))
+#   Original entry: SpuVmNoiseOnWithAdsr                # PAINTING_REMOVED 2026-06-28 (0x8008DA50); CONFIRMED BLOCKER: filled-branch-delay codegen -- target duplicates the epilogue `lw ra` into the beqz delay slot (2 lw ra vs 1 from C); the arg-home stack-slot diff is remap-fixable but the duplicated restore is not synthesizable without insert-and-shift (BANNED)
+# RETIRED 2026-10-04: SpuVmGetProgVol byte_perfect (main matched_c; 0x8008EA64 is by registered src/main/matched/SpuVmGetProgVol.c (0x8008EA64+88))
+#   Original entry: SpuVmGetProgVol                # PAINTING_REMOVED 2026-06-28 (0x8008EA64); CONFIRMED BLOCKER 2026-06-29: duplicated epilogue `lw ra` -- target restores ra on BOTH return paths (success path in the `b END` delay slot, fail path before the shared `addiu sp;jr ra`), so lw ra appears twice; clean C shares the restore once (position [18]=nop). Reg-alloc + arg1 stack-slot are sanctioned-patchable but the duplicate restore needs insert/copy (BANNED). Same family as SpuVmNoiseOnWithAdsr/func_80060E28
+# RETIRED 2026-10-04: SpuVmGetProgPan byte_perfect (main matched_c; 0x8008EB34 is by registered src/main/matched/SpuVmGetProgPan.c (0x8008EB34+88))
+#   Original entry: SpuVmGetProgPan                # PAINTING_REMOVED 2026-06-28 (0x8008EB34); CONFIRMED BLOCKER 2026-06-29: sister of SpuVmGetProgVol (offset 4 vs 1) -- same duplicated epilogue `lw ra` blocker
+# RETIRED 2026-10-04: seek_stop_xa byte_perfect (main matched_c; 0x8008F478 covered by registered src/main/matched/SsUtChangePitch.c (0x8008F46C+276))
+#   Original entry: seek_stop_xa                 # PAINTING_REMOVED 2026-06-28 (0x8008F478); archived painted .c
+# RETIRED 2026-10-04: func_8008FBD8 byte_perfect (main matched_c; 0x8008FBD8 covered by registered src/main/matched/SsSeqOpen.c (0x8008FBD0+164))
+#   Original entry: func_8008FBD8                # PAINTING_REMOVED 2026-06-28 (0x8008FBD8); archived painted .c
+# RETIRED 2026-10-04: normal_date_two_select byte_perfect (main matched_c; 0x800915A8 is by registered src/main/matched/InitSoundSep.c (0x80091570+1132))
+#   Original entry: normal_date_two_select       # PAINTING_REMOVED 2026-06-28 (0x800915A8); archived painted .c
+# RETIRED 2026-10-04: face_change byte_perfect (main matched_c; 0x80091A20 covered by registered src/main/matched/Snd_pause.c (0x80091A10+160))
+#   Original entry: face_change                  # PAINTING_REMOVED 2026-06-28 (0x80091A20); CONFIRMED BLOCKER (library/IDO): arg1 saved across a call as a halfword (sh/lh) needs an s16 param, but an s16 param forces an entry sign-extend (sll;sra) the target lacks -- s16-entry-sign-extend, instruction-presence diff
+# RETIRED 2026-10-04: load_ful byte_perfect (main matched_c; 0x8009347C is by registered src/main/matched/ContPortaTime.c (0x8009347C+236))
+#   Original entry: load_ful                     # PAINTING_REMOVED 2026-06-28 (0x8009347C); archived painted .c
+# RETIRED 2026-10-04: load_opd byte_perfect (main matched_c; 0x80093568 is by registered src/main/matched/ContPortamento.c (0x80093568+352))
+#   Original entry: load_opd                     # PAINTING_REMOVED 2026-06-28 (0x80093568); archived painted .c
+# RETIRED 2026-10-04: ContRpn2 byte_perfect (main matched_c; 0x80093A40 is by registered src/main/matched/ContRpn2.c (0x80093A10+120))
+#   Original entry: ContRpn2            # RE-AUDIT 2026-07-27: "caller-threaded t7/t8" REFUTED (same head pattern as sister ContNrpn1, true start 0x80093A10); honest semi 29/30 -- entire gap is one word: IDO folds the u8-arg `andi aN,aN,0xff` into the following sb, target keeps it live (K&R params tested, inert)
+# RETIRED 2026-10-04: SetControlChange byte_perfect (main matched_c; 0x80092F8C is by registered src/main/matched/SetControlChange.c (0x80092F8C+1028))
+#   Original entry: SetControlChange             # PAINTING_REMOVED 2026-06-28 (0x8009FE28); archived painted .c
+# RETIRED 2026-10-04: wipe_disp byte_perfect (main matched_c; 0x8007C968 is by registered src/main/matched/wipe_disp.c (0x8007C968+2732))
+#   Original entry: wipe_disp           # PAINTING_REMOVED 2026-06-28 (0x8007C968); archived painted .c
+
+# --- PAINTING_REMOVED batch 2 (gap-detector audit, de-registered 2026-06-28) ---
+# 47 functions 'matched' via painting the is_painting_script detector MISSED:
+#   - general_remap_postscheduler.py engine: reads target, copies whole words
+#     (funct/branch/base/cross-funct) + delete-to-nop (29 funcs).
+#   - self-painters: copy target words / hardcode op-change words / insert+delete.
+# These are NOT confirmed codegen blockers: eligible for honest from-scratch C.
+# Build SHA1 unaffected (de-registered funcs fall back to correct ROM bytes).
+# RETIRED 2026-10-04: func_80043338 byte_perfect (main matched_c; 0x80043338 covered by registered src/main/matched/pad_scan.c (0x80043330+856))
+#   Original entry: func_80043338                # PAINTING_REMOVED 2026-06-28 (0x80043338); archived painted .c
+# RETIRED 2026-10-04: vcount_meter_disp byte_perfect (main matched_c; 0x80044648 is by registered src/main/matched/vcount_meter_disp.c (0x80044648+708))
+#   Original entry: vcount_meter_disp                # PAINTING_REMOVED 2026-06-28 (0x80044648); archived painted .c
+# RETIRED 2026-10-04: func_8004580C byte_perfect (main matched_c; 0x8004580C covered by registered src/main/matched/cdq_command_process.c (0x800457FC+2852))
+#   Original entry: func_8004580C                # PAINTING_REMOVED 2026-06-28 (0x8004580C); archived painted .c
+# RETIRED 2026-10-04: func_8004F91C byte_perfect (main matched_c; 0x8004F91C covered by registered src/main/matched/melt_font.c (0x8004F918+436))
+#   Original entry: func_8004F91C                # PAINTING_REMOVED 2026-06-28 (0x8004F91C); archived painted .c
+# RETIRED 2026-10-04: Control_CD byte_perfect (main matched_c; 0x80050FA0 covered by registered src/main/matched/menu_bar_show.c (0x80050F74+208))
+#   Original entry: Control_CD                   # PAINTING_REMOVED 2026-06-28 (0x80050FA0); archived painted .c
+# RETIRED 2026-10-04: goto_tpage byte_perfect (main matched_c; 0x80054C74 is by registered src/main/matched/card_file_write.c (0x80054C74+624))
+#   Original entry: goto_tpage                   # PAINTING_REMOVED 2026-06-28 (0x80054C74); archived painted .c
+# RETIRED 2026-10-04: indexed_byte_lsb_set byte_perfect (main matched_c; 0x80057780 is by registered src/main/matched/indexed_byte_lsb_set.c (0x80057780+20))
+#   Original entry: indexed_byte_lsb_set                # PAINTING_REMOVED 2026-06-28 (0x80057884); archived painted .c
+# RETIRED 2026-10-04: make_color_bar16 byte_perfect (main matched_c; 0x800580A4 is by registered src/main/matched/bg_show_girl_out.c (0x800580A4+1648))
+#   Original entry: make_color_bar16             # PAINTING_REMOVED 2026-06-28 (0x800580A4); archived painted .c
+# RETIRED 2026-10-04: func_8005B6D4 byte_perfect (main matched_c; 0x8005B6D4 covered by registered src/main/matched/icon_select_check.c (0x8005B6CC+852))
+#   Original entry: func_8005B6D4                  # PAINTING_REMOVED 2026-06-28 (0x8005B6D4); archived painted .c
+# RETIRED 2026-10-04: menu_step_mainff byte_perfect (main matched_c; 0x8005BE0C is by registered src/main/matched/menu_step_mainff.c (0x8005BE0C+180); 0x8005BE14 is by registered src/main/matched/menu_step_mainff.c (0x8005BE0C+180))
+#   Original entry: menu_step_mainff                 # PAINTING_REMOVED 2026-06-28 (0x8005BE14); archived painted .c
+# RETIRED 2026-10-04: system_config_disp byte_perfect (main matched_c; 0x8005E0E0 is by registered src/main/matched/system_config_disp.c (0x8005E0E0+376))
+#   Original entry: system_config_disp                # PAINTING_REMOVED 2026-06-28 (0x8005E0E0); archived painted .c
+# RETIRED 2026-10-04: title_data_read byte_perfect (main matched_c; 0x80061C64 is by registered src/main/matched/title_data_read.c (0x80061C64+1196))
+#   Original entry: title_data_read                   # PAINTING_REMOVED 2026-06-28 (0x80061C6C); archived painted .c
+# RETIRED 2026-10-04: load_vram byte_perfect (main matched_c; 0x80066D38 is by registered src/main/matched/update_anim_state.c (0x80066D38+1968))
+#   Original entry: load_vram                    # PAINTING_REMOVED 2026-06-28 (0x80066D38); archived painted .c
+# RETIRED 2026-10-04: olh_check byte_perfect (main matched_c; 0x800679A0 is by registered src/main/matched/mascot_move.c (0x800679A0+952))
+#   Original entry: olh_check                    # PAINTING_REMOVED 2026-06-28 (0x800679A0); archived painted .c
+# RETIRED 2026-10-04: mode_change_check byte_perfect (main matched_c; 0x8006EC08 is by registered src/main/matched/touzyou_check.c (0x8006EC08+864))
+#   Original entry: mode_change_check            # PAINTING_REMOVED 2026-06-28 (0x8006EC08); archived painted .c
+# RETIRED 2026-10-04: hizuke_disp_switch byte_perfect (main matched_c; 0x800760BC covered by registered src/main/matched/holiday_icon_check.c (0x800760B4+1160))
+#   Original entry: hizuke_disp_switch           # PAINTING_REMOVED 2026-06-28 (0x800760BC); archived painted .c
+# RETIRED 2026-10-04: func_8007EAE8 byte_perfect (main matched_c; 0x8007EAE8 covered by registered src/main/matched/fade_out.c (0x8007EAE0+272))
+#   Original entry: func_8007EAE8                # PAINTING_REMOVED 2026-06-28 (0x8007EAE8); archived painted .c
+# RETIRED 2026-10-04: touzyou_girl1 byte_perfect (main matched_c; 0x8007ECA8 is by registered src/main/matched/sprite_fade.c (0x8007ECA0+268))
+#   Original entry: touzyou_girl1                # PAINTING_REMOVED 2026-06-28 (0x8007ECA8); archived painted .c
+# RETIRED 2026-10-04: SsSepOpen byte_perfect (main matched_c; 0x8008FC74 is by registered src/main/matched/SsSepOpen.c (0x8008FC74+248))
+#   Original entry: SsSepOpen                # PAINTING_REMOVED 2026-06-28 (0x8008FC74); archived painted .c
+# RETIRED 2026-10-04: func_800901C8 byte_perfect (main matched_c; 0x800901C8 covered by registered src/main/matched/SsSepStop.c (0x800901B4+236))
+#   Original entry: func_800901C8                # PAINTING_REMOVED 2026-06-28 (0x800901C8); archived painted .c
+# RETIRED 2026-10-04: func_800908FC byte_perfect (main matched_c; 0x800908FC covered by registered src/main/matched/SsSepPause.c (0x800908E4+244))
+#   Original entry: func_800908FC                # PAINTING_REMOVED 2026-06-28 (0x800908FC); archived painted .c
+# RETIRED 2026-10-04: bustup_mouse_on byte_perfect (main matched_c; 0x80093390 is by registered src/main/matched/ContModulation.c (0x80093390+236))
+#   Original entry: bustup_mouse_on              # PAINTING_REMOVED 2026-06-28 (0x80093390); archived painted .c
+# RETIRED 2026-10-04: date_alubum_para_set byte_perfect (main matched_c; 0x80094078 is by registered src/main/matched/Snd_setVabAttr.c (0x80094078+1308))
+#   Original entry: date_alubum_para_set         # PAINTING_REMOVED 2026-06-28 (0x80094078); archived painted .c
+# RETIRED 2026-10-04: func_80095628 byte_perfect (main matched_c; 0x80095628 covered by registered src/main/matched/SpuSetTransferStartAddr.c (0x80095620+116))
+#   Original entry: func_80095628                # PAINTING_REMOVED 2026-06-28 (0x80095628); archived painted .c
+# RETIRED 2026-10-04: MoveImage byte_perfect (main matched_c; 0x800A0180 is by registered src/main/matched/MoveImage.c (0x800A0180+144))
+#   Original entry: MoveImage                # PAINTING_REMOVED 2026-06-28 (0x800A0180); archived painted .c
+# RETIRED 2026-10-04: ContPortaTime byte_perfect (main matched_c; 0x8009347C is by registered src/main/matched/ContPortaTime.c (0x8009347C+236))
+#   Original entry: ContPortaTime                # PAINTING_REMOVED 2026-06-28 (0x800A0218); archived painted .c
+# CORRECTION (superseded, kept for history): func_8013B294/func_8013B764/
+# func_8013943C were WRONGLY diagnosed below as an unfixable
+# "held_register_reuse_across_call" blocker (the `D_800F62CF = N;
+# func_8008F618(N);` shape). The true root cause was a plain SIGNATURE BUG:
+# func_8008F618 is `void func_8008F618(void)`, NOT `void func_8008F618(s32
+# a0)` — proof is func_801341DC's byte-perfect `func_8008F618();` call with
+# zero argument-setup instructions. The `(s32 a0)` declaration fabricated a
+# phantom argument-load `li` that doesn't exist in the target, which is what
+# I was misreading as "target reuses a0 across the call and the store."
+# Fixing the signature (drop the argument at every `func_8008F618(N)` call
+# site in this cluster) took all three to BYTE-PERFECT with plain
+# patch_insn_reg_field, no scheduler_normalizer needed. REMOVED from this
+# list — see git log for the fix commits. func_8013A118 and func_8013BC2C
+# also had this same signature bug (fixed, real improvement) but each has
+# a SEPARATE, genuinely-unfixed residual — see the corrected entries below.
+# GYOZI/func_8013306C: fixed 3 real C bugs (missing patch_stack_complete 24->40,
+# D_80145EA8/D_80145EAC tile-pointer-table arrays were SWAPPED, and the
+# decompress destination global was misnamed D_80145860 -> real addr
+# D_801458E0) — 53.5%->58.1% exact, 93.0%->97.7% masked. Lone residual
+# [23]: target `move v0,t6` (or v0,t6,zero) vs our faithful `sll t4,t6,2`;
+# t6 already holds rowIdx<<2 from the D_80145EAC[rowIdx] access a few
+# instructions earlier and is reused as-is at the D_80145EA8[rowIdx] access
+# later — target's `move v0,t6` writes a value (v0) that is never read
+# afterward (v0 is clobbered by the next jal's return value). This is a
+# dead phi-copy / SSA-out register-coalescing artifact of the real
+# compiler's allocator (same class as SHOUGATU/shougatu_serifu_base_set [NOW BYTE-PERFECT 2026-07-27, stale exemplar]
+# below) — no C restructuring (explicit temp, unconditional hoist, pointer-
+# arithmetic instead of array indexing) reproduced it, and patch_insn_reg_field
+# cannot touch it (sll funct != or funct, an opcode change = banned painting).
+# GYOZI/func_8013A118: fixed the func_8008F618 signature bug (void, not s32 —
+# see the correction note above) and D_800F53DA s8->u8. Genuinely-remaining
+# residual is DIFFERENT from the call-arg misdiagnosis: `D_800F5ACD = 7;
+# D_800F62CF = 7;` (two DIFFERENT globals set to the SAME literal in
+# consecutive statements) — target reuses ONE register (a0) for both `sb`
+# stores; our compile materializes the constant twice (t8 then t9), 1 extra
+# raw instruction, cascading a 1-word misalignment through the rest of the
+# function (10 real residuals via resolve_overlay_relocs.py). Tried chained
+# assignment `D_800F5ACD = D_800F62CF = 7;` — reorders which global is
+# stored first but still uses two separate registers/li's, no fusion.
+# Also has a 5/6-arg stack-passed-argument call sequence (func_8008FD1C)
+# with its own scheduling residuals beyond the double-store issue.
+# GYOZI/func_8013943C: fixed the func_8008F618 signature bug + confirmed
+# BYTE-PERFECT (see commit) — no longer a blocker, only ever had the single
+# call-arg misdiagnosis which was the signature bug, not a genuine reuse gap.
+# GYOZI/func_8013BC2C: fixed the func_8008F618 signature bug + D_800F53DA
+# s8->u8 (31.3%->98.5% masked, real correctness improvement). Remaining lone
+# residual is the SAME held_register_reuse_double_store class as
+# func_8013A118: `D_800F5ACD = 10; D_800F62CF = 10;` — target reuses a0 for
+# both stores, our compile uses two separate li's/registers. BONUS TOOLING
+# FINDING (still applies): scheduler_normalizer's relocation-masked matcher
+# can pick the WRONG source instruction when multiple relocated instructions
+# share the same masked opcode/register shape in one block (raw pp0 without
+# scheduler_normalizer correctly carries the D_800F5788 relocation on the
+# `D_800F5788 |= 8;` store hoisted into the func_8009068C() jal's delay slot;
+# after scheduler_normalizer runs, that relocation gets reassigned to
+# D_800F53DA, a structurally-identical `sb rX,0(at)` a few instructions
+# later). Pre-existing tool limitation, not fixed here (out of scope for a
+# single-function pass) — flagged for scheduler_normalizer maintenance.
+# RETIRED 2026-10-04: TACO/taco_zk_cd_load byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: TACO/taco_zk_cd_load        # BLOCKER 2026-06-30: filled-branch-delay-slot lw-ra duplication. 6 sibling case-groups (get_CD_State2-gated) share this shape: `n=get_CD_State2(); andi t,v0,1; beq t,zero,0x801342D0 / delay=lw ra,20(sp)`. IDO schedules the epilogue's `lw ra` into the delay slot of this early bit-test UNCONDITIONALLY (executes on both taken/not-taken paths), then the fallthrough path (continues to more cd_read_start calls) reloads ra a SECOND time via the full shared epilogue at 0x801342CC before its own return. C89 cannot force IDO to duplicate a restore load into an unrelated branch's delay slot when the fallthrough path needs a live ra afterward — same family as func_80060E28/SpuVmNoiseOnWithAdsr (documented PAINTING-REWRITE-TRIAGE.md). Not fixable with allowed PostProc (would need insert_instruction_and_shift = banned). 32 residual diffs are ALL downstream of this one scheduling choice (32 = branch target offsets shifted because compiled code takes the single shared epilogue every time instead of the two-tier early/full split).
+# RETIRED 2026-10-04: BUNKA_SD/bunka_sd_result_step byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: BUNKA_SD/bunka_sd_result_step   spill_hoist  # BLOCKER 2026-07-01: after fixing genuinely wrong addresses (all rodata/global constants were fabricated, plus wrong frame size 64 vs real natural 72) the C is now faithful and reaches 90.1% masked (118/131), but 13 residual diffs are a real spill-vs-rematerialize codegen difference: the target rematerializes cheap sp-relative addresses (`addiu a0,sp,56` for the stack name buffer, and the pad_data ctrl-flag address) fresh at each of 3 call sites, while IDO 5.2 -O2 on our C spills/reloads them from a stack slot instead (verified via remap_stack_slots trying every plausible slot mapping — the residual is a genuine extra load/store vs a genuine extra lui/addiu, not an offset choice). Matches the SKIP-list spill-hoist category. Not fixable with allowed PostProc.
+# RETIRED 2026-10-04: ETC/etc_init byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: ETC/etc_init        held_constant  # RE-AUDIT 2026-07-19: CONST_INREG=2 INERT (2<<14 folded at frontend, no live const for f_constinreg). Still blocked. BLOCKER 2026-07-04: -3 count_mismatch after faithful re-derivation (also fixed 3 semantically-wrong cases + bg_set 7->10 args). Case 5's second buffer block keeps count `2` as a RUNTIME register (addiu a0,zero,2; sll v0,a0,14; addu vp[i],v0,base) and does NOT fold 2<<14. Clean C with a literal `2` constant-folds shift14 into address constants (loses 5 addu/2 sll). Forcing runtime: `volatile s32 n=2` adds a sw/lw spill (net +5); `n=a1-3` gives wrong `addiu,a1,-3` bytes. No construct yields "literal-2-in-register, unfolded, no spill". Same folded-constant class also costs the fill-loop slt.
+# RETIRED 2026-10-04: TAIIKU/taiiku_racer_stumble1 byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: TAIIKU/taiiku_racer_stumble1     alt_entry_fragment  # BLOCKER 2026-07-04b: func_80148330 (cross-prologue) is the real head; this label continues using five live-in registers ($v0,$v1,$t1,$t3,$t5,$a0) in non-argument positions after the fall-through — unexpressible in C (a true alt-entry fragment, not a recoverable cross-prologue head). 4/20.
+#     ^ ADJUDICATED 2026-08-09: filing VALID -> promoted to asm_only (Status: ASM-ONLY marker in the .c).
+# RETIRED 2026-10-04: RPG_BAT/bat_result_step byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: RPG_BAT/bat_result_step     fake_stub_unground  # RECLASSIFIED 2026-07-26 (re-audit): NOT caller_threaded — $t6 is D_8015ED98 read cross-prologue (head at 0x80155A70). Current .c is a pad-102 register-transcription fabrication needing a full 145-insn rewrite (8-entry jr table); queue as a pad-rewrite target, not a blocker.
+# RETIRED 2026-10-04: RPG_BAT/rpg_bat_bukatu11_fly_step byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: RPG_BAT/rpg_bat_bukatu11_fly_step   orphaned_head_unground  # RE-AUDIT 2026-07-26: merged_symbol REFUTED — the live-in $at/$t2/$t6/LO come from the 12-insn cross-prologue head func_80149C5C sitting in a 48-byte .sym GAP (0x80149AA8+436 .. 0x80149C8C). Absorbable via @SymbolStart 0x80149C5C / @SymbolSize 1296; head incl. guardless div-by-1000 verified reproducible from C. A full 312-insn rewrite untried — queue as a target, not a blocker.
+
+# --- 2026-07-19 TAIIKU blockers (probe-validated) ---
+# RETIRED 2026-10-04: TAIIKU/taiiku_crowd_set byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: TAIIKU/taiiku_crowd_set   held_constant_licm  # RE-AUDIT 2026-07-19: OUT OF SCOPE for CONST_INREG (blocker is findinduct unroll-vs-stride mutual exclusion, not const-remat). memcpy needs findinduct-unroll ON while main-loop counter×stride multu needs it OFF -- mutually exclusive
+# RETIRED 2026-10-04: TAIIKU/taiiku_rank_sprite_init byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: TAIIKU/taiiku_rank_sprite_init   base_register_cse  # two 68-strided arrays (0x801271B0 & 0x80128B30) share one walked induction pointer via a +6461 const offset
+
+# --- 2026-07-25 dispatcher blockers (probe-validated) ---
+# RETIRED 2026-10-04: SHOUGATU/shougatu_menu_sprite_init byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: SHOUGATU/shougatu_menu_sprite_init   as1_intra_bb_sched  # RETITLED 2026-07-26 (as1-hook build): NOT xbb la-pull — its two hoisted luis never cross a BB boundary; the residual is f_schedule/reorganize_bb intra-block fill priority. NO_LA_PULL/FORCE_LA_PULL swept in both directions incl. all pairs: baseline op-DIFF=36 beats everything (best alt 39). Needs an intra-BB scheduler hook. 332/332 count-exact honest semi.
+
+# --- EVENT palette-tail multu cluster: CRACKED 2026-07-31, extended later. cfe strength-reduces x*K only on a single expression chain; >=2 distinct spellings of the operand each emit li+multu (see src/overlay/EVENT/func_8014E230.c). REFINEMENT (wave 24): with only 2 chains, BOTH spellings must differ from the bare variable — `(g|0U)` + `(g^0U)`, since bare `g` + `(u32)g` leaves one canonical chain and ugen re-lowers both. GYOZI/SHUGAKU cited members all byte-perfect; 11 filings deleted total across waves 23-24. ---
+#     ^ ADJUDICATED 2026-08-09: filing VALID -> promoted to asm_only (Status: ASM-ONLY marker in the .c).
+# RETIRED 2026-10-04: func_8008F39C byte_perfect (main matched_c; 0x8008F39C covered by registered src/main/matched/SsUtKeyOffV.c (0x8008F394+128))
+#   Original entry: func_8008F39C        # ASM_ONLY alt-entry: 0x8008F39C..0x8008F410 is SsUtKeyOffV minus its 2-word cross-prologue head (lui/lw D_8013140C into $t6). The window is entered with $t6 already live, so no C body can emit these 30 words without also emitting the lui/lw pair (+2 overrun). Decompilation lives in SsUtKeyOffV.c. Re-diagnosed 2026-08-01 (old note claimed function-wide regalloc divergence + per-use reload of D_8013140C; both false).
+
+# ============================================================================
+# 2026-08-09 COMPLETION-FIRST PASS: no-PostProc semi/count_mismatch functions
+# closed as asm_only.  Each ships the byte-perfect .EXN bytes; the faithful C is
+# RETAINED in the .c behind a `Status: ASM-ONLY` marker (for reference and the PC
+# port), so deleting the marker resumes work exactly where it stopped.
+# Per-function refutation lists live in the .c headers.
+# ============================================================================
+# RETIRED 2026-10-04: DATE/date_serifu_param_add byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: DATE/date_serifu_param_add   as1_branch_target_duplicate  # 105/108. Target's as1 DUPLICATED the branch-target `addiu $at,$zero,1` into the entry bne's delay slot while RETAINING the original; ido-static-recomp's as1 performs the same cross-BB pull as a MOVE, not a copy, so we get either the delay-slot copy OR the original, never both. Hook 21 IDO52_AS1_NO_LA_PULL=0 restores the original but has no copy knob
+# RETIRED 2026-10-04: GEKO/serifu_basyo_set byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: GEKO/serifu_basyo_set   cross_block_web_split  # target splits a web across blocks uopt keeps whole
+# RETIRED 2026-10-04: GYOZI/func_8013F944 byte_perfect (overlay_match_status.json byte_perfect, resolver TRUE WIN)
+#   Original entry: GYOZI/func_8013F944   held_constant_zero_return_web  # 2026-08-09 re-derived: ONE-word wall. target[58] `or $v0,$zero,$zero` is a DEAD def (no $v0 read in [59..83]) = the register-held const 0 for the `rv = 0` whose store const-folds to `sh $zero` at [57]. globalcolor refuses to colour a one-block const-0 web ($zero is free) so the def is never emitted -- the identical honest negative recorded for NAME_ENT/name_ent_intro W2 (UOPT-HOOKS-REFERENCE Hook 30 'Measured limits'); a copy-prop divergence whose decision site is unlocated. NOT a spill: the target frame (152, table at sp+44) has no 4-byte home, and the `void` body under -Wc,-pic1 reproduces frame+table natively with zero stack PostProc. Threading the call returns into the return web DOES emit the copy at [58] with no spill, but ugen colours it $v1 and adds 2 transfer moves = 85 words, overrunning the 336-byte window. Refuted: Hook 32 COPYPROP_SITE (stmt 0..60, lod:q 0..30, *) all bit-identical; PRECOLOR_WEB/LIVEIN v0,v1 x bitpos 0..45; EXCLUDE_REGS(_WEB); UGEN_{NUM_TREGS,TREG_ORDER,NO_ARG_COALESCE}; CONST_{IN,NOIN}REG_VALUES=0; NO_DEADSTORE_GLOBALS; AS1_NO_COPY_PROP=all; ~20 C spellings. Wanted primitives: (1) site-keyed copy-prop veto that actually reaches the fold, (2) per-site IDO52_AS1_NO_FALLTHRU_FILL selector (only `all` responds here). Sister: GYOZI/func_80143384.
+#     ^ ADJUDICATED 2026-08-09: filing VALID -> promoted to asm_only (Status: ASM-ONLY marker in the .c).
+#     ^ ADJUDICATED 2026-08-09: filing VALID -> promoted to asm_only (Status: ASM-ONLY marker in the .c).
+# ETC/etc_event_load was filed here in the completion-first pass and CRACKED the
+#   same day: Hook 21 IDO52_AS1_NO_LA_PULL=5,6 + Hook 27 NO_FALLTHRU_FILL=all.
+#   NOTE THE SPELLING TRAP that invalidated the earlier probe log: both as1
+#   selectors parse a bare `1` as `all`, so a single index must be written
+#   `N,` (Hook 21) or `occ:N` (Hook 27). Sweeps logged as "all indices inert"
+#   before 2026-08-09 may never have tested a single index at all.
+
+# ============================================================================
+# REJECTED FILINGS -- adjudication 2026-08-09
+# ============================================================================
+# 50 overlay functions were carrying a c_unmatchable filing while still counted
+# semi_matched/count_mismatch. Each was adjudicated against the current crack
+# list and re-measured with resolve_overlay_relocs.py. 4 filings were upheld and
+# promoted to asm_only (marked above). 2 were skipped (in progress
+# elsewhere: TT/tt_record_copy, TT/tt_slot_hit_make). The 44 below are REJECTED and
+# have been REMOVED from the active list -- they stay semi_matched and are
+# recoverable. Reasons are preserved here so the finding is not lost.
+#
+# NOTE: a rejection is a FINDING, not a failure. It means a real function that
+# was written off is back in the work queue.
+#
+#
+# --- CATEGORY A. PROVENANCE, NOT MECHANISM -- "BANNED_PP" records that an old win used a banned tool.  (2 filings)
+#   TAIIKU/taiiku_result_main
+#       BANNED_PP is provenance, not a mechanism: it records that an old "win"
+#       used a banned tool, not that the function has a codegen wall. Never re-
+#       derived. (.sym addr 0x80145C3C != name -> also blocked by the
+#       build_asm_only_obj name-offset defect.)
+#   DATE/date_basyo2_scene_set
+#       BANNED_PP is provenance, not a mechanism. Honest state today: 16/472
+#       words, 0.4% -- an unconverted body, not a wall.
+#
+# --- CATEGORY B. NOT A MECHANISM -- bare label, percentage, "reg-alloc/scheduling", or an explicit work item.  (11 filings)
+#   OMIMAI/omimai_bustup_read
+#       Filing says verbatim "needs C source change". That is a work item, not a
+#       blocker. 161/161 count-exact, 43.5% exact.
+#   SHUGAKU/shugaku_float
+#       "SEVERE_MISMATCH" is not a blocker category. 177/177 count-exact, 47.5%
+#       exact. (.sym addr 0x80136058 != name -> also sym-defect blocked.)
+#   TT/tt_sparkle_disp
+#       Filing says verbatim "body still semi (needs decomp)". Not a blocker. The
+#       named head is the 8-byte cross-prologue stub func_80134E20 (lui
+#       $t6,0x8016; lw $t6) -- absorbable per absorb_stub.py, not an alt-entry.
+#       5.0% exact.
+#   TT/tt_match_init   [CLOSED 2026-09-19: BYTE-PERFECT 121/121; head absorbed in .sym]
+#       Filing says verbatim "body still semi (needs decomp)". Head func_80135870
+#       is an 8-byte lui/lw cross-prologue stub. 2.0% exact.
+#   TT/tt_camera_step
+#       Filing says verbatim "body still semi (needs decomp)". Head func_80136244
+#       is an 8-byte lui/lw cross-prologue stub. 2.4% exact.
+#   NAME_ENT/name_ent_fade_box_show
+#       "residual is reg-alloc/scheduling" is explicitly not a blocker category.
+#       44/44 count-exact, 68.2% exact -- a paint pass away.
+#   NAME_ENT/name_ent_layout_init
+#       "residual is reg-alloc/scheduling" is not a blocker category. 355/355
+#       count-exact, 7.6% exact -- needs real work, not a marker.
+#   VALEN/valen_birthday_step
+#       "residual is reg-alloc/scheduling" is not a blocker category. 58/58 count-
+#       exact, 37.9% exact.
+#   SHUGAKU/shugaku_init38
+#       "residual is reg-alloc/scheduling" is not a blocker category. 95/95 count-
+#       exact, 35.8% exact.
+#   TEL/tel_reserved_date_step
+#       "residual is reg-alloc/scheduling" is not a blocker category. 143/143
+#       count-exact but 0.0% exact -- nothing has been re-derived here at all.
+#   VALEN/valen_basyo_set
+#       The filing names "wrong global addresses + block layout" -- i.e. C BUGS,
+#       which are work items. Commit 5bb35e33a states outright
+#       "VALEN/valen_basyo_set ... Still SEMI, deliberately not filed". The
+#       c_unmatchable entry contradicts the commit. (.sym addr 0x80133074 != name
+#       -> also sym-defect blocked.)
+#
+# --- CATEGORY C. WRONG DIAGNOSIS -- filed "cross_prologue alt-entry"; actually the 8-byte lui/lw
+#     cross-prologue HEAD STUB whose sanctioned fix is ABSORPTION (absorb_stub.py).  (10 filings)
+#   TT/tt_scene_step   [CLOSED 2026-09-19: BYTE-PERFECT 533/533 (-cckr, zero PostProc); head absorbed in .sym]
+#       "cross_prologue alt-entry" is the WRONG diagnosis. Predecessor
+#       func_80136C64 is an 8-byte `lui $t6,0x8016; lw $t6,-30096($t6)` cross-
+#       prologue HEAD STUB -- the shape CLAUDE.md says is fixed by ABSORPTION
+#       (absorb_stub.py), not a blocker. Same correction already applied to
+#       TT/tt_char_disp in commit 5bb35e33a. 12.0% exact.
+#   TT/tt_serve_hit_step
+#       Head func_80137A78 = `lui $t6,0x8016; lw $t6,-30052($t6)`. Absorbable
+#       cross-prologue head stub, not an alt-entry. 10.6% exact.
+#   TT/tt_match_move0   [CLOSED 2026-09-19: BYTE-PERFECT 169/169; head absorbed in .sym]
+#       Head func_8013AE3C = `lui $t6,0x8016; lw $a1,-30052($t6)`. Absorbable
+#       cross-prologue head stub. 6.0% exact.
+#   TT/tt_config_page_step
+#       Head func_8013CDC0 = `lui $t6,0x8016; lw $t2,-30096($t6)`. Absorbable
+#       cross-prologue head stub. 6.6% exact.
+#   TT/tt_step_dispatch
+#       Head func_80140D74 = `lui $t6,0x8016; lw $a1,-30052($t6)`. Absorbable
+#       cross-prologue head stub. Also currently OVERRUNS its symbol window
+#       (emission 888 vs window 788) -- the C is wrong, not walled.
+#   TT/tt_pad_read
+#       Head func_80142100 = `lui $v0,0x8016; lw $v0,-30096($v0)`. Absorbable
+#       cross-prologue head stub. 12.7% exact.
+#   TT/tt_player_pad_step
+#       Head func_80143A34 = `lui $t6,0x8016; lw $t6,-30096($t6)`. Absorbable
+#       cross-prologue head stub. 8.7% exact.
+#   TT/tt_player
+#       Head func_801441AC = `lui $t7,0x8016; lw $t7,-30068($t7)`. Absorbable
+#       cross-prologue head stub. 19.3% exact.
+#   TT/tt_fade_out80
+#       Head func_8014686C = `lui $t6,0x8016; lw $a2,-30092($t6)`. The filing
+#       itself says "cross_prologue head recoverable" and then names two DIFFERENT
+#       secondary blockers (held-constant LICM, jal-delay scheduling) without a
+#       probe matrix. Resolver 31/40 = 9 residual.
+#   TT/tt_menu_start_step
+#       Head func_80149E90 = `lui $t6,0x8016; lw $a0,-30076($t6)`. Absorbable
+#       cross-prologue head stub. 7.0% exact, 84/86 count.
+#
+# --- CATEGORY D. CATEGORY SINCE CRACKED -- stale by definition.  (4 filings)
+#   DATE/date_model_link
+#       LFTR is CRACKED. Hook 20 IDO52_NO_LOOP_TEST_REPLACEMENT landed 2026-07-26;
+#       this filing is dated 2026-07-18. The hook is in production use on
+#       OPTION/option_select for exactly this "keep the slti loop test" shape.
+#       HIGH-VALUE recoverable.
+#   SHOUGATU/shougatu_girl10_init
+#       Held-constant VALUE rematerialization, count sub-class, is CRACKED
+#       (@CompileEnv IDO52_CONST_INREG_VALUES). "target threads 10 through a0 for
+#       both stores+call, IDO emits 3 materializations" is exactly that sub-class.
+#       Resolver also refutes the "lone residual" claim: 8.1% exact on 74/74.
+#   VALEN/valen_list_init
+#       multu-by-nonpow2 is CRACKED in BOTH the loop and the non-loop/mflo form
+#       (IDO52_NO_FINDINDUCT_STRIDE / occurrence-windowed
+#       IDO52_CONST_INREG_VALUES). The rest of the filing is "register allocation
+#       ... diverge irreducibly", which is not a mechanism. 2.3% exact on 308/308.
+#   GYOZI/func_8013306C
+#       Duplicate second filing for GYOZI/func_8013306C under a CONTRADICTORY
+#       category. phi-copy (s16)(x+k) is CRACKED (volatile on the u8 source), and
+#       two mutually exclusive categories filed for one function is itself
+#       disqualifying. Carries the same defective AS1-SWEEP log.
+#
+# --- CATEGORY E. EVIDENCE IS AN as1 PROBE LOG -- unproven. Two selector defects are confirmed:
+#     a bare number parses as "all" (a single index needs `N,` or `occ:N`), and as1
+#     pass II re-offers a vetoed word as a fresh candidate, so vetoing one index
+#     measures exactly inert and reads as a refutation. "All indices inert" notes
+#     may never have tested a single index.  (3 filings)
+#   NAME_ENT/name_ent_album_copyc7
+#       Rests on an AS1-SWEEP log ("ZERO pass-II copy candidates; pass-I veto also
+#       inert") whose own conclusion is "third deleter unidentified" -- an
+#       unidentified deleter is not a named mechanism. The as1 selector defects
+#       (bare N parses as "all"; pass II re-offers a vetoed word) make such logs
+#       unproven. Measurement also refutes the filing: it claims 136 vs 137 with 2
+#       word diffs; resolver says count-exact 137/137 with 52 residual.
+#   GYOZI/func_8013306C
+#       Rests on the same defective AS1-SWEEP log and concludes "third deleter
+#       unidentified". Resolver does show exactly 1 residual word, so the deficit
+#       is real, but the mechanism is by the filing's own words unidentified.
+#       Sister SHOUGATU/shougatu_serifu_sound_check had the identical diagnosis formally
+#       corrected in its .c header.
+#   TAIIKU/taiiku_tama_girl1_event_step
+#       Rests on an as1 probe log ("as1 never offers the candidate; 31 FORCE
+#       combos"). Given the confirmed as1 selector defects, such logs are
+#       unproven. Independently refuted by measurement: the object OVERRUNS its
+#       symbol window (emission 536 bytes vs window 528) and resolves 28/132 --
+#       104 residual words, not the filed "134 vs 132".
+#
+# --- CATEGORY F. MECHANISM CLAIM REFUTED BY MEASUREMENT -- the filed residual/count does not
+#     reproduce under tools/overlay/resolve_overlay_relocs.py today.  (15 filings)
+#   EVENT/func_80155B80
+#       Claims "Residual: 1 word, epilogue lw ra duplication". Resolver: 43/50, 7
+#       residual. The .c header itself (2026-08-07) states the epilogue-share note
+#       "was a symptom of the body being one word short, not an independent wall"
+#       and took 13 -> 7 residual with C+hook fixes. Actively improving, not
+#       walled.
+#   DATE/date_basyo17_girl6_skip
+#       One truncated clause ("IDO globally hoists the li 2/li 3 constant") with
+#       no probe, no numbers, no refutation list. 55/55 count-exact, 29.1% exact
+#       -- 39 residual words. (.sym addr 0x8013be54 != name -> also sym-defect
+#       blocked.)
+#   ETC/etc_taku_step
+#       "IDO spill-vs-keep-live is a register-pressure heuristic" is not a named
+#       category, and the probe is a single variant (volatile s32 sel). Genuine -1
+#       word (len t=452 c=448), so a real deficit exists -- but unattributed and
+#       un-probed against Hook 30.
+#   SHOUGATU/shougatu_serifu_sound_check
+#       REFUTED BY ITS OWN .c HEADER, which carries a "2026-07-21 CORRECTED
+#       DIAGNOSIS (the note above is wrong): ... this is NOT base_register_cse".
+#       The "3 insns short" claim is also false -- count-exact 43/43, 41/43
+#       resolved. The header even records a VERIFIED paint completion (add
+#       0x5c:rs:t7:t0 0x5c:rt:t7:t0) plus the clean fix (replace the whole-
+#       function normalizer with explicit swap_instructions).
+#   TT/tt_shot_polar_make
+#       Claims "3 residual words"; resolver says 57/67 = 10. held_constant_zero
+#       with a partial probe (CONST_INREG_VALUES only). Not at a wall.
+#   TT/tt_config_page_init
+#       "held_constant+base_pointer_form" with no probe matrix and no per-word
+#       attribution. 103/103 count-exact but only 15.5% exact -- 87 residual
+#       words. (.sym addr 0x8013CC24 != name -> also blocked by the
+#       build_asm_only_obj name-offset defect.)
+#   EVENT/func_80154870
+#       Claims "55 vs 56" (a 1-word split). Resolver: 17/56 = 39 residual. The
+#       count claim was already defeated by CONST_INREG per the filing, but the
+#       object is nowhere near a 1-word wall. Filed 2026-07-19, predates Hook 30
+#       (2026-08-08), which is exactly a const pre-colouring override.
+#   EVENT/func_8013F5BC
+#       Claims "1-word tail cascade" from a duplicated sltiu. Resolver: count-
+#       exact 86/86 with 26 residual words -- a cascade would be a count deficit
+#       or a clean tail shift, not 26 scattered diffs. Unsubstantiated.
+#   EVENT/func_80158478
+#       Claims a 39-insn function at the guard-fail delay-fill wall. Resolver:
+#       7/41 = 34 residual words. The body is not near any wall.
+#   EVENT/func_80144B24
+#       Claims "Logic byte-identical (90/119 resolved)". Resolver measured today:
+#       28/119. The filed number is off by 62 words. Also self-describes the
+#       residual as "store/load OFFSET positions", which is frame layout --
+#       declaration-order / remap_stack_slots territory.
+#   RPG_BAT/rpg_bat_sprite_sway
+#       stack_buffer_frame_slot is a valid CATEGORY, but the object is not at that
+#       wall: 116/116 count-exact, resolver 74/116 = 42 residual, and the .c
+#       header is an inventory of stripped orphan-read paints. Frame-slot
+#       placement is declaration-order controllable (CLAUDE.md: declaration order
+#       and declared sizes set stack-slot placement).
+#   TAIIKU/taiiku_kari_result_main
+#       Claims the residual is 2 words (136 and 172). Resolver: 224/314 = 90
+#       residual AND 1 UNRESOLVED relocation. The at_as_memcpy half was already
+#       self-refuted in the filing. Not a wall.
+#   TAIIKU/taiiku_ladder_disp
+#       SELF-REFUTING. The entry ends with "[RE-ATTACK 2026-08-02: emission-phase
+#       LDA mid-windows cracked this exact shape on GEKO/geko_girl_pick_init -- see
+#       UOPT-HOOKS-REFERENCE Hook 3 correction]". sp-LDA spill-vs-remat is in the
+#       cracked list. TOP of the recoverable queue.
+#   RPG_BAT/rpg_bat_bukatu2_drop_step
+#       Self-describes "Root cause register allocation", which is not a blocker
+#       category, and its precolour probe is Hook 18 IDO52_PRECOLOR_WEB. Filed
+#       2026-07-30; Hook 30 (the site-keyed pre-colouring formation/emission
+#       override, 2026-08-08) is a different and newer primitive and was never
+#       tried. Resolver 53/75 = 22 residual, not the filed 1-word delay-slot dup.
+#   TACO/taco_actor_alloc
+#       Self-describes "Allocator tie-break", which is not a blocker category.
+#       Filed 2026-07-26, predates Hook 30 pre-colouring. Resolver: len t=1260
+#       c=1248 (-3 words), 23/312 exact.
+# ============================================================================
+
+# --- 2026-08-23: strip_trailing_instructions-on-a-real-body audit ---
+# Both entries below shipped as byte_perfect main-binary C.  In each the
+# directive DELETED real compiled code -- including the compiler's own
+# `jr ra` and epilogue -- so the "match" was fabrication by subtraction
+# (the ≤16-byte head-stub class, scaled up).  Sources moved to
+# src/main/semi-matched/ and de-registered; the retail bytes now come from
+# the ASM base image, which is where they always actually came from.
+# set_kanji_string head (0x8004EBB0, formerly listed under its address name): RESOLVED 2026-09-27 (naming batch 2) -- the
+                     # registered set_kanji_string window now STARTS at 0x8004EBB0 (@SymbolStart, 252 B,
+                     # byte-perfect), so the head is compiled as its own first two words.  Old entry:
+                     # ASM-ONLY: cross-prologue head, already absorbed elsewhere.
+                     # 0x8004EBB0 is the two-word `lui $t0; lh $t0` hoist that feeds
+                     # set_kanji_string's prologue at 0x8004EBB8.  It was ALSO
+                     # registered as its own 216-byte function -- a duplicate that
+                     # OVERLAPPED set_kanji_string (0x8004EBB8 + 244) in the build
+                     # and used `strip_trailing_instructions --count 10` to chop its
+                     # own tail (`addiu $t0,1; sll; sra; lui $at; sh; lw $ra; addiu
+                     # $sp; jr $ra; nop; nop`) back to the invented size.  Those ten
+                     # words are REAL retail code at 0x8004EC88-0x8004ECA8 -- they are
+                     # simply set_kanji_string's, and it already emits them
+                     # byte-perfectly.  Nothing is lost by de-registering this entry.
+
+# --- 2026-08-23: the 0x800B0508 blob split (24 Sony library functions) ---
+# func_800B0508 was registered as one 4,424-byte blob.  Sony's own symbol table,
+# recovered from the shipped Psy-Q archives, says 356 bytes.  The window
+# 0x800B0508..0x800B1650 holds 24 functions whose sizes sum to exactly 4,424.
+# Boundaries agree across three independent derivations: whole-member alignment
+# of LIBGTE TMD / SMP_00 / DIVF3A against the retail image (0 masked mismatches
+# each), a jr-ra + delay-slot walk of the retail disassembly, and the jal call
+# sites that land on them.  All 24 are hand-written Sony assembly -- COP2 / LWC2
+# / SWC2 / MTC2 / CTC2 GTE opcodes, or BIOS-level $k0/$k1 + mfc0 code.  No C
+# compiler emits COP2, and the archive members record no source path (Sony
+# shipped these as .s).  Byte-perfect ASM in asm/main/matched/, regenerated and
+# self-verified by tools/analysis/gen_b0508_asm.py (24/24 assemble back to the
+# retail bytes).  Details: docs/reference/PSYQ-LIB-IDENTIFICATION.md.
+gte_texture_gouraud3     # ASM-ONLY: GTE asm, 0x800B0508/356, LIBGTE 2.5 TMD (byte-verified)
+gte_flat_fog3            # ASM-ONLY: GTE asm, 0x800B066C/244, LIBGTE 2.5 TMD (byte-verified)
+gte_texture_flat_fog3    # ASM-ONLY: GTE asm, 0x800B0760/288, LIBGTE 2.5 TMD (byte-verified)
+gte_gouraud_fog3         # ASM-ONLY: GTE asm, 0x800B0880/320, LIBGTE 2.5 TMD (byte-verified)
+gte_texture_gouraud_fog3 # ASM-ONLY: GTE asm, 0x800B09C0/356, LIBGTE 2.5 TMD (byte-verified)
+gte_scope_tf4_B          # ASM-ONLY: GTE asm, 0x800B0B24/372, LIBGTE 2.5 TMD (byte-verified)
+gte_scope_tf4            # ASM-ONLY: GTE asm, 0x800B0C98/344, LIBGTE 2.5 TMD (byte-verified)
+exception_handler_install            # ASM-ONLY: 0x800B0DF0/160.  BIOS exception-handler installer:
+                         # stashes $ra in a global with lui/sw and NO stack frame, calls
+                         # B(56h) GetC0Table through `li $t2,0xB0; jalr $t2; li $t1,0x56`,
+                         # and copies a 56-byte handler template over table entry 6.
+                         # Bytes +0x68..+0xA0 of the window ARE that template: data, not a
+                         # function (0 jal sites, 0 word references, uses $k0/$k1 + mfc0),
+                         # which is why they stay inside this entry instead of being split
+                         # off.  Unidentified -- no shipped 2.5/4.5 member matches.
+LightColor               # ASM-ONLY: GTE asm, 0x800B0E90/40,  LIBGTE 4.5 SMP_00 (byte-verified)
+DpqColorLight            # ASM-ONLY: GTE asm, 0x800B0EB8/40,  LIBGTE 4.5 SMP_00 (byte-verified)
+DpqColor3                # ASM-ONLY: GTE asm, 0x800B0EE0/60,  LIBGTE 4.5 SMP_00 (byte-verified)
+Intpl                    # ASM-ONLY: GTE asm, 0x800B0F1C/36,  LIBGTE 4.5 SMP_00 (byte-verified)
+Square12                 # ASM-ONLY: GTE asm, 0x800B0F40/40,  LIBGTE 4.5 SMP_00 (byte-verified)
+Square0                  # ASM-ONLY: GTE asm, 0x800B0F68/40,  LIBGTE 4.5 SMP_00 (byte-verified)
+AverageZ3                # ASM-ONLY: GTE asm, 0x800B0F90/32,  LIBGTE 4.5 SMP_00 (byte-verified)
+AverageZ4                # ASM-ONLY: GTE asm, 0x800B0FB0/36,  LIBGTE 4.5 SMP_00 (byte-verified)
+OuterProduct12           # ASM-ONLY: GTE asm, 0x800B0FD4/88,  LIBGTE 4.5 SMP_00 (byte-verified)
+OuterProduct0            # ASM-ONLY: GTE asm, 0x800B102C/88,  LIBGTE 4.5 SMP_00 (byte-verified)
+Lzc                      # ASM-ONLY: GTE asm, 0x800B1084/28,  LIBGTE 4.5 SMP_00 (byte-verified)
+InvSquareRoot            # ASM-ONLY: 0x800B10A0/140.  MTC2 $30 / MFC2 $31 (GTE LZCS/LZCR)
+                         # plus a %hi/%lo rsqrt table lookup at 0x800E4A74.  Name from a
+                         # SINGLE-symbol alignment against LIBGTE 2.5 MSC (35 words, 33
+                         # fully compared, 0 masked mismatches); the surrounding member
+                         # does NOT align, so the name is an identification, not a proof.
+                         # The boundary does not depend on the name.
+vector_normalize            # ASM-ONLY: 0x800B112C/200.  Same LZCS/LZCR + rsqrt-table idiom;
+                         # long VECTOR in, long VECTOR out.  HYPOTHESIS ONLY (kept out of
+                         # the name): LIBGTE VectorNormal from an SDK we do not ship --
+                         # 2.5 MSC VectorNormal has the same 200-byte size but only 18 of
+                         # 50 words agree, so the implementation differs.
+vector_normalize_short            # ASM-ONLY: 0x800B11F4/236.  Alt-entry fragment PLUS the GTE
+                         # LZCS/LZCR idiom: entry at +0x00 loads a long VECTOR (lw), the
+                         # second entry at 0x800B1208 loads a short SVECTOR (lh), both
+                         # fall into a common tail storing an SVECTOR (sh).  HYPOTHESIS
+                         # ONLY: VectorNormalS + VectorNormalSS.
+RCpolyF3                 # ASM-ONLY: alt-entry fragment, 0x800B12E0/8.  Two instructions,
+                         # no jr ra; falls through into RCpolyF3A.  LIBGTE 2.5 DIVF3A
+                         # (byte-verified).
+RCpolyF3A                # ASM-ONLY: GTE asm, 0x800B12E8/872, LIBGTE 2.5 DIVF3A (byte-verified)
+
+# --- ASM-ONLY: Sony Psy-Q LIBGTE, linked VERBATIM (filed 2026-08-23) ---
+# Konami linked LIBGTE verbatim: the retail bytes at these addresses are
+# byte-for-byte the shipped Sony archive objects, modulo relocation fields.
+# Evidence is WHOLE-MEMBER alignment (a linker emits a member's .text
+# contiguously), never per-function masked similarity -- that shortcut is the
+# false-positive class retracted in docs/TODO-NEXT.md.  Measured FP rate at the
+# reporting floor: 0 over the 70,656-word Konami game region.  Corroborated by
+# Sony's own symbol sizes matching the repo-derived boundaries exactly, and by
+# COP2 density.  Record: config/psyq_lib_symbols.json.  Full method:
+# docs/reference/PSYQ-LIB-IDENTIFICATION.md.
+#
+# Blocker category: sony_libgte_verbatim.  These are not Konami code.  Most are
+# hand-written GTE assembly (COP2 densities below); the 8-byte RCpoly* entries
+# are alt-entry stubs that fall through into their RCpoly*A body.  Either way,
+# reproducing a shipped Sony object needs Sony's build of LIBGTE, not a
+# decompilation of this game.  Byte-perfect listings regenerate with
+# `python3 tools/analysis/emit_psyq_asm_only.py`.
+#
+# RotMatrix (0x800A4710) is listed too.  It has 0 COP2 words in 164 -- it
+# builds the matrix in the integer unit off rcossin_tbl -- so it looked like the
+# one C candidate here.  It is not (re-adjudicated 2026-10-03; the old "6 dead
+# nops" argument was wrong -- those are real mflo->multu hazard nops -- and is
+# replaced by the evidence on the RotMatrix line below: vacuous branches, code
+# duplicated across a branch with different registers, an allocation no
+# compiler makes, multu on signed products).  Byte-identical (modulo relocs)
+# to LIBGTE.LIB member FGO_01 in the 3.3, 3.6 and 4.5 archives.
+# 0x800B0508..0x800B1650 is individuated separately and filed by that pass.
+ApplyMatrix          # ASM-ONLY sony_libgte_verbatim: 4.5 LIBGTE.LIB member MTX_05, 11/20 words COP2, 80 bytes @ 0x800A4BB8
+RotNclip4            # ASM-ONLY sony_libgte_verbatim: 4.5 LIBGTE.LIB member CMB_05, 20/44 words COP2, 176 bytes @ 0x800A545C
+RotAverageNclip3_1   # ASM-ONLY sony_libgte_verbatim: 4.5 LIBGTE.LIB member CMB_15, 16/40 words COP2, 160 bytes @ 0x800A5594
+RotAverageNclip4     # ASM-ONLY sony_libgte_verbatim: 4.5 LIBGTE.LIB member CMB_07, 21/44 words COP2, 176 bytes @ 0x800A5634
+ColorMatDpq          # ASM-ONLY sony_libgte_verbatim: 4.5 LIBGTE.LIB member CMB_10, 8/16 words COP2, 64 bytes @ 0x800A59C0
+ColorMatCol          # ASM-ONLY sony_libgte_verbatim: 4.5 LIBGTE.LIB member CMB_11, 7/16 words COP2, 64 bytes @ 0x800A5A00
+SetMulMatrix         # ASM-ONLY sony_libgte_verbatim: 4.5 LIBGTE.LIB member MTX_00B, 28/68 words COP2, 272 bytes @ 0x800A5E78
+ReadColorMatrix      # ASM-ONLY sony_libgte_verbatim: 4.5 LIBGTE.LIB member MTX_008, 8/20 words COP2, 80 bytes @ 0x800A640C
+GsTMDfastNF3         # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMDF_F3, 17/79 words COP2, 316 bytes @ 0x800A64B0
+GsTMDfastF3NL        # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMDF_F3, 17/80 words COP2, 320 bytes @ 0x800A65EC
+GsTMDfastF3L         # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMDF_F3, 20/82 words COP2, 328 bytes @ 0x800A672C
+GsTMDfastF3LFG       # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMDF_F3, 20/83 words COP2, 332 bytes @ 0x800A6874
+GsTMDfastNF4         # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMDF_F4, 22/90 words COP2, 360 bytes @ 0x800A69C0
+GsTMDfastF4NL        # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMDF_F4, 22/91 words COP2, 364 bytes @ 0x800A6B28
+GsTMDfastF4L         # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMDF_F4, 25/94 words COP2, 376 bytes @ 0x800A6C94
+GsTMDfastF4LFG       # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMDF_F4, 25/97 words COP2, 388 bytes @ 0x800A6E0C
+GsTMDfastNG3         # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMDF_G3, 21/82 words COP2, 328 bytes @ 0x800A6F90
+GsTMDfastG3NL        # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMDF_G3, 19/80 words COP2, 320 bytes @ 0x800A70D8
+GsTMDfastG3L         # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMDF_G3, 26/100 words COP2, 400 bytes @ 0x800A7218
+GsTMDfastG3LFG       # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMDF_G3, 26/102 words COP2, 408 bytes @ 0x800A73A8
+GsTMDfastTNF3        # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMDF_FT3, 17/91 words COP2, 364 bytes @ 0x800A7540
+GsTMDfastTF3NL       # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMDF_FT3, 15/89 words COP2, 356 bytes @ 0x800A76AC
+GsTMDfastTF3L        # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMDF_FT3, 20/92 words COP2, 368 bytes @ 0x800A7810
+GsTMDfastTF3LFG      # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMDF_FT3, 20/92 words COP2, 368 bytes @ 0x800A7980
+GsTMDfastNG4         # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMDF_G4, 20/96 words COP2, 384 bytes @ 0x800A82E0
+GsTMDfastG4NL        # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMDF_G4, 25/93 words COP2, 372 bytes @ 0x800A8460
+GsTMDfastG4L         # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMDF_G4, 35/120 words COP2, 480 bytes @ 0x800A85D4
+GsTMDfastG4LFG       # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMDF_G4, 35/123 words COP2, 492 bytes @ 0x800A87B4
+GsTMDfastTNF4        # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMDF_FT4, 20/104 words COP2, 416 bytes @ 0x800A89A0
+GsTMDfastTF4NL       # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMDF_FT4, 20/103 words COP2, 412 bytes @ 0x800A8B40
+GsTMDfastTF4L        # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMDF_FT4, 25/107 words COP2, 428 bytes @ 0x800A8CDC
+GsTMDfastTF4LFG      # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMDF_FT4, 25/110 words COP2, 440 bytes @ 0x800A8E88
+GsTMDfastTNG4        # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMDF_GT4, 28/111 words COP2, 444 bytes @ 0x800A9040
+GsTMDfastTG4NL       # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMDF_GT4, 20/102 words COP2, 408 bytes @ 0x800A91FC
+GsTMDfastTG4L        # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMDF_GT4, 35/131 words COP2, 524 bytes @ 0x800A9394
+GsTMDfastTG4LFG      # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMDF_GT4, 35/132 words COP2, 528 bytes @ 0x800A95A0
+gte_scope_f3         # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMD, 18/71 words COP2, 284 bytes @ 0x800AFD40
+gte_scope_tf3        # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMD, 16/65 words COP2, 260 bytes @ 0x800AFE5C
+gte_scope_g3         # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMD, 18/72 words COP2, 288 bytes @ 0x800AFF60
+gte_scope_tg3        # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMD, 18/72 words COP2, 288 bytes @ 0x800B0080
+gte_flat3            # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMD, 12/63 words COP2, 252 bytes @ 0x800B01A0
+gte_texture_flat3    # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMD, 12/72 words COP2, 288 bytes @ 0x800B029C
+gte_gouraud3         # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMD, 18/83 words COP2, 332 bytes @ 0x800B03BC
+RCpolyF4             # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member DIVF4A, alt-entry stub falling through into RCpolyF4A, 8 bytes @ 0x800B1900
+RCpolyF4A            # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member DIVF4A, 28/286 words COP2, 1144 bytes @ 0x800B1908
+RCpolyG3             # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member DIVG3A, alt-entry stub falling through into RCpolyG3A, 8 bytes @ 0x800B1D80
+RCpolyG3A            # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member DIVG3A, 19/258 words COP2, 1032 bytes @ 0x800B1D88
+RCpolyFT3            # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member DIVFT3A, alt-entry stub falling through into RCpolyFT3A, 8 bytes @ 0x800B2190
+RCpolyFT3A           # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member DIVFT3A, 19/254 words COP2, 1016 bytes @ 0x800B2198
+RCpolyGT3            # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member DIVGT3A, alt-entry stub falling through into RCpolyGT3A, 8 bytes @ 0x800B2590
+RCpolyGT3A           # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member DIVGT3A, 19/294 words COP2, 1176 bytes @ 0x800B2598
+RCpolyG4             # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member DIVG4A, alt-entry stub falling through into RCpolyG4A, 8 bytes @ 0x800B2A30
+RCpolyG4A            # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member DIVG4A, 27/338 words COP2, 1352 bytes @ 0x800B2A38
+RCpolyFT4            # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member DIVFT4A, alt-entry stub falling through into RCpolyFT4A, 8 bytes @ 0x800B2F80
+RCpolyFT4A           # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member DIVFT4A, 27/326 words COP2, 1304 bytes @ 0x800B2F88
+RCpolyGT4            # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member DIVGT4A, alt-entry stub falling through into RCpolyGT4A, 8 bytes @ 0x800B34A0
+RCpolyGT4A           # ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member DIVGT4A, 25/390 words COP2, 1560 bytes @ 0x800B34A8
+RotMatrix            # ASM-ONLY sony_libgte_verbatim (RE-ADJUDICATED 2026-10-03: hand-written assembly, proven from the bytes; the 2026-09-17 "live candidate" note is closed).  Shipped object: LIBGTE.LIB member FGO_01, whole-member aligned 164/164 words (149 compared at all 32 bits, the other 15 covered by the member's own relocs, 0 mismatches) against the 3.3, 3.6 AND 4.5 archives.  Not compiler output, for four reasons: (1) three VACUOUS branches whose target is the word right after their delay slot (0x800A4724 bgez t7 -> 0x800A472C, 0x800A4788 -> 0x800A4790, 0x800A4814 -> 0x800A481C; `negu t7; bgez t7,+1; andi t7,t7,0xfff`): taken and fall-through run the same words, and gcc 2.x jump optimisation deletes a branch to the following label, while IDO never emits the intra-function `j` this body has (0x800A474C/0x800A47B0/0x800A483C); (2) cross-branch scheduling with TAIL DUPLICATION: `multu t1,t0` issues before `bgez t7` at 0x800A47FC and its `mflo; sra 12; sh 16(a1)` is copied into BOTH successors with DIFFERENT registers (mflo t8 at 0x800A4804, mflo t7 at 0x800A4844); gcc 2.6-2.8 schedule within a basic block and reorg only fills delay slots, ASPSX only fills delay slots; (3) an allocation no compiler here makes: a leaf with two args uses t7 (49 refs), t8 (32), t9 (46) and t0-t6 but never v1, a2 or a3, sets the return value `move v0,a1` as its SECOND instruction, and never reuses a0 after the third lh -- gcc allocates v0,v1,a0-a3,t0.. in order (the gcc-built siblings RotMatrix_C/YXZ/ZYX use v0/v1/a0-a3/t0-t5), and `move` is addu, not IDO as1 or; (4) every fixed-point product is `multu` on signed sin/cos values followed by `sra 12`; gcc emits `mult` for int*int (the byte-perfect RotMatrix*_C siblings do), so C would need unsigned operands and a signed shift of the product. The 6 "dead nops" of the old rationale are NOT evidence (they are mflo->multu hazard nops) and are not cited.  The rage-racer-psyz Psy-Q 4.0 decomp also leaves fgo_00..fgo_09 as INCLUDE_ASM.  656 bytes @ 0x800A4710
+
+# --- BIOS-TRAMPOLINE TABLE (0x800B4830-0x800B48D0, 0x800B5650-0x800B5A60) ---
+# Blocker category: bios_trampoline.  Added 2026-08-23.  51 sixteen-byte entries
+# of the Sony LIBAPI kernel-trampoline table.  47 are `li $t2,0xA0/0xB0/0xC0;
+# jr $t2; li $t1,N; nop` -- a jump to the PSX BIOS vector with the call number
+# established in the branch-delay slot.  The other four are a bare `syscall` or
+# a read/write of $sp/$gp.  None has a C89 form (this project bans GCC inline
+# asm; IDO 5.2 has no asm statement), so the terminal state is asm_only.
+# Every listing round-trips: tools/analysis/gen_bios_thunk_asm.py --check
+# reassembles each and compares against disks/SLPS_000.65 (51/51, 0 failures).
+# Names are deliberately left as func_<ADDR>: the (table,index) pair is proven
+# (it is the immediates) but the Sony LIBAPI symbol name is not -- see the
+# retraction in docs/TODO-NEXT.md.
+strncpy         # ASM-ONLY bios_trampoline: 0x800B4830/16 -- A(0x1A) strncpy
+memcpy         # ASM-ONLY bios_trampoline: 0x800B4840/16 -- A(0x2A) memcpy
+printf         # ASM-ONLY bios_trampoline: 0x800B4850/16 -- A(0x3F) printf
+abs         # ASM-ONLY bios_trampoline: 0x800B4860/16 -- A(0x0E) abs
+strlen         # ASM-ONLY bios_trampoline: 0x800B4880/16 -- A(0x1B) strlen
+strcpy         # ASM-ONLY bios_trampoline: 0x800B4890/16 -- A(0x19) strcpy
+strcat         # ASM-ONLY bios_trampoline: 0x800B48A0/16 -- A(0x15) strcat
+strncat         # ASM-ONLY bios_trampoline: 0x800B48B0/16 -- A(0x16) strncat
+srand         # ASM-ONLY bios_trampoline: 0x800B48C0/16 -- A(0x30) srand
+strcmp         # ASM-ONLY bios_trampoline: 0x800B5650/16 -- A(0x17) strcmp
+exit         # ASM-ONLY bios_trampoline: 0x800B5660/16 -- B(0x38) exit
+strncmp         # ASM-ONLY bios_trampoline: 0x800B5670/16 -- A(0x18) strncmp
+bcopy         # ASM-ONLY bios_trampoline: 0x800B5680/16 -- A(0x27) bcopy
+setjmp         # ASM-ONLY bios_trampoline: 0x800B5690/16 -- A(0x13) setjmp
+puts         # ASM-ONLY bios_trampoline: 0x800B56A0/16 -- B(0x3F) puts
+memchr         # ASM-ONLY bios_trampoline: 0x800B56B0/16 -- A(0x2E) memchr
+memmove         # ASM-ONLY bios_trampoline: 0x800B56C0/16 -- A(0x2C) memmove
+SetSp         # ASM-ONLY bios_trampoline: 0x800B56D0/16 -- Reads $sp into $v0 and installs $a0 as the new $sp, from the branch-delay slot of the `jr $ra` (so the switch happens on the way out)
+InitHeap         # ASM-ONLY bios_trampoline: 0x800B56E0/16 -- A(0x39) InitHeap
+GetGp         # ASM-ONLY bios_trampoline: 0x800B56F0/16 -- Returns $gp
+InitPAD         # ASM-ONLY bios_trampoline: 0x800B5700/16 -- B(0x12) InitPad
+StartPAD         # ASM-ONLY bios_trampoline: 0x800B5710/16 -- B(0x13) StartPad
+ChangeClearPAD         # ASM-ONLY bios_trampoline: 0x800B5720/16 -- B(0x5B) ChangeClearPad
+EnterCriticalSection         # ASM-ONLY bios_trampoline: 0x800B5730/16 -- `li $a0,1; syscall` -- kernel syscall 1 (EnterCriticalSection)
+FlushCache         # ASM-ONLY bios_trampoline: 0x800B5740/16 -- A(0x44) FlushCache
+ExitCriticalSection         # ASM-ONLY bios_trampoline: 0x800B5750/16 -- `li $a0,2; syscall` -- kernel syscall 2 (ExitCriticalSection)
+OpenEvent         # ASM-ONLY bios_trampoline: 0x800B5760/16 -- B(0x08) OpenEvent
+EnableEvent         # ASM-ONLY bios_trampoline: 0x800B5770/16 -- B(0x0C) EnableEvent
+GetSp         # ASM-ONLY bios_trampoline: 0x800B58F0/16 -- Returns $sp
+TestEvent         # ASM-ONLY bios_trampoline: 0x800B5900/16 -- B(0x0B) TestEvent
+CloseEvent         # ASM-ONLY bios_trampoline: 0x800B5910/16 -- B(0x09) CloseEvent
+close         # ASM-ONLY bios_trampoline: 0x800B5920/16 -- B(0x36) FileClose
+format         # ASM-ONLY bios_trampoline: 0x800B5930/16 -- B(0x41) format
+open         # ASM-ONLY bios_trampoline: 0x800B5940/16 -- B(0x32) FileOpen
+delete         # ASM-ONLY bios_trampoline: 0x800B5950/16 -- B(0x45) erase
+read         # ASM-ONLY bios_trampoline: 0x800B5960/16 -- B(0x34) FileRead
+write         # ASM-ONLY bios_trampoline: 0x800B5970/16 -- B(0x35) FileWrite
+_96_init         # ASM-ONLY bios_trampoline: 0x800B5980/16 -- A(0x71) _96_init
+LoadExec         # ASM-ONLY bios_trampoline: 0x800B5990/16 -- A(0x51) LoadExec
+_96_remove         # ASM-ONLY bios_trampoline: 0x800B59A0/16 -- A(0x72) _96_remove
+DeliverEvent         # ASM-ONLY bios_trampoline: 0x800B59B0/16 -- B(0x07) DeliverEvent
+WaitEvent         # ASM-ONLY bios_trampoline: 0x800B59C0/16 -- B(0x0A) WaitEvent
+DisableEvent         # ASM-ONLY bios_trampoline: 0x800B59D0/16 -- B(0x0D) DisableEvent
+GPU_cw         # ASM-ONLY bios_trampoline: 0x800B59E0/16 -- A(0x49) GPU_cw
+HookEntryInt         # ASM-ONLY bios_trampoline: 0x800B59F0/16 -- B(0x19) SetCustomExitFromException
+ReturnFromException         # ASM-ONLY bios_trampoline: 0x800B5A00/16 -- B(0x17) ReturnFromException
+ChangeClearRCnt         # ASM-ONLY bios_trampoline: 0x800B5A10/16 -- C(0x0A) ChangeClearRCnt
+ResetEntryInt         # ASM-ONLY bios_trampoline: 0x800B5A20/16 -- B(0x18) SetDefaultExitFromException
+PAD_init         # ASM-ONLY bios_trampoline: 0x800B5A30/16 -- B(0x15) OutdatedPadInitAndStart
+PAD_dr         # ASM-ONLY bios_trampoline: 0x800B5A40/16 -- B(0x16) OutdatedPadGetButtons
+StopPAD         # ASM-ONLY bios_trampoline: 0x800B5A50/16 -- B(0x14) StopPad
+# 2026-08-30: caller-spill allocator region 0x800A4000-0x800B4000 (LIBGS-style polygon sorters).
+#   The retail code there uses NO callee-saved registers at all: values live across a jal are
+#   kept in t-regs, spilled to the frame right before the call and reloaded after; only the
+#   arg registers that conflict are homed; moves are native addu. Not IDO 5.2 (which puts every
+#   call-crossing value in an s-reg; -Wo,-rege,0 / -regr / MAX_SREGS / noprecolor / LDA_NOINREG
+#   all measured, none reproduce it). Faithful C parked in src/main/semi-matched/.
+#   CORRECTION 2026-09-26 (DivideF4 = DivideF4, 107/107 byte-perfect): the class IS reachable --
+#   force the colour of every call-crossing web INCLUDING the formals (Hook 37 FORCE_WEB_COLOR ...:tN,
+#   NOSPLIT on the formals; the s-reg pick only looked mandatory under -rege,0), then the as1
+#   NO_PASS1_PROP/NO_COPY_PROP/KEEP_DEAD_RELOAD/NO_FALLTHRU_FILL vetoes and Hook 36. Only the
+#   unwritten s0..s4 save area (frame +24) stays outside every hook (remap_stack_slots + patch_stack_complete).
+
+# 2026-08-31: hand-written GTE register loaders (libgte style). The bodies are lw + ctc2
+#   sequences; IDO 5.2 cannot emit ctc2/cfc2 from C at all. Terminal asm_only.
+SetGeomScreen        # ASM-ONLY sony_libgte_verbatim (2026-09-26): 3.3 LIBGTE.LIB member REG03 +0x150 (SetGeomScreen), 12 B; member whole 96/96 | prev: BLOCKER: GTE ctc2 hand-asm (ctc2 a0,$26; 3 words)
+SetBackColor        # ASM-ONLY sony_libgte_verbatim (2026-09-26): 3.3 LIBGTE.LIB member REG03 +0x84 (SetBackColor), 32 B; member whole 96/96 at 0x800A4F80 | prev: BLOCKER: GTE ctc2 hand-asm (3x sll + 3x ctc2 $13-$15)
+SetTransMatrix        # ASM-ONLY sony_libgte_verbatim: 4.5 LIBGTE.LIB member MTX_12 +0x0 (SetTransMatrix), 3/9 COP2 words, 36 B (incl. 1 trailing alignment nop); member aligned 8/8 at 0x800A4E3C (chain MTX_09..MTX_12) (2026-09-25)
+SetLightMatrix        # ASM-ONLY sony_libgte_verbatim: 4.5 LIBGTE.LIB member MTX_10 +0x0 (SetLightMatrix), 5/12 COP2 words, 48 B; member aligned 12/12 at 0x800A4DDC (chain MTX_09..MTX_12) (2026-09-25)
+SetColorMatrix        # ASM-ONLY sony_libgte_verbatim: 4.5 LIBGTE.LIB member MTX_11 +0x0 (SetColorMatrix), 5/12 COP2 words, 48 B; member aligned 12/12 at 0x800A4E0C (chain MTX_09..MTX_12) (2026-09-25)
+InitGeom        # ASM-ONLY sony_libgte_verbatim (2026-09-26): 3.3 LIBGTE.LIB member MSC00 +0x0 (InitGeom), whole member aligned 32/32 words (27 unmasked) at 0x800A3540; hand-written GTE asm (mfc0/mtc0 SR + ctc2 block) | prev: BLOCKER: GTE ctc2 hand-asm (InitGeom: mfc0/mtc0 SR + ctc2 constant block)
+SetFarColor        # ASM-ONLY sony_libgte_verbatim (2026-09-26): 3.3 LIBGTE.LIB member REG03 +0xA4 (SetFarColor 0x800A5024, then SetSZfifo3/4, SetSXSYfifo, SetRii, SetMAC123, SetData32, SetGeomOffset up to 0x800A50D0); member whole 96/96 at 0x800A4F80 | prev: BLOCKER: GTE ctc2/mtc2 hand-asm (window covers ~7 tiny SetRotMatrix/SetVector-style loaders)
+
+# 2026-09-02: address-taken PARAMETER whose entry home store retail does not emit.
+#   uopt emits `sw a0,home(sp)` in the ENT block for every address-taken parameter
+#   and never kills it, even when every path stores again before the address
+#   escapes; retail has only the per-arm stores.  ugen is not the emitter (read
+#   end to end: f_home_parameters / f_home_parms / f_save_vreg only reserve).
+
+# 2026-09-02: remaining semi_stub functions that are hand-written GTE assembly (libgte
+#   class -- LIBGTE was linked verbatim, see PSYQ-LIB-IDENTIFICATION.md). ctc2/mtc2/mfc2/
+#   c2 cannot be emitted by IDO 5.2 from C. Terminal asm_only, same class as the five
+#   ctc2 loaders filed 2026-08-31.
+MulMatrix2        # ASM-ONLY sony_libgte_verbatim: 4.5 LIBGTE.LIB member MTX_04 +0x0 (MulMatrix2), 23/67 COP2 words, 268 B; member aligned 67/68 at 0x800A4AAC (miss = trailing pad) (2026-09-25)
+GsTMDfastTG3NL        # ASM-ONLY sony_libgte_verbatim (2026-09-26): 3.3 LIBGTE.LIB member TMDF_GT3 +0x178 (GsTMDfastTG3NL), 348 B; member whole 508/508 at 0x800A7AF0 | prev: ASM-ONLY sony_libgte_verbatim: 2.5 LIBGTE.LIB member TMDF_GT3 +0x178 (GsTMDfastTG3NL), 21/87 COP2 words, 348 B; member aligned 399/400 at 0x800A7AF0 (2026-09-25)
+SquareRoot0        # ASM-ONLY sony_libgte_verbatim (2026-09-26): 3.3 LIBGTE.LIB member MSC01 +0x0 (SquareRoot0 0x800A4E60/132, SquareRoot12 0x800A4EE4/156), whole member 72/72 words; the 420-byte window also covers the head of 3.3 REG03 (SetVertex0/1/2, SetVertexTri, SetRGBfifo, SetIR123, SetIR0 at 0x800A4F80-0x800A5004), also whole-member verbatim 96/96 | prev: BLOCKER: GTE hand-asm (12-leaf GTE blob (12 jr ra, 23 COP2 words in 105) -- ctc2/mfc2 loaders and readers)
+ApplyMatrixLV        # ASM-ONLY sony_libgte_verbatim (2026-09-26): 3.6 LIBGTE.LIB member MTX_004 +0x0 (ApplyMatrixLV), whole member 88/88 words, 352 B at 0x800A5F88 | prev: BLOCKER: GTE hand-asm (25 COP2 words in 173 (3 jr ra))
+MulMatrix0        # ASM-ONLY sony_libgte_verbatim: 4.5 LIBGTE.LIB members MTX_000 +0x0 (MulMatrix0) + MTX_002 (MulRotMatrix0) + MTX_001 (MulRotMatrix), 59/182 COP2 words, 728 B; members aligned back-to-back 67/68 at 0x800A5BA0, 57/60 at 0x800A5CAC, 58/60 at 0x800A5D90 (misses = trailing pads) (2026-09-25)
+GsTMDfastTG3LFG        # ASM-ONLY sony_libgte_verbatim (2026-09-26, NO LONGER partial): 3.3 LIBGTE.LIB member TMDF_GT3 +0x488 (GsTMDfastTG3LFG, 436 B) + +0x63C (GsTMDfastTG3L_FLIP, 436 B at 0x800A812C) = the whole 872-byte window; member whole 508/508 at 0x800A7AF0 | prev: ASM-ONLY sony_libgte_verbatim (partial): first 436 B = 2.5 LIBGTE.LIB member TMDF_GT3 +0x488 (GsTMDfastTG3LFG), member aligned 399/400 at 0x800A7AF0; the 436 B from 0x800A812C is a separate frameless function (single-symbol 109/109 vs 4.5 GT3F GsTMDfastTG3L_FLIP, hint only); window should be split at 0x800A812C; 872 B (2026-09-25)
+SetDQA        # ASM-ONLY sony_libgte_verbatim (2026-09-26): 3.3 LIBGTE.LIB member REG03 +0x15C (SetDQA), 12 B; member whole 96/96 | prev: BLOCKER: GTE hand-asm (ctc2 a0,$27 wrapper; libgte control-register store)
+SetDQB        # ASM-ONLY sony_libgte_verbatim (2026-09-26, first 152 B): 3.3 LIBGTE.LIB REG03 +0x168 (SetDQB, 24 B) then 3.3 REG01 whole 32/32 at 0x800A5100 (ReadSZfifo3/4, ReadSXSYfifo, ReadRGBfifo, ReadGeomOffset, ReadGeomScreen, to 0x800A5180); the rest of the 884-byte window (0x800A5180-0x800A545C) is the same class of tiny lwc2/swc2/ctc2 loaders but no shipped 2.5/3.3/3.5/3.6/4.0/4.5 member aligns whole there | prev: BLOCKER: GTE hand-asm (filed 2026-09-17): 884-byte window of ~14 tiny LIBGTE register loaders/storers (ctc2/swc2/mtc2, jr ra each) right after SetDQA. Verbatim-linked Sony COP2 assembly, no C compiler emits it; asm_only listing in asm/main/matched.
+RotTransPers        # ASM-ONLY sony_libgte_verbatim (2026-09-26): 3.3 LIBGTE.LIB member SMP, whole member 172/172 words = exactly this 688-byte window (RotTransPers 0x800B1650, RotTransPers3, RotTrans, LocalLight, DpqColor, NormalColor, NormalColor3, NormalColorDpq, NormalColorDpq3, NormalColorCol, NormalColorCol3, ColorDpq, ColorCol, NormalClip, NormalClipS, AverageSZ3, AverageSZ4) | prev: BLOCKER: GTE hand-asm (filed 2026-09-17): 688-byte window of ~17 tiny LIBGTE wrappers (lwc2/swc2/cop2/cfc2/mfc2 bodies, jr ra each). Verbatim-linked Sony COP2 assembly (PSYQ-LIB-IDENTIFICATION.md), no C compiler emits it; asm_only listing in asm/main/matched.
+rand        # BLOCKER: PS1 BIOS call thunk (li t2,0xA0; jr t2; li t1,0x2F) -- hand-written
+ApplyMatrixSV        # ASM-ONLY sony_libgte_verbatim: 4.5 LIBGTE.LIB member MTX_06 +0x0 (ApplyMatrixSV), 11/23 COP2 words, 92 B; member aligned 23/24 at 0x800A4C08 (2026-09-25)
+SetRotMatrix        # ASM-ONLY sony_libgte_verbatim: 4.5 LIBGTE.LIB member MTX_09 +0x0 (SetRotMatrix), 5/12 COP2 words, 48 B; member aligned 12/12 at 0x800A4DAC (FULL 11 sub-floor; chain MTX_09..MTX_12 FULL 40) (2026-09-25)
+PushMatrix        # ASM-ONLY sony_libgte_verbatim (2026-09-26): 3.6 LIBGTE.LIB member MTX_006 +0x0 (PushMatrix), 160 B; member whole 80/80 words (54 unmasked) at 0x800A623C -- the 'GTE control-register dump into a ring' IS Sony's PushMatrix (cfc2 $0-$7 into the matrix stack) | prev: ASM-ONLY hand_written_asm: GTE control-register dump (8x cfc2 $0-$7 into a 640-byte ring, addi, $ra saved to a global D_800E8D70; 160 bytes @ 0x800A623C)
+# RETIRED 2026-10-04: func_80143750 byte_perfect (absorbed into TAIIKU/taiiku_race_init3 (window 0x80143750+624, absorbed head), byte_perfect)
+#   Original entry: func_80143750        # TAIIKU alt-entry fragment: 408-byte cross-prologue head of func_801438E8 (real entry, jal'd); host absorption is 35 words long -- retail shares lui $at across store runs (same-TU .data definition class), named externs cannot
+# AMENDED 2026-09-22: re-categorise as1_crossblock_fill_empty_slot -- retail's entry block is scheduled across the prologue (so as1 DID schedule) and only the two cross-block fills are skipped; ido52-gas is worse (46 words).
+ScaleMatrix        # ASM-ONLY sony_libgte_verbatim (2026-09-26): 3.3 LIBGTE.LIB member MTX +0x2E8 (ScaleMatrix), 292 B; the 3.3 MTX member (MulMatrix..SetTransMatrix, 304 words) aligns WHOLE 304/304 at 0x800A49A0 -- the 2.5 member did not, the 3.3 one does | prev: ASM-ONLY: GTE hand-asm, LIBGTE ScaleMatrix; the 2.5 MTX member does NOT align whole with the shipped archives (97/948 at the anchor) so "verbatim" is unproven -- asm_only as hand-written GTE code; listing regenerated, C stub moved to src/main/pc-port/ (2026-09-25)
+PopMatrix        # ASM-ONLY sony_libgte_verbatim (2026-09-26): 3.6 LIBGTE.LIB member MTX_006 +0xA0 (PopMatrix), 160 B; member whole 80/80 at 0x800A623C -- the whole window is one member, not PopMatrix + 4.5 MTX_009/MTX_007 fragments | prev: ASM-ONLY: GTE hand-asm, LIBGTE PopMatrix; last 144 B are verbatim 4.5 MTX_009 ReadRotMatrix + MTX_007 ReadLightMatrix, the first 160 B differ from 4.5 MTX_006 and the 2.5 MTX member does not align whole (153/948); C stub in src/main/pc-port/ (2026-09-25)
+MulMatrix        # ASM-ONLY sony_libgte_verbatim: 4.5 LIBGTE.LIB member MTX_03 +0x0 (MulMatrix), 23/67 COP2 words, 268 B; member aligned 67/68 at 0x800A49A0 (miss = trailing pad); 14 jal callers; C stub in src/main/pc-port/ (2026-09-25)
+# RETIRED 2026-10-04: func_80079DCC byte_perfect (main matched_c; 0x80079DCC covered by registered src/main/matched/SD_VabLoad.c (0x80079DB8+216))
+#   Original entry: func_80079DCC        # BLOCKER alt_entry_fragment: secondary entry into func_80079DC8 (no initial lui, hidden inputs in v1/t6); 2/48 body 48 vs 49 (2026-09-24)
+GsTMDfastTNG3        # ASM-ONLY sony_libgte_verbatim (2026-09-26): 3.3 LIBGTE.LIB member TMDF_GT3 +0x0 (GsTMDfastTNG3), 376 B; the 3.3 member (2032 B, 508 words, incl. GsTMDfastTG3L_FLIP) aligns WHOLE 508/508 at 0x800A7AF0 -- the 2.5 member was 399/400 | prev: ASM-ONLY sony_libgte_verbatim: LIBGTE 2.5 member TMDF_GT3 +0x0 (GsTMDfastTNG3), 21/94 COP2 words, 376 B; the whole 1600-byte member matches retail 399/400 from 0x800A7AF0 (the miss is the member's trailing pad word); C stub kept in src/main/pc-port/ (2026-09-25)
+GsTMDfastTG3L        # ASM-ONLY sony_libgte_verbatim (2026-09-26): 3.3 LIBGTE.LIB member TMDF_GT3 +0x2D4 (GsTMDfastTG3L), 436 B; member whole 508/508 at 0x800A7AF0 | prev: ASM-ONLY sony_libgte_verbatim: LIBGTE 2.5 member TMDF_GT3 +0x2d4 (GsTMDfastTG3L), 26/109 COP2 words, 436 B; same member as GsTMDfastTNG3; C stub kept in src/main/pc-port/ (2026-09-25)
+
+TransMatrix        # ASM-ONLY sony_libgte_verbatim: 4.5 LIBGTE.LIB member MTX_07 +0x0 (TransMatrix), 0/9 COP2 words, 36 B; member aligned 9/12 at 0x800A4C64 (3 trailing pad words; FULL 8 sub-floor, corroborated by the back-to-back MTX_03..MTX_06 chain) (2026-09-25)
+DATE/RotMatrixX  # non_ido_library_code: Psy-Q LIBGTE RotMatrixX (FGO_04) hand-written assembly (vacuous bgez-to-next, dead multu..mflo nops, multu for signed products, intra-function j); main RotMatrix*_C is the C variant, does not transfer (2026-10-03)
+# RETIRED 2026-10-04: _mk_xpndsp byte_perfect (main matched_c; registered src/main/matched/_mk_xpndsp.c (0x8009E330+708)): the "toolchain we do not have" is IDO as1's reorganizer run on the gcc text -- maspsx --konami-lib-sched (as1 DAG model, v2) gives 177/177 with no swap; the archived C needed one fix (coordIn filled u, v, flag).
+#   Original entry: _mk_xpndsp                   # BLOCKER retail_lib_scheduler: 0x8009E330, TRUE window 708 B (177 words; Sony LIBGS 2D_COM0 member, 2D_COM0.C, offset 64..772 in SDK 3.3-4.5). Re-audited 2026-10-03 (origin audit): the faithful C (src/main/archive/_mk_xpndsp_painted.c, gcc 2.6.0/2.6.3 -O2) reproduces SONY'S OWN 3.3/3.5/3.6 object 173/177 in place (only 4 sh/addiu words + the epilogue differ), and retail is a pure PERMUTATION of that object (177-word multisets identical after reloc masking) -- so source, allocation and frame are right and the residue is scheduling by a toolchain we do not have: retail interleaves the prologue saves (s1,s2,s3,ra,s5,s4,s0, move s2,a0 at word 12), restores ascending (ra,s0..s5) with `addiu sp` in the jr slot, hoists the next call's arg setup (addiu s0 / move a2 / move a0 / addiu a1) into the four lbu load-delay nops, and keeps a nop in `lbu; nop; j; sw`. Ground truth: genuine ASPSX 2.21/2.34 (dosbox), 2.56, 2.67, 2.86 (wibo) assemble the gcc .s PASSIVELY (no slot fill, no load scheduling, no epilogue fill); cc1 2.4.1/2.5.7/2.6.0 (DOS) and 2.6.0/2.6.3/2.6.3p(-fsched2-forward/-fsched-old-blockage)/2.7.2/2.8.1 schedule differently; best honest pipeline 177 words with wrong j joins (--fill-earliest) or 178 (--delay-slot-load-nop). The old bridge was 96 swaps + 2 adjust_branch_offset (banned). Marker: src/main/semi-matched/_mk_xpndsp.c; listing asm/main/matched/_mk_xpndsp.s 2026-10-04: the -g lever (EigenMatrix, maspsx --loc-load-nop) is refuted: -g leaves cc1 2.6.0/2.7.2 output unchanged here (LCS distance 90 either way) and --loc-load-nop adds 18 nops retail does not have (195 words).
+# RETIRED 2026-10-04: GsMapModelingData byte_perfect 28/28 (src/main/matched/GsMapModelingData.c, registered 0x8009D220+112). The blez slot was cc1 dbr on Sony's source order (count read after `p++`), the ori/lw tie a ksched tie-break rule (no latency seen into a cc1 noreorder group except through a memory base). Was: GsMapModelingData            # BLOCKER retail_lib_scheduler: 0x8009D220, TRUE window 112 B (28 words; the map's 0x8009D230 is inside the bnez slot; Sony LIBGS GS_105, SCLIB.C). Re-audited 2026-10-03 (origin audit): honest best is 28/28 count, 22 exact, three order residues -- (1) `ori; lw a3,4(a0); sw` vs `ori; sw; lw a3,4(a0)`, (2) retail keeps `move a2,zero` above `blez` and fills the slot from the FALL-THROUGH (`addiu a0,a0,4`) where gcc dbr takes the preceding `move a2,zero`, (3) the loop's load-delay fill `addiu a2` vs `addu v1` (retail +8 update before +16). Measured: cc1 2.6.0/2.6.3/2.6.3p (incl. -fsched2-forward, -fsched-old-blockage)/2.7.2/2.8.1 x 11 source shapes (index/struct/pointer loops, n read before/after the flag store, i=0 placement, explicit guards, do-while) x sched/rerun-cse flags x fill-tool modes (epilogue/load-delay/earliest/ptr-bump-down): max 22. Genuine ASPSX 2.21/2.34/2.56/2.67/2.86 is passive on the gcc .s (no slot fill, no load hoist). No Sony archive (SDK 2.6, 3.0-4.7) equals retail: 3.x is 30 words (unfilled jr slot, load nop), 4.1+ drops the 8-byte frame; the 3.3 member does fill blez from the fall-through, so retail's cc1 dbr differs from every cc1 on disk. The old bridge was swap + adjust_branch_offset across the blez (banned). Marker: src/main/semi-matched/GsMapModelingData.c; C: src/main/archive/GsMapModelingData_painted.c; listing asm/main/matched/GsMapModelingData.s 2026-10-04: the -g lever (EigenMatrix, maspsx --loc-load-nop) is refuted: -g leaves cc1 2.6.0-2.8.1 output unchanged here (still 22/28) and --loc-load-nop adds 4 nops retail does not have (`lw a3,4(a0); sw` has none).
+DATE/RotMatrixZ  # non_ido_library_code: Psy-Q LIBGTE RotMatrixZ (FGO_06) hand-written assembly (vacuous bgez-to-next, dead multu..mflo nops, multu for signed products, intra-function j); main RotMatrix*_C is the C variant, does not transfer (2026-10-03)
+DATE/RotMatrixY  # non_ido_library_code: Psy-Q LIBGTE RotMatrixY (FGO_05) hand-written assembly (vacuous bgez-to-next, dead multu..mflo nops, multu for signed products, intra-function j); main RotMatrix*_C is the C variant, does not transfer (2026-10-03)
+TACO/RotMatrixZ  # non_ido_library_code: Psy-Q LIBGTE RotMatrixZ (FGO_06) hand-written assembly (vacuous bgez-to-next, dead multu..mflo nops, multu for signed products, intra-function j); main RotMatrix*_C is the C variant, does not transfer (2026-10-03)
+TACO/RotMatrixX  # non_ido_library_code: Psy-Q LIBGTE RotMatrixX (FGO_04) hand-written assembly (vacuous bgez-to-next, dead multu..mflo nops, multu for signed products, intra-function j); main RotMatrix*_C is the C variant, does not transfer (2026-10-03)
+TACO/RotMatrixY  # non_ido_library_code: Psy-Q LIBGTE RotMatrixY (FGO_05) hand-written assembly (vacuous bgez-to-next, dead multu..mflo nops, multu for signed products, intra-function j); main RotMatrix*_C is the C variant, does not transfer (2026-10-03)
+
+# --- 2026-10-03: Sony assembly that no listing and no registry entry covered ---
+# Found by tools/analysis/audit_main_coverage.py (the byte-level coverage gate).
+# Evidence = whole-member alignment against the Sony archives on disk
+# (Psy-Q {2.5,4.5} archives, ~/psy-q-decomp/psy-q/{3.3,3.5,3.6,4.0} -- the SDK
+# is not vendored since the 2026-11 cleanup), compared
+# under each member's own relocation mask; none of these members carries a
+# ccpsx source record (Sony's C members all do).  Listings: tools/analysis/
+# gen_bios_thunk_asm.py (BIOS thunks) and emit_asm_only_window.py (LIBGTE).
+InitCARD         # ASM-ONLY bios_trampoline: 0x800B4760/16 -- B(0x4A) InitCARD; LIBAPI member A74, 16/16 exact in SDK 2.5-4.5, no source record
+StartCARD         # ASM-ONLY bios_trampoline: 0x800B4770/16 -- B(0x4B) StartCARD; LIBAPI member A75, 16/16 exact in SDK 2.5-4.5, no source record
+_bu_init         # ASM-ONLY bios_trampoline: 0x800B4780/16 -- A(0x70) _bu_init; LIBAPI member C112, 16/16 exact in SDK 2.5-4.5, no source record
+_card_auto         # ASM-ONLY bios_trampoline: 0x800B4790/16 -- A(0xAD) _card_auto; LIBAPI member C173, 16/16 exact in SDK 2.5-4.5, no source record
+_card_status         # ASM-ONLY bios_trampoline: 0x800B47A0/16 -- B(0x5C) _card_status; LIBAPI member A92, 16/16 exact in SDK 2.5-4.5, no source record
+_card_info         # ASM-ONLY bios_trampoline: 0x800B47B0/16 -- A(0xAB) _card_info; LIBAPI member C171, 16/16 exact in SDK 2.5-4.5, no source record
+_card_load         # ASM-ONLY bios_trampoline: 0x800B47C0/16 -- A(0xAC) _card_load; LIBAPI member C172, 16/16 exact in SDK 2.5-4.5, no source record
+_new_card         # ASM-ONLY bios_trampoline: 0x800B4800/16 -- B(0x50) _new_card; LIBAPI member A80, 16/16 exact in SDK 2.5-4.5, no source record
+_card_write         # ASM-ONLY bios_trampoline: 0x800B4810/16 -- B(0x4E) _card_write; LIBAPI member A78, 16/16 exact in SDK 2.5-4.5, no source record
+bzero         # ASM-ONLY bios_trampoline: 0x800B4820/16 -- A(0x28) bzero; LIBAPI member C40, 16/16 exact in SDK 2.5-4.5, no source record
+RotAverageNclip3         # ASM-ONLY sony_libgte_verbatim: LIBGTE CMB_06 (RotAverageNclip3) 34/36 at 0x800A550C in SDK 3.3-4.5 (revision variant), 16/34 COP2 words, 136 B, no source record
+func_800A56E4         # ASM-ONLY sony_libgte_verbatim: LIBGTE CMB_12 RotColorDpq 19/20, CMB_13 RotColorDpq3 38/40, CMB_08 RotAverageNclipColorDpq3 50/52, CMB_09 RotAverageNclipColorCol3 50/52, CMB_14 RotColorMatDpq 26/28 back to back (SDK 3.3-4.5, revision variants), 99/183 COP2 words, 732 B, no source record
+func_800A5A40         # ASM-ONLY sony_libgte_verbatim: LIBGTE MTX_003 (CompMatrix) 85/88 at 0x800A5A40 in SDK 3.6/4.0/4.5, 29/88 COP2 words, 352 B, no source record
+TransposeMatrix         # ASM-ONLY sony_libgte_verbatim: LIBGTE FGO_00 (TransposeMatrix) WHOLE member 20/20 (all 32-bit compared) at 0x800A6460 in SDK 3.3/3.5/3.6, 80 B, no source record
+EVENT/func_8015B530   # ASM-ONLY bios_trampoline: 0x8015B530/16 (runtime 0x8011F530; EVENT.EXN linked at 0x800F6000) -- A(0x30) srand-index trampoline li t2,0xA0/jr t2/li t1,0x30/nop; called by func_80136D28/func_80158758/func_8015ADFC; found by audit_overlay_coverage.py 2026-10-03

@@ -1,0 +1,130 @@
+name: Lint and policy
+
+# Runners are pinned to ubuntu-24.04: ubuntu-latest moved to 26.04, which no
+# longer ships binutils-mipsel-linux-gnu (compile-check needs mipsel-linux-gnu-as).
+# Never use ubuntu-latest here: a runner upgrade must be a deliberate commit.
+#
+# Local mirror: tools/ci/run_ci_locally.sh runs these jobs step for step in a
+# clean checkout of a commit (~30 s). Change both files in the same commit.
+# (This is toki1-decomp's workflow: the PC port and the English patch are
+# separate repositories with their own CI.)
+
+# CI has no retail disc, so it cannot run the verification battery: that needs
+# the player's own SLPS-00065 image (see docs/GETTING-STARTED.md and the battery
+# in docs/progress/REMAINING-WORK.md). Everything here is disc-free on purpose.
+# If a check below ever needs the disc, delete the check instead of making it
+# skip silently: a green CI that verified nothing is worse than no CI.
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+# A newer push to the same branch makes an older run moot.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Python, shell and JSON syntax
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Byte-compile every Python tool
+        run: python -m compileall -q -x '(\.venv|build|node_modules|__pycache__|\.git)' tools
+
+      - name: Shell syntax
+        run: |
+          find tools -name '*.sh' -print0 | xargs -0 -r -n1 bash -n
+
+      - name: Every tracked JSON parses
+        run: |
+          python - <<'PY'
+          import json
+          import subprocess
+          files = subprocess.run(["git", "ls-files", "*.json"],
+                                 capture_output=True, text=True, check=True).stdout.split()
+          bad = []
+          for path in files:
+              try:
+                  with open(path, encoding="utf-8") as fh:
+                      json.load(fh)
+              except Exception as exc:            # noqa: BLE001 - report, do not crash
+                  bad.append(f"{path}: {exc}")
+          print(f"{len(files)} JSON files parsed, {len(bad)} failed")
+          for line in bad:
+              print("BAD", line)
+          raise SystemExit(1 if bad else 0)
+          PY
+
+  postproc-policy:
+    name: PostProc ban suite and grandfather list
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Pure Python: fixtures plus the grandfather-only-shrinks check. No disc,
+      # no compiler build.
+      - name: PostProc ban suite
+        run: python tools/build/test_banned_postproc.py
+
+  compile-check:
+    name: Every matched C file still compiles
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # binutils-mipsel-linux-gnu: tools/gcc/gccwrap.py assembles every Psy-Q
+      # GCC and ido52-gas/-aspsx file with mipsel-linux-gnu-as (~213 matched
+      # files; without it each fails with FileNotFoundError). The preprocessor
+      # falls back to the host cpp from build-essential.
+      - name: System dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential pkg-config binutils-mipsel-linux-gnu
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Vendored sources only (recomp + rabbitizer + the Psy-Q GCC/IDO trees):
+      # nothing is fetched from outside the repository.
+      - name: Build the IDO 5.2 recompiler
+        run: make setup-ido52
+
+      # Compiles every matched C file with its declared compiler and compares
+      # the instruction count against the declared size. PostProc is not run
+      # (it needs the retail bytes); byte identity is gated by `build-c` on the
+      # owner's machine.
+      - name: Compile matched C
+        run: python tools/build/ci_compile_check.py

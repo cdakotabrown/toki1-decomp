@@ -1,0 +1,1 @@
+{"scope": "TACO", "host": "0x8015F5C0", "count": 40, "type": "TACO_UV", "header": "tokimeki/taco_uv.h", "size": 2, "head_leaf": "u", "leaves": [[0, "u", "u8"], [1, "v", "u8"]]}

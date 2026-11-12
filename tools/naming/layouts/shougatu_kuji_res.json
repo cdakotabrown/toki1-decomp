@@ -1,0 +1,1 @@
+{"scope": "SHOUGATU", "host": "0x80143E70", "count": 1, "type": "SHOUGATU_KUJI_RES", "size": 40, "leaves": [[0, "hdr[0]", "s32"], [4, "hdr[1]", "s32"], [8, "img[0]", "s32"], [12, "img[1]", "s32"], [16, "anim_tbl[0]", "s32"], [20, "anim_tbl[1]", "s32"], [24, "aux[0]", "s16"], [28, "aux[1]", "s16"], [32, "pal[0]", "s32"], [36, "pal[1]", "s32"]]}

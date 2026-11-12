@@ -1,0 +1,89 @@
+/* Address: 0x8014BE10 */
+/* Size: 644 bytes (161 instructions) */
+/* @SymbolSize: 644 */
+#include "types.h"
+
+extern void * D_801251D0;
+extern void * D_801251D4;
+extern void * D_801251D8;
+extern void * D_801251DC;
+extern void * D_801251E0;
+extern void * D_801251E4;
+extern void * D_801251E8;
+extern void * D_801251EC;
+extern void * D_801251F0;
+extern void * D_801251F4;
+extern void * D_801251F8;
+extern void * D_801251FC;
+extern void * D_80125200;
+extern void * D_80125204;
+extern void * D_80125208;
+extern void * D_8012520C;
+extern void * D_80125210;
+extern void * D_80125214;
+extern void * D_80125218;
+extern void * D_8012521C;
+extern void * D_80125220;
+extern void * D_80125224;
+extern void * D_80125228;
+extern void * D_8012522C;
+extern void * D_80125230;
+extern void * D_80125234;
+extern void * D_80125238;
+extern void * D_8012523C;
+extern void * D_80125240;
+extern void * D_80125244;
+extern void * D_80125248;
+extern void * D_8012524C;
+extern void * D_80125250;
+extern void * D_80125254;
+extern void * D_80125258;
+extern void * D_8012525C;
+extern void * D_80125260;
+extern void * D_80125264;
+extern void * D_80125268;
+extern void * D_8012526C;
+
+void func_8014BE10(void)
+{
+    D_801251D0 = (void *)0x801A427C;
+    D_801251D4 = (void *)0x801A4D2C;
+    D_801251D8 = (void *)0x801A43EC;
+    D_801251DC = (void *)0x801A4E9C;
+    D_801251E0 = (void *)0x801A47F0;
+    D_801251E4 = (void *)0x801A52A0;
+    D_801251E8 = (void *)0x801A4190;
+    D_801251EC = (void *)0x801A4C40;
+    D_801251F0 = (void *)0x801A4A04;
+    D_801251F4 = (void *)0x801A54B4;
+    D_801251F8 = (void *)0x801A4368;
+    D_801251FC = (void *)0x801A4E18;
+    D_80125200 = (void *)0x801A4430;
+    D_80125204 = (void *)0x801A4EE0;
+    D_80125208 = (void *)0x801A4684;
+    D_8012520C = (void *)0x801A5134;
+    D_80125210 = (void *)0x801A497C;
+    D_80125214 = (void *)0x801A542C;
+    D_80125218 = (void *)0x801A4238;
+    D_8012521C = (void *)0x801A4CE8;
+    D_80125220 = (void *)0x801A49C0;
+    D_80125224 = (void *)0x801A5470;
+    D_80125228 = (void *)0x801A41F4;
+    D_8012522C = (void *)0x801A4CA4;
+    D_80125230 = (void *)0x801A4064;
+    D_80125234 = (void *)0x801A4B14;
+    D_80125238 = (void *)0x801A4A28;
+    D_8012523C = (void *)0x801A54D8;
+    D_80125240 = (void *)0x801A4A6C;
+    D_80125244 = (void *)0x801A551C;
+    D_80125248 = (void *)0x801A4600;
+    D_8012524C = (void *)0x801A50B0;
+    D_80125250 = (void *)0x801A412C;
+    D_80125254 = (void *)0x801A4BDC;
+    D_80125258 = (void *)0x801A4324;
+    D_8012525C = (void *)0x801A4DD4;
+    D_80125260 = (void *)0x801A4474;
+    D_80125264 = (void *)0x801A4F24;
+    D_80125268 = (void *)0x801A4000;
+    D_8012526C = (void *)0x801A4AB0;
+}

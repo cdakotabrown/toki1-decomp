@@ -1,0 +1,385 @@
+diff --git a/calls.c b/calls.c
+index b350a75..2a3afd2 100644
+--- a/calls.c
++++ b/calls.c
+@@ -126,6 +126,7 @@ static int calls_function	PROTO((tree, int));
+ static int calls_function_1	PROTO((tree, int));
+ static void emit_call_1		PROTO((rtx, tree, int, int, rtx, rtx, int,
+ 				       rtx, int));
++static void precompute_register_parameters PROTO((int, struct arg_data *, int *));
+ static void store_one_arg	PROTO ((struct arg_data *, rtx, int, int,
+ 					tree, int));
+ 
+@@ -460,6 +461,72 @@ emit_call_1 (funexp, funtype, stack_size, struct_value_size, next_arg_reg,
+ #endif
+ }
+ 
++/* Precompute all register parameters of ARGS (NUM_ACTUALS entries) into
++   pseudos or constants; set *REG_PARM_SEEN if any exist.  Factored out of
++   expand_call so that -fstack-args-first can run it after the stack
++   arguments have been stored.  */
++
++static void
++precompute_register_parameters (num_actuals, args, reg_parm_seen_p)
++     int num_actuals;
++     struct arg_data *args;
++     int *reg_parm_seen_p;
++{
++  int i;
++  int reg_parm_seen = 0;
++
++  for (i = 0; i < num_actuals; i++)
++    if (args[i].reg != 0 && ! args[i].pass_on_stack)
++      {
++	reg_parm_seen = 1;
++
++	if (args[i].value == 0)
++	  {
++	    push_temp_slots ();
++	    args[i].value = expand_expr (args[i].tree_value, NULL_RTX,
++					 VOIDmode, 0);
++	    preserve_temp_slots (args[i].value);
++	    pop_temp_slots ();
++
++	    /* ANSI doesn't require a sequence point here,
++	       but PCC has one, so this will avoid some problems.  */
++	    emit_queue ();
++	  }
++
++	/* If we are to promote the function arg to a wider mode,
++	   do it now.  */
++
++	if (args[i].mode != TYPE_MODE (TREE_TYPE (args[i].tree_value)))
++	  args[i].value
++	    = convert_modes (args[i].mode,
++			     TYPE_MODE (TREE_TYPE (args[i].tree_value)),
++			     args[i].value, args[i].unsignedp);
++
++	/* If the value is expensive, and we are inside an appropriately 
++	   short loop, put the value into a pseudo and then put the pseudo
++	   into the hard reg.
++
++	   For small register classes, also do this if this call uses
++	   register parameters.  This is to avoid reload conflicts while
++	   loading the parameters registers.  */
++
++	if ((! (GET_CODE (args[i].value) == REG
++		|| (GET_CODE (args[i].value) == SUBREG
++		    && GET_CODE (SUBREG_REG (args[i].value)) == REG)))
++	    && args[i].mode != BLKmode
++	    && rtx_cost (args[i].value, SET) > 2
++#ifdef SMALL_REGISTER_CLASSES
++	    && (reg_parm_seen || preserve_subexpressions_p ())
++#else
++	    && preserve_subexpressions_p ()
++#endif
++	    )
++	  args[i].value = copy_to_mode_reg (args[i].mode, args[i].value);
++      }
++
++  *reg_parm_seen_p = reg_parm_seen;
++}
++
+ /* Generate all the code for a function call
+    and return an rtx for its value.
+    Store the value in TARGET (specified as an rtx) if convenient.
+@@ -1581,57 +1648,16 @@ expand_call (exp, target, ignore)
+     }
+ 
+   /* Precompute all register parameters.  It isn't safe to compute anything
+-     once we have started filling any specific hard regs. */
++     once we have started filling any specific hard regs.
++     -fstack-args-first defers this until the stack arguments are stored.  */
+   reg_parm_seen = 0;
+-  for (i = 0; i < num_actuals; i++)
+-    if (args[i].reg != 0 && ! args[i].pass_on_stack)
+-      {
++  if (! flag_stack_args_first)
++    precompute_register_parameters (num_actuals, args, &reg_parm_seen);
++  else
++    for (i = 0; i < num_actuals; i++)
++      if (args[i].reg != 0 && ! args[i].pass_on_stack)
+ 	reg_parm_seen = 1;
+ 
+-	if (args[i].value == 0)
+-	  {
+-	    push_temp_slots ();
+-	    args[i].value = expand_expr (args[i].tree_value, NULL_RTX,
+-					 VOIDmode, 0);
+-	    preserve_temp_slots (args[i].value);
+-	    pop_temp_slots ();
+-
+-	    /* ANSI doesn't require a sequence point here,
+-	       but PCC has one, so this will avoid some problems.  */
+-	    emit_queue ();
+-	  }
+-
+-	/* If we are to promote the function arg to a wider mode,
+-	   do it now.  */
+-
+-	if (args[i].mode != TYPE_MODE (TREE_TYPE (args[i].tree_value)))
+-	  args[i].value
+-	    = convert_modes (args[i].mode,
+-			     TYPE_MODE (TREE_TYPE (args[i].tree_value)),
+-			     args[i].value, args[i].unsignedp);
+-
+-	/* If the value is expensive, and we are inside an appropriately 
+-	   short loop, put the value into a pseudo and then put the pseudo
+-	   into the hard reg.
+-
+-	   For small register classes, also do this if this call uses
+-	   register parameters.  This is to avoid reload conflicts while
+-	   loading the parameters registers.  */
+-
+-	if ((! (GET_CODE (args[i].value) == REG
+-		|| (GET_CODE (args[i].value) == SUBREG
+-		    && GET_CODE (SUBREG_REG (args[i].value)) == REG)))
+-	    && args[i].mode != BLKmode
+-	    && rtx_cost (args[i].value, SET) > 2
+-#ifdef SMALL_REGISTER_CLASSES
+-	    && (reg_parm_seen || preserve_subexpressions_p ())
+-#else
+-	    && preserve_subexpressions_p ()
+-#endif
+-	    )
+-	  args[i].value = copy_to_mode_reg (args[i].mode, args[i].value);
+-      }
+-
+ #if defined(ACCUMULATE_OUTGOING_ARGS) && defined(REG_PARM_STACK_SPACE)
+   /* The argument list is the property of the called routine and it
+      may clobber it.  If the fixed area has been used for previous
+@@ -1705,6 +1731,11 @@ expand_call (exp, target, ignore)
+       store_one_arg (&args[i], argblock, may_be_alloca,
+ 		     args_size.var != 0, fndecl, reg_parm_stack_space);
+ 
++  /* -fstack-args-first: the register parameters are computed only now,
++     after every stack-passed argument has been stored.  */
++  if (flag_stack_args_first)
++    precompute_register_parameters (num_actuals, args, &reg_parm_seen);
++
+ #ifdef STRICT_ALIGNMENT
+   /* If we have a parm that is passed in registers but not in memory
+      and whose alignment does not permit a direct copy into registers,
+diff --git a/flags.h b/flags.h
+index 07ea734..233e063 100644
+--- a/flags.h
++++ b/flags.h
+@@ -236,6 +236,12 @@ extern int flag_omit_frame_pointer;
+ 
+ extern int flag_no_peephole;
+ 
++/* Nonzero: store stack args before computing register args.  */
++extern int flag_stack_args_first;
++
++/* Nonzero: forward list scheduling after reload.  */
++extern int flag_sched2_forward;
++
+ /* Nonzero means all references through pointers are volatile.  */
+ 
+ extern int flag_volatile;
+diff --git a/sched.c b/sched.c
+index 0f08b65..b2b1109 100644
+--- a/sched.c
++++ b/sched.c
+@@ -3103,6 +3103,153 @@ finish_sometimes_live (regs_sometimes_live, sometimes_max)
+     }
+ }
+ 
++/* -fsched2-forward: after reload, re-order the insns of one scheduled
++   block with a FORWARD list scheduler over the same dependence graph
++   (LOG_LINKS) and the same MIPS unit model (insn_cost, function unit
++   blockage).  Each cycle the ready insn with the longest latency-weighted
++   path to the end of the block is issued; ties go first to an insn that is
++   data dependent on the insn issued last, then to the original (pre-sched2)
++   order.  An insn is ready when every predecessor has issued and its
++   latency has elapsed and its function units are free; when nothing is
++   ready the clock advances (the stall is left to the assembler).  This is
++   the order retail Psy-Q library objects show (CdIntToPos, CdIntToPos).
++   Blocks containing SCHED_GROUP_P insns or interior notes are left in
++   the backward scheduler's order.  */
++
++static void
++schedule_block_forward (prev_head, next_tail, file)
++     rtx prev_head, next_tail;
++     FILE *file;
++{
++  rtx insn, link, first_insn = 0, last_insn;
++  rtx *v;
++  int *pri, *issued, *npred;
++  int n = 0, i, j, k, clock, nsched;
++  int max_uid = get_max_uid ();
++  int *idx;
++  rtx unit_last[FUNCTION_UNITS_SIZE];
++  int unit_time[FUNCTION_UNITS_SIZE];
++  rtx last_issued = 0;
++
++  for (insn = NEXT_INSN (prev_head); insn != next_tail; insn = NEXT_INSN (insn))
++    {
++      if (GET_RTX_CLASS (GET_CODE (insn)) == 'i')
++	{
++	  if (SCHED_GROUP_P (insn))
++	    return;
++	  if (first_insn == 0)
++	    first_insn = insn;
++	  n++;
++	}
++      else if (first_insn != 0)
++	return;			/* A note among the insns: leave the block.  */
++    }
++  if (n < 2)
++    return;
++
++  v = (rtx *) alloca (n * sizeof (rtx));
++  pri = (int *) alloca (n * sizeof (int));
++  issued = (int *) alloca (n * sizeof (int));
++  npred = (int *) alloca (n * sizeof (int));
++  idx = (int *) alloca ((max_uid + 1) * sizeof (int));
++  for (i = 0; i <= max_uid; i++)
++    idx[i] = -1;
++
++  /* V holds the insns in original (pre-sched2) order.  */
++  for (i = 0, insn = first_insn; insn != next_tail; insn = NEXT_INSN (insn))
++    v[i++] = insn;
++  for (i = 1; i < n; i++)
++    for (j = i; j > 0 && INSN_LUID (v[j - 1]) > INSN_LUID (v[j]); j--)
++      {
++	rtx t = v[j]; v[j] = v[j - 1]; v[j - 1] = t;
++      }
++  for (i = 0; i < n; i++)
++    idx[INSN_UID (v[i])] = i;
++
++  /* Priority: longest latency-weighted path to the end of the block.  */
++  for (i = n - 1; i >= 0; i--)
++    pri[i] = 0;
++  for (i = n - 1; i >= 0; i--)
++    for (link = LOG_LINKS (v[i]); link; link = XEXP (link, 1))
++      {
++	rtx p = XEXP (link, 0);
++	if (INSN_UID (p) <= max_uid && (j = idx[INSN_UID (p)]) >= 0
++	    && pri[i] + insn_cost (p, link, v[i]) > pri[j])
++	  pri[j] = pri[i] + insn_cost (p, link, v[i]);
++      }
++
++  for (i = 0; i < n; i++)
++    issued[i] = -1;
++  for (i = 0; i < FUNCTION_UNITS_SIZE; i++)
++    unit_last[i] = 0, unit_time[i] = 0;
++
++  /* Leading notes (moved to the head of the block) stay in front.  */
++  last_insn = PREV_INSN (first_insn);
++  for (clock = 0, nsched = 0; nsched < n; clock++)
++    {
++      int best = -1, best_dep = 0;
++
++      for (i = 0; i < n; i++)
++	{
++	  int ok = 1, dep = 0, u;
++
++	  if (issued[i] >= 0)
++	    continue;
++	  for (link = LOG_LINKS (v[i]); link && ok; link = XEXP (link, 1))
++	    {
++	      rtx p = XEXP (link, 0);
++	      if (INSN_UID (p) > max_uid || (j = idx[INSN_UID (p)]) < 0)
++		continue;
++	      if (issued[j] < 0
++		  || issued[j] + insn_cost (p, link, v[i]) > clock)
++		ok = 0;
++	      else if (p == last_issued && REG_NOTE_KIND (link) == 0)
++		dep = 1;
++	    }
++	  if (! ok)
++	    continue;
++
++	  /* Function unit blockage against the last insn on each unit.  */
++	  u = insn_unit (v[i]);
++	  for (k = 0; k < FUNCTION_UNITS_SIZE && ok; k++)
++	    if ((u >= 0 ? u == k : ((~u) >> k) & 1) && unit_last[k] != 0
++		&& unit_time[k]
++		   + (function_units[k].blockage_function
++		      ? (*function_units[k].blockage_function) (unit_last[k],
++							       v[i])
++		      : function_units[k].max_blockage) > clock)
++	      ok = 0;
++	  if (! ok)
++	    continue;
++
++	  if (best < 0 || pri[i] > pri[best]
++	      || (pri[i] == pri[best] && dep && ! best_dep))
++	    best = i, best_dep = dep;
++	}
++
++      if (best < 0)
++	continue;		/* Stall.  */
++
++      if (file)
++	fprintf (file, ";; forward: T%d insn %d (priority %d%s)\n", clock,
++		 INSN_UID (v[best]), pri[best], best_dep ? ", dep" : "");
++      issued[best] = clock;
++      last_issued = v[best];
++      {
++	int u = insn_unit (v[best]);
++	for (k = 0; k < FUNCTION_UNITS_SIZE; k++)
++	  if (u >= 0 ? u == k : ((~u) >> k) & 1)
++	    unit_last[k] = v[best], unit_time[k] = clock;
++      }
++      NEXT_INSN (last_insn) = v[best];
++      PREV_INSN (v[best]) = last_insn;
++      last_insn = v[best];
++      nsched++;
++    }
++  NEXT_INSN (last_insn) = next_tail;
++  PREV_INSN (next_tail) = last_insn;
++}
++
+ /* Use modified list scheduling to rearrange insns in basic block
+    B.  FILE, if nonzero, is where we dump interesting output about
+    this pass.  */
+@@ -3954,6 +4101,15 @@ schedule_block (b, file)
+   NEXT_INSN (tail) = next_tail;
+   PREV_INSN (next_tail) = tail;
+ 
++  if (reload_completed && flag_sched2_forward)
++    {
++      schedule_block_forward (prev_head, next_tail, file);
++      if (new_needs & NEED_HEAD)
++	basic_block_head[b] = NEXT_INSN (prev_head);
++      if (new_needs & NEED_TAIL)
++	basic_block_end[b] = PREV_INSN (next_tail);
++    }
++
+   /* Restore the line-number notes of each insn.  */
+   if (write_symbols != NO_DEBUG)
+     {
+diff --git a/toplev.c b/toplev.c
+index f69004c..a4225fe 100644
+--- a/toplev.c
++++ b/toplev.c
+@@ -397,6 +397,16 @@ int flag_omit_frame_pointer = 0;
+ 
+ int flag_no_peephole = 0;
+ 
++/* Nonzero means expand_call stores the stack-passed arguments before it
++   computes the register arguments (-fstack-args-first; Psy-Q retail order). */
++
++int flag_stack_args_first = 0;
++
++/* Nonzero means the post-reload scheduler re-orders each block with a
++   forward list scheduler (-fsched2-forward; Psy-Q retail order).  */
++
++int flag_sched2_forward = 0;
++
+ /* Nonzero allows GCC to violate some IEEE or ANSI rules regarding math
+    operations in the interest of optimization.  For example it allows
+    GCC to assume arguments to sqrt are nonnegative numbers, allowing
+@@ -553,7 +563,9 @@ struct { char *string; int *variable; int on_value;} f_options[] =
+   {"inhibit-size-directive", &flag_inhibit_size_directive, 1},
+   {"verbose-asm", &flag_verbose_asm, 1},
+   {"gnu-linker", &flag_gnu_linker, 1},
+-  {"bytecode", &output_bytecode, 1}
++  {"bytecode", &output_bytecode, 1},
++  {"stack-args-first", &flag_stack_args_first, 1},
++  {"sched2-forward", &flag_sched2_forward, 1}
+ };
+ 
+ /* Table of language-specific options.  */

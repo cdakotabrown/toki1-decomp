@@ -1,0 +1,1 @@
+{"scope": "RPG_BAT", "hosts": ["0x8015EE44", "0x8015EE50", "0x8015EE5C", "0x8015EE68", "0x8015EE74", "0x8015EE80"], "count": 1, "type": "RPG_BAT_CTL", "size": 12, "leaves": [[0, "step", "s32"], [4, "mode", "s32"], [8, "cnt", "s32"]]}

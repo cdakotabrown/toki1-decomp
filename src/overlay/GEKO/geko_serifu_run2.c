@@ -1,0 +1,29 @@
+/* @SymbolStart: 0x80136AD8 */
+/* @SymbolSize: 124 */
+/* Address: 0x80136B1C, Size: 56 bytes */
+#include "types.h"
+
+extern void serifu_main(s32, s32, s32);
+
+extern u8 serifu_no;
+extern u8 geko_now_serifu2[];
+extern u8 geko_now_serifu2_in[];
+extern s32 geko_ss_serifu2;
+extern s32 geko_ss_serifu2_kind;
+extern s32 geko_sss_sound2;
+
+extern s32 now_s;
+extern s32 now_s_in;
+extern s32 ss_s;
+extern s32 ss_s_kind;
+extern s32 sss_so;
+
+void geko_serifu_run2(void)
+{
+    now_s = (s32)geko_now_serifu2;
+    now_s_in = (s32)geko_now_serifu2_in;
+    ss_s = geko_ss_serifu2;
+    ss_s_kind = geko_ss_serifu2_kind;
+    sss_so = geko_sss_sound2;
+    serifu_main(serifu_no, 1, 0);
+}

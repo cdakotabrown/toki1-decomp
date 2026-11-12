@@ -1,0 +1,89 @@
+/* Function: date_ptr_tbl_init */
+/* Overlay: DATE */
+/* Address: 0x80132000 */
+/* Size: 644 bytes (161 instructions) */
+#include "types.h"
+
+extern s32 date_impkao_tbl;
+extern s32 date_impkao_tbl_0_kao;
+extern s32 date_impkao_tbl_1_imp;
+extern s32 date_impkao_tbl_1_kao;
+extern s32 date_impkao_tbl_2_imp;
+extern s32 date_impkao_tbl_2_kao;
+extern s32 date_impkao_tbl_3_imp;
+extern s32 date_impkao_tbl_3_kao;
+extern s32 date_impkao_tbl_4_imp;
+extern s32 date_impkao_tbl_4_kao;
+extern s32 date_impkao_tbl_5_imp;
+extern s32 date_impkao_tbl_5_kao;
+extern s32 date_impkao_tbl_6_imp;
+extern s32 date_impkao_tbl_6_kao;
+extern s32 date_impkao_tbl_7_imp;
+extern s32 date_impkao_tbl_7_kao;
+extern s32 date_impkao_tbl_8_imp;
+extern s32 date_impkao_tbl_8_kao;
+extern s32 date_impkao_tbl_9_imp;
+extern s32 date_impkao_tbl_9_kao;
+extern s32 date_impkao_tbl_10_imp;
+extern s32 date_impkao_tbl_10_kao;
+extern s32 date_impkao_tbl_11_imp;
+extern s32 date_impkao_tbl_11_kao;
+extern s32 date_impkao_tbl_12_imp;
+extern s32 date_impkao_tbl_12_kao;
+extern s32 date_impkao_tbl_13_imp;
+extern s32 date_impkao_tbl_13_kao;
+extern s32 date_impkao_tbl_14_imp;
+extern s32 date_impkao_tbl_14_kao;
+extern s32 date_impkao_tbl_15_imp;
+extern s32 date_impkao_tbl_15_kao;
+extern s32 date_impkao_tbl_16_imp;
+extern s32 date_impkao_tbl_16_kao;
+extern s32 date_impkao_tbl_17_imp;
+extern s32 date_impkao_tbl_17_kao;
+extern s32 date_impkao_tbl_18_imp;
+extern s32 date_impkao_tbl_18_kao;
+extern s32 date_impkao_tbl_19_imp;
+extern s32 date_impkao_tbl_19_kao;
+
+void date_ptr_tbl_init(void) {
+    date_impkao_tbl = (s32)0x801A427C;
+    date_impkao_tbl_0_kao = (s32)0x801A4D2C;
+    date_impkao_tbl_1_imp = (s32)0x801A43EC;
+    date_impkao_tbl_1_kao = (s32)0x801A4E9C;
+    date_impkao_tbl_2_imp = (s32)0x801A47F0;
+    date_impkao_tbl_2_kao = (s32)0x801A52A0;
+    date_impkao_tbl_3_imp = (s32)0x801A4190;
+    date_impkao_tbl_3_kao = (s32)0x801A4C40;
+    date_impkao_tbl_4_imp = (s32)0x801A4A04;
+    date_impkao_tbl_4_kao = (s32)0x801A54B4;
+    date_impkao_tbl_5_imp = (s32)0x801A4368;
+    date_impkao_tbl_5_kao = (s32)0x801A4E18;
+    date_impkao_tbl_6_imp = (s32)0x801A4430;
+    date_impkao_tbl_6_kao = (s32)0x801A4EE0;
+    date_impkao_tbl_7_imp = (s32)0x801A4684;
+    date_impkao_tbl_7_kao = (s32)0x801A5134;
+    date_impkao_tbl_8_imp = (s32)0x801A497C;
+    date_impkao_tbl_8_kao = (s32)0x801A542C;
+    date_impkao_tbl_9_imp = (s32)0x801A4238;
+    date_impkao_tbl_9_kao = (s32)0x801A4CE8;
+    date_impkao_tbl_10_imp = (s32)0x801A49C0;
+    date_impkao_tbl_10_kao = (s32)0x801A5470;
+    date_impkao_tbl_11_imp = (s32)0x801A41F4;
+    date_impkao_tbl_11_kao = (s32)0x801A4CA4;
+    date_impkao_tbl_12_imp = (s32)0x801A4064;
+    date_impkao_tbl_12_kao = (s32)0x801A4B14;
+    date_impkao_tbl_13_imp = (s32)0x801A4A28;
+    date_impkao_tbl_13_kao = (s32)0x801A54D8;
+    date_impkao_tbl_14_imp = (s32)0x801A4A6C;
+    date_impkao_tbl_14_kao = (s32)0x801A551C;
+    date_impkao_tbl_15_imp = (s32)0x801A4600;
+    date_impkao_tbl_15_kao = (s32)0x801A50B0;
+    date_impkao_tbl_16_imp = (s32)0x801A412C;
+    date_impkao_tbl_16_kao = (s32)0x801A4BDC;
+    date_impkao_tbl_17_imp = (s32)0x801A4324;
+    date_impkao_tbl_17_kao = (s32)0x801A4DD4;
+    date_impkao_tbl_18_imp = (s32)0x801A4474;
+    date_impkao_tbl_18_kao = (s32)0x801A4F24;
+    date_impkao_tbl_19_imp = (s32)0x801A4000;
+    date_impkao_tbl_19_kao = (s32)0x801A4AB0;
+}

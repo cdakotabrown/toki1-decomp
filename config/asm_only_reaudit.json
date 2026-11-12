@@ -1,0 +1,43 @@
+{
+ "generated_by": "tools/analysis/reaudit_asm_only.py",
+ "overlay_tested": 6,
+ "main_tested": 19,
+ "overlay_tally": {
+  "mismatch": 6
+ },
+ "main_tally": {
+  "mismatch": 19
+ },
+ "stale": [],
+ "results": {
+  "overlay": {
+   "DATE/RotMatrixX": "mismatch",
+   "DATE/RotMatrixY": "mismatch",
+   "DATE/RotMatrixZ": "mismatch",
+   "TACO/RotMatrixX": "mismatch",
+   "TACO/RotMatrixY": "mismatch",
+   "TACO/RotMatrixZ": "mismatch"
+  },
+  "main": {
+   "ClearOTag_painted": "mismatch",
+   "SD_VABTransfer": "mismatch",
+   "cdq_command_process_painted": "mismatch",
+   "func_80073D8C_painted": "mismatch",
+   "mascot_sel_painted": "mismatch",
+   "mode_change_check_painted": "mismatch",
+   "sprite_set_gpu_sprt2_painted": "mismatch",
+   "SD_BranchCTRL": "mismatch",
+   "file_select_copy1": "mismatch",
+   "func_80042D48": "mismatch",
+   "func_800457FC": "mismatch",
+   "func_8005DF34": "mismatch",
+   "func_80064510": "mismatch",
+   "func_800647B8": "mismatch",
+   "func_80066700": "mismatch",
+   "func_80067490": "mismatch",
+   "func_800766C0": "mismatch",
+   "func_8007E778": "mismatch",
+   "func_8009F9A4": "mismatch"
+  }
+ }
+}

@@ -1,0 +1,55 @@
+MIT License
+
+Copyright (c) 2026 cdakotabrown and contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+--------------------------------------------------------------------------------
+
+What this licence covers, and what it does not.
+
+Covers: the project's own source, tools, tests, build scripts and
+documentation -- everything in this repository that the project authored,
+unless a file or directory says otherwise. Third-party components keep their
+own licences; see THIRD-PARTY.md.
+
+Does not cover:
+
+  * Tokimeki Memorial: Forever with You. The game, its code, its data, its
+    art, its music and its text are (c) Konami. This repository holds no disc
+    images and none of the game's data files, Japanese script text, art,
+    audio or video.
+    The disc-derived inputs are built on your machine from your own copy
+    (docs/GETTING-STARTED.md). The repository does contain the project's
+    reimplementation in C (below), symbol maps, decompiled C for the Sony
+    SDK functions linked into the game, initial values of some program
+    variables, and a small amount of disassembly quoted in documentation.
+    The MIT grant covers only the project's own expression in these. It
+    grants no right in the game, and the project claims none.
+  * Trademarks. "Tokimeki Memorial" is a trademark of Konami; "PlayStation"
+    is a trademark of Sony Interactive Entertainment. This is an unofficial
+    fan project, not affiliated with, endorsed by or sponsored by Konami or
+    Sony. Neither this licence nor the project grants any trademark right.
+  * The reception of this repository as a decompilation. The C sources under
+    src/ are the project's own expression of the game's behaviour, written to
+    be byte-identical to the retail build; they are not a copy of Konami's
+    source, and the project makes no claim about Konami's rights in the
+    original work.
+  * The vendored third-party directories listed in THIRD-PARTY.md, which carry
+    their own terms.

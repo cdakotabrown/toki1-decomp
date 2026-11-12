@@ -1,0 +1,314 @@
+--- a/genattr.c
++++ b/genattr.c
+@@ -167,6 +167,7 @@
+   printf ("  unsigned int (*blockage_range_function) ();\n");
+   printf ("  int (*blockage_function) ();\n");
+   printf ("} function_units[];\n\n");
++  printf ("extern struct function_unit_desc function_units_old[];\n\n");
+   printf ("#define FUNCTION_UNITS_SIZE %d\n", num_units);
+   printf ("#define MIN_MULTIPLICITY %d\n", multiplicity->min);
+   printf ("#define MAX_MULTIPLICITY %d\n", multiplicity->max);
+--- a/genattrtab.c
++++ b/genattrtab.c
+@@ -244,6 +244,11 @@
+   rtx default_cost;		/* Conflict cost, if constant.  */
+   struct range issue_delay;	/* Range of issue delay values.  */
+   int max_blockage;		/* Maximum time an insn blocks the unit.  */
++  /* The same three values under the gcc 2.5 blockage formula, written to
++     the function_units_old table (-fsched-old-blockage).  */
++  int needs_blockage_function_old;
++  int needs_range_function_old;
++  int max_blockage_old;
+ };
+ 
+ /* Listheads of above structures.  */
+@@ -1953,6 +1958,7 @@
+       if (u < num_units)
+ 	{
+ 	  rtx max_blockage = 0, min_blockage = 0;
++	  rtx max_blockage_old = 0, min_blockage_old = 0;
+ 
+ 	  /* Simplify the readycost expression by only considering insns
+ 	     that use the unit.  */
+@@ -2039,6 +2045,46 @@
+ 	      str = attr_printf (strlen (unit->name) + sizeof ("*_block_") + MAX_DIGITS,
+ 				 "*%s_block_%d", unit->name, op->num);
+ 	      make_internal_attr (str, blockage, 1);
++
++	      /* The gcc 2.5 (genattrtab 2.5.x) formula for the same term:
++		 READY-COST (C) - (READY-COST (E) - 1), with the pipeline
++		 delay limited by the fill time, as in gcc-2.5.7.  It is
++		 kept for -fsched-old-blockage only.  */
++	      {
++		rtx blockage_old = readycost;
++		int delay = op->ready - 1;
++
++		if (unit->simultaneity != 0)
++		  delay = MIN (delay, ((unit->simultaneity - 1)
++				       * unit->issue_delay.min));
++
++		if (delay > 0)
++		  blockage_old = operate_exp (POS_MINUS_OP, blockage_old,
++					      make_numeric_value (delay));
++
++		blockage_old = operate_exp (MAX_OP, blockage_old,
++					    op->issue_exp);
++		blockage_old = simplify_knowing (blockage_old, unit->condexp);
++
++		if (max_blockage_old == 0)
++		  max_blockage_old = min_blockage_old = blockage_old;
++		else
++		  {
++		    max_blockage_old
++		      = simplify_knowing (operate_exp (MAX_OP, max_blockage_old,
++						       blockage_old),
++					  unit->condexp);
++		    min_blockage_old
++		      = simplify_knowing (operate_exp (MIN_OP, min_blockage_old,
++						       blockage_old),
++					  unit->condexp);
++		  }
++
++		str = attr_printf (strlen (unit->name) + sizeof ("*_block_old_")
++				   + MAX_DIGITS,
++				   "*%s_block_old_%d", unit->name, op->num);
++		make_internal_attr (str, blockage_old, 1);
++	      }
+ 	    }
+ 
+ 	  /* Record MAX (BLOCKAGE (*,*)).  */
+@@ -2071,6 +2117,28 @@
+ 	      make_internal_attr (str, newexp, 4);
+ 	    }
+ 
++	  /* The same, under the gcc 2.5 formula.  */
++	  unit->max_blockage_old = max_attr_value (max_blockage_old);
++	  newexp = operate_exp (EQ_OP, max_blockage_old, min_blockage_old);
++	  newexp = simplify_knowing (newexp, unit->condexp);
++	  unit->needs_blockage_function_old
++	    = (GET_CODE (newexp) != CONST_STRING
++	       || atoi (XSTR (newexp, 0)) != 1);
++	  unit->needs_range_function_old
++	    = (unit->needs_blockage_function_old
++	       || GET_CODE (max_blockage_old) != CONST_STRING);
++	  if (unit->needs_range_function_old)
++	    {
++	      newexp = operate_exp (RANGE_OP, min_blockage_old,
++				    max_blockage_old);
++	      newexp = simplify_knowing (newexp, unit->condexp);
++
++	      str = attr_printf (strlen (unit->name)
++				 + sizeof ("*_unit_blockage_range_old"),
++				 "*%s_unit_blockage_range_old", unit->name);
++	      make_internal_attr (str, newexp, 4);
++	    }
++
+ 	  str = attr_printf (strlen (unit->name) + sizeof ("*_unit_ready_cost"),
+ 			     "*%s_unit_ready_cost", unit->name);
+ 	}
+@@ -2089,7 +2157,8 @@
+       rtx caseexp;
+ 
+       if (! unit->needs_conflict_function
+-	  && ! unit->needs_blockage_function)
++	  && ! unit->needs_blockage_function
++	  && ! unit->needs_blockage_function_old)
+ 	continue;
+ 
+       caseexp = rtx_alloc (COND);
+@@ -5076,6 +5145,8 @@
+     {
+       if (unit->needs_blockage_function)
+ 	write_complex_function (unit, "blockage", "block");
++      if (unit->needs_blockage_function_old)
++	write_complex_function (unit, "blockage_old", "block_old");
+ 
+       /* If the minimum and maximum conflict costs are the same, there
+ 	 is only one value, so we don't need a function.  */
+@@ -5130,6 +5201,41 @@
+     }
+ 
+   printf ("};\n\n");
++
++  /* The same table with the gcc 2.5 blockage functions
++     (-fsched-old-blockage).  */
++  printf ("struct function_unit_desc function_units_old[] = {\n");
++  for (i = 0; i < num_units; i++)
++    {
++      for (unit = units; unit; unit = unit->next)
++	if (unit->num == i)
++	  break;
++
++      printf ("  {\"%s\", %d, %d, %d, %s, %d, %s_unit_ready_cost, ",
++	      unit->name, 1 << unit->num, unit->multiplicity,
++	      unit->simultaneity, XSTR (unit->default_cost, 0),
++	      unit->issue_delay.max, unit->name);
++
++      if (unit->needs_conflict_function)
++	printf ("%s_unit_conflict_cost, ", unit->name);
++      else
++	printf ("0, ");
++
++      printf ("%d, ", unit->max_blockage_old);
++
++      if (unit->needs_range_function_old)
++	printf ("%s_unit_blockage_range_old, ", unit->name);
++      else
++	printf ("0, ");
++
++      if (unit->needs_blockage_function_old)
++	printf ("%s_unit_blockage_old", unit->name);
++      else
++	printf ("0");
++
++      printf ("}, \n");
++    }
++  printf ("};\n\n");
+ }
+ 
+ static void
+--- a/sched.c
++++ b/sched.c
+@@ -147,6 +147,11 @@
+ 
+ /* Vector indexed by INSN_UID giving the original ordering of the insns.  */
+ static int *insn_luid;
++
++/* The function unit table in use: FUNCTION_UNITS, or FUNCTION_UNITS_OLD
++   (blockage computed by the gcc 2.5 genattrtab formula) under
++   -fsched-old-blockage.  */
++static struct function_unit_desc *sched_units = function_units;
+ #define INSN_LUID(INSN) (insn_luid[INSN_UID (INSN)])
+ 
+ /* Vector indexed by INSN_UID giving each instruction a priority.  */
+@@ -1140,7 +1145,7 @@
+ 
+   if (UNIT_BLOCKED (blockage) != unit + 1)
+     {
+-      range = function_units[unit].blockage_range_function (insn);
++      range = sched_units[unit].blockage_range_function (insn);
+       /* We only cache the blockage range for one unit and then only if
+ 	 the values fit.  */
+       if (HOST_BITS_PER_INT >= UNIT_BITS + 2 * BLOCKAGE_BITS)
+@@ -1213,15 +1218,15 @@
+ 	 constant, blockage range function, or blockage function.  Use
+ 	 the most exact form for the given unit.  */
+ 
+-      if (function_units[unit].blockage_range_function)
++      if (sched_units[unit].blockage_range_function)
+ 	{
+-	  if (function_units[unit].blockage_function)
+-	    tick += (function_units[unit].blockage_function
++	  if (sched_units[unit].blockage_function)
++	    tick += (sched_units[unit].blockage_function
+ 		     (insn, unit_last_insn[instance])
+-		     - function_units[unit].max_blockage);
++		     - sched_units[unit].max_blockage);
+ 	  else
+ 	    tick += ((int) MAX_BLOCKAGE_COST (blockage_range (unit, insn))
+-		     - function_units[unit].max_blockage);
++		     - sched_units[unit].max_blockage);
+ 	}
+       if (tick - clock > cost)
+ 	cost = tick - clock;
+@@ -1245,7 +1250,7 @@
+ #if MAX_MULTIPLICITY > 1
+       /* Find the first free instance of the function unit and use that
+ 	 one.  We assume that one is free.  */
+-      for (i = function_units[unit].multiplicity - 1; i > 0; i--)
++      for (i = sched_units[unit].multiplicity - 1; i > 0; i--)
+ 	{
+ 	  if (! actual_hazard_this_instance (unit, instance, insn, clock, 0))
+ 	    break;
+@@ -1253,7 +1258,7 @@
+ 	}
+ #endif
+       unit_last_insn[instance] = insn;
+-      unit_tick[instance] = (clock + function_units[unit].max_blockage);
++      unit_tick[instance] = (clock + sched_units[unit].max_blockage);
+     }
+   else
+     for (i = 0, unit = ~unit; unit; i++, unit >>= 1)
+@@ -1282,7 +1287,7 @@
+ #if MAX_MULTIPLICITY > 1
+       if (best_cost > cost)
+ 	{
+-	  for (i = function_units[unit].multiplicity - 1; i > 0; i--)
++	  for (i = sched_units[unit].multiplicity - 1; i > 0; i--)
+ 	    {
+ 	      instance += FUNCTION_UNITS_SIZE;
+ 	      this_cost = actual_hazard_this_instance (unit, instance, insn,
+@@ -1323,10 +1328,10 @@
+ 
+   if (unit >= 0)
+     {
+-      minb = maxb = function_units[unit].max_blockage;
++      minb = maxb = sched_units[unit].max_blockage;
+       if (maxb > 1)
+ 	{
+-	  if (function_units[unit].blockage_range_function)
++	  if (sched_units[unit].blockage_range_function)
+ 	    {
+ 	      maxb = minb = blockage_range (unit, insn);
+ 	      maxb = MAX_BLOCKAGE_COST (maxb);
+@@ -3214,10 +3219,10 @@
+ 	  for (k = 0; k < FUNCTION_UNITS_SIZE && ok; k++)
+ 	    if ((u >= 0 ? u == k : ((~u) >> k) & 1) && unit_last[k] != 0
+ 		&& unit_time[k]
+-		   + (function_units[k].blockage_function
+-		      ? (*function_units[k].blockage_function) (unit_last[k],
++		   + (sched_units[k].blockage_function
++		      ? (*sched_units[k].blockage_function) (unit_last[k],
+ 							       v[i])
+-		      : function_units[k].max_blockage) > clock)
++		      : sched_units[k].max_blockage) > clock)
+ 	      ok = 0;
+ 	  if (! ok)
+ 	    continue;
+@@ -4802,6 +4807,8 @@
+   int b;
+   rtx insn;
+ 
++  sched_units = flag_sched_old_blockage ? function_units_old : function_units;
++
+   /* Taking care of this degenerate case makes the rest of
+      this code simpler.  */
+   if (n_basic_blocks == 0)
+--- a/flags.h
++++ b/flags.h
+@@ -242,6 +242,10 @@
+ /* Nonzero: forward list scheduling after reload.  */
+ extern int flag_sched2_forward;
+ 
++/* Nonzero: the scheduler uses function unit blockage computed by the
++   gcc 2.5 genattrtab formula.  */
++extern int flag_sched_old_blockage;
++
+ /* Nonzero means all references through pointers are volatile.  */
+ 
+ extern int flag_volatile;
+--- a/toplev.c
++++ b/toplev.c
+@@ -407,6 +407,12 @@
+ 
+ int flag_sched2_forward = 0;
+ 
++/* Nonzero means the scheduler uses the function unit blockage values of
++   the gcc 2.5 genattrtab formula, READY-COST (C) - (READY-COST (E) - 1)
++   (-fsched-old-blockage; see sched.c).  */
++
++int flag_sched_old_blockage = 0;
++
+ /* Nonzero allows GCC to violate some IEEE or ANSI rules regarding math
+    operations in the interest of optimization.  For example it allows
+    GCC to assume arguments to sqrt are nonnegative numbers, allowing
+@@ -565,7 +571,8 @@
+   {"gnu-linker", &flag_gnu_linker, 1},
+   {"bytecode", &output_bytecode, 1},
+   {"stack-args-first", &flag_stack_args_first, 1},
+-  {"sched2-forward", &flag_sched2_forward, 1}
++  {"sched2-forward", &flag_sched2_forward, 1},
++  {"sched-old-blockage", &flag_sched_old_blockage, 1}
+ };
+ 
+ /* Table of language-specific options.  */

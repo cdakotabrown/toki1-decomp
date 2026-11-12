@@ -1,0 +1,360 @@
+/* @SymbolStart: 0x8014F36C */
+/* @RodataBase: 0x8015EEBC */
+/* Address: 0x8014F374, Size: 2300 bytes (575 insns) */
+/* @SymbolSize: 2308 */
+/* @PostProc: swap_instructions --offset1 0x2c8 --offset2 0x2cc */
+/* @PostProc: swap_instructions --offset1 0x2c4 --offset2 0x2c8 */
+/* @PostProc: swap_instructions --offset1 0x2e8 --offset2 0x2ec */
+/* @PostProc: swap_instructions --offset1 0x564 --offset2 0x568 */
+/* @PostProc: swap_instructions --offset1 0x56c --offset2 0x570 */
+/* @PostProc: patch_insn_reg_field 0x2b4:rt:t9:t5 0x2b8:rs:t9:t5 0x2b8:rt:t9:t5 0x2c0:rt:t0:t6 0x2c4:rt:t9:t5 0x2c8:rs:t0:t6 0x2c8:rt:t0:t6 0x2cc:rt:t2:v1 0x2d0:rs:t2:v1 0x2d0:rt:t2:t9 0x2d8:rt:t0:t6 0x2e0:rt:t1:t7 0x2e4:rs:t2:t9 0x2e4:rt:t3:t1 0x2e8:rs:t3:t1 0x2e8:rt:t4:t2 0x2ec:rt:t1:t7 0x2f0:rs:t4:t2 0x2f0:rt:t5:t4 0x2f8:rt:t5:t4 0x30c:rt:t6:t8 0x314:rt:t7:t9 0x318:rs:t7:t9 0x318:rt:t7:t9 0x31c:rt:t6:t8 0x324:rt:t7:t9 0x32c:rt:t8:t0 0x330:rt:t8:t0 0x34c:rt:t9:t1 0x350:rt:t0:t2 0x354:rt:t0:t2 0x358:rt:t9:t1 0x384:rt:t1:t3 0x390:rt:t1:t3 0x410:rt:t2:t4 0x414:rs:t2:t4 0x458:rt:t3:t5 0x464:rt:t3:t5 0x49c:rt:t4:t6 0x4a0:rs:t4:t6 0x4c4:rt:t6:t8 0x4d0:rt:t7:t9 0x4dc:rt:t5:t7 0x4e8:rt:t5:t7 0x4f4:rt:t6:t8 0x4fc:rt:t7:t9 0x554:rt:t8:t5 0x558:rs:t8:t5 0x558:rt:t8:t5 0x560:rt:t9:t6 0x564:rt:t8:t5 0x568:rs:t9:t6 0x568:rt:t9:t6 0x56c:rt:t1:v1 0x574:rs:t1:v1 0x574:rt:t1:t0 0x578:rt:t9:t6 0x580:rt:t0:t7 0x584:rt:t0:t7 0x588:rs:t1:t0 0x58c:rt:t3:t4 0x594:rt:t3:t4 0x5a8:rt:t4:t8 0x5b0:rt:t5:t9 0x5b4:rs:t5:t9 0x5b4:rt:t5:t9 0x5b8:rt:t4:t8 0x5c0:rt:t5:t9 0x5c8:rt:t6:t0 0x5cc:rt:t6:t0 0x5e8:rt:t7:t1 0x5ec:rt:t8:t2 0x5f0:rt:t8:t2 0x5f4:rt:t7:t1 0x620:rt:t9:t3 0x62c:rt:t9:t3 0x6ac:rt:t0:t4 0x6b0:rs:t0:t4 0x6f4:rt:t1:t5 0x700:rt:t1:t5 0x75c:rt:t2:t6 0x760:rs:t2:t6 0x778:rd:t3:t7 0x780:rt:t3:t7 0x784:rt:t3:t7 0x78c:rs:t3:t7 0x794:rt:t4:t8 0x7a0:rt:t4:t8 0x7a4:rt:t5:t9 0x7b0:rt:t5:t9 0x7b4:rt:t6:t0 0x7c0:rt:t6:t0 0x7c4:rt:t7:t1 0x7cc:rt:t7:t1 0x7d8:rt:t8:t2 0x7dc:rs:t8:t2 0x7dc:rt:t8:t2 0x7e0:rt:t9:t3 0x7e4:rs:t8:t2 0x7f0:rs:t9:t3 0x7f0:rt:t9:t3 0x7f8:rs:t9:t3 0x7f8:rt:t0:t4 0x800:rt:t0:t4 0x82c:rd:t1:t5 0x834:rt:t1:t5 0x838:rt:t1:t5 0x840:rs:t1:t5 0x848:rt:t2:t6 0x854:rt:t2:t6 0x858:rt:t3:t7 0x864:rt:t3:t7 0x868:rt:t4:t8 0x874:rt:t4:t8 0x8dc:rt:t5:v1 0x8e0:rs:t5:v1 0x8e0:rt:t5:t9 0x8e8:rs:t5:t9 0x8e8:rt:t6:t1 0x8f0:rt:t6:t1 */
+#include "types.h"
+
+extern u8 now_sub_sub_step;
+extern void sub_sub_step_up();
+extern void goto_step(s32);
+extern void goto_sub_step(s32);
+extern void goto_sub_sub_step(s32);
+extern void device_cmd_send(s32);
+extern void device_load_start(s32, s32, s32, s32, s32, s32);
+extern s32  device_load_poll(void);
+extern s32  get_CD_State2(void);
+extern void cd_read_start2(s32, s32, s32);
+extern void game_reset(void);
+extern void set_dec_bri(s32);
+extern void dec_bg_reset(void);
+extern void indexed_byte_lsb_set(s32, s32);
+extern s32  dec_bg_init(s32);
+extern void value_cache_find_or_load(s32, s32);
+extern void bustup_ptr_init(void);
+extern void fade_up_main(void);
+extern void fade_down_main(void);
+extern void fade_in_step(void);
+extern void fade_in(void);
+extern void fade_out_step(void);
+extern void fade_out(void);
+extern void zyotai_sprite_set_chk(void);
+extern void yazirushi_off(void);
+extern void serifu_run(void);
+extern void date_x_taku_set(s32, s32);
+extern void bustup_load_step(s32);
+extern u8   get_g_zyotai_low(s32);
+extern void date_name_set(s32);
+extern void hizuke_init(void);
+extern void message_window_init(void);
+extern void bunkasai_basyo_init(void);
+extern void bunkasai_sub_reset(void);
+extern void bunkasai_girl6_srf_bank_set(void);
+
+extern u8  now_girl;
+extern s16 now_serifu;
+extern u8  ret_step;
+extern u8  ret_sub_step;
+extern u8  ret_sub_sub_step;
+extern u8  now_step;
+extern u8  now_sub_step;
+extern u8  tt_result;
+extern u8  bunkaken_flags;
+extern s32 common_disp_off;
+extern s32 bunka_ret_sub_step;
+extern s32 bunka_ret_sub_sub_step;
+extern s16 mes_base_y;
+
+void bunkasai_girl6_club3_96_scene(void)
+{
+    switch (now_sub_sub_step) {
+    case 0:
+        value_cache_find_or_load(16645, 1);
+        sub_sub_step_up();
+        break;
+    case 1:
+        fade_out_step();
+        break;
+    case 2:
+        if (get_CD_State2() & 1) {
+            indexed_byte_lsb_set(1, dec_bg_init(1));
+            sub_sub_step_up();
+        }
+        break;
+    case 3:
+        bustup_load_step(25133);
+        break;
+    case 4:
+        bustup_ptr_init();
+        now_girl = 6;
+        zyotai_sprite_set_chk();
+        bunkasai_basyo_init();
+        now_serifu = 42;
+        break;
+    case 5:
+        fade_in_step();
+        break;
+    case 6:
+        serifu_run();
+        break;
+    case 7:
+        cd_read_start2(15, 0x801E8000, 19219);
+        sub_sub_step_up();
+        break;
+    case 8:
+        fade_up_main();
+        break;
+    case 9:
+        if (get_CD_State2() & 1) {
+            switch (get_g_zyotai_low(6)) {
+            case 0:
+            case 1:
+                now_serifu = 64;
+                break;
+            case 2:
+                now_serifu = 65;
+                break;
+            case 3:
+                now_serifu = 66;
+                break;
+            case 4:
+                now_serifu = 67;
+                break;
+            }
+            bunkasai_girl6_srf_bank_set();
+        }
+        break;
+    case 10:
+        serifu_run();
+        break;
+    case 11:
+        if (get_g_zyotai_low(6) == 4)
+            fade_down_main();
+        else
+            goto_sub_sub_step(14);
+        break;
+    case 12:
+        serifu_run();
+        break;
+    case 13:
+        goto_sub_sub_step(27);
+        break;
+    case 14:
+        switch (get_g_zyotai_low(6)) {
+        case 0:
+        case 1:
+            now_serifu = 69;
+            break;
+        case 2:
+            now_serifu = 70;
+            break;
+        case 3:
+            now_serifu = 71;
+            break;
+        }
+        sub_sub_step_up();
+        break;
+    case 15:
+        serifu_run();
+        break;
+    case 16:
+        fade_out();
+        break;
+    case 17:
+        ret_step = now_step;
+        ret_sub_step = now_sub_step;
+        ret_sub_sub_step = now_sub_sub_step + 1;
+        bunkaken_flags = (u8)((((bunkaken_flags | 2) & 0xFFE3) | 8));
+        goto_step(208);
+        break;
+    case 18:
+        common_disp_off = 1;
+        bunka_ret_sub_step = now_sub_step;
+        bunka_ret_sub_sub_step = now_sub_sub_step + 1;
+        goto_sub_step(163);
+        break;
+    case 19:
+        device_cmd_send(191);
+        device_load_start(1, 0xC486, 0xC459, 0xD266, 0xD216, 0xD20E);
+        date_x_taku_set(1, 0);
+        bunkasai_basyo_init();
+        mes_base_y = 192;
+        message_window_init();
+        hizuke_init();
+        yazirushi_off();
+        date_name_set(6);
+        common_disp_off = 0;
+        sub_sub_step_up();
+        break;
+    case 20:
+        if (device_load_poll() == 1) {
+            device_cmd_send(512);
+            dec_bg_reset();
+            set_dec_bri(0);
+            value_cache_find_or_load(16645, 1);
+            sub_sub_step_up();
+        }
+        break;
+    case 21:
+        if (get_CD_State2() & 1) {
+            indexed_byte_lsb_set(1, dec_bg_init(1));
+            sub_sub_step_up();
+        }
+        break;
+    case 22:
+        bustup_load_step(25133);
+        break;
+    case 23:
+        bustup_ptr_init();
+        now_girl = 6;
+        zyotai_sprite_set_chk();
+        cd_read_start2(15, 0x801E8000, 19219);
+        break;
+    case 24:
+        fade_in();
+        break;
+    case 25:
+        if (get_CD_State2() & 1) {
+            switch (get_g_zyotai_low(6)) {
+            case 0:
+            case 1:
+                now_serifu = 75;
+                break;
+            case 2:
+                now_serifu = 76;
+                break;
+            case 3:
+                now_serifu = 77;
+                break;
+            }
+            bunkasai_girl6_srf_bank_set();
+        }
+        break;
+    case 26:
+        serifu_run();
+        break;
+    case 27:
+        if (get_g_zyotai_low(6) == 4)
+            sub_sub_step_up();
+        else
+            fade_down_main();
+        break;
+    case 28:
+        ret_step = now_step;
+        ret_sub_step = now_sub_step;
+        ret_sub_sub_step = now_sub_sub_step + 1;
+        bunkaken_flags = (u8)((bunkaken_flags | 2) & 0xFFE3);
+        goto_sub_step(164);
+        break;
+    case 29:
+        common_disp_off = 1;
+        bunka_ret_sub_step = now_sub_step;
+        bunka_ret_sub_sub_step = now_sub_sub_step + 1;
+        goto_sub_step(163);
+        break;
+    case 30:
+        device_cmd_send(191);
+        device_load_start(1, 0xC486, 0xC459, 0xD266, 0xD216, 0xD20E);
+        date_x_taku_set(1, 0);
+        bunkasai_basyo_init();
+        mes_base_y = 192;
+        message_window_init();
+        hizuke_init();
+        yazirushi_off();
+        date_name_set(6);
+        common_disp_off = 0;
+        sub_sub_step_up();
+        break;
+    case 31:
+        if (device_load_poll() == 1) {
+            device_cmd_send(512);
+            dec_bg_reset();
+            set_dec_bri(0);
+            value_cache_find_or_load(16645, 1);
+            sub_sub_step_up();
+        }
+        break;
+    case 32:
+        if (get_CD_State2() & 1) {
+            indexed_byte_lsb_set(1, dec_bg_init(1));
+            sub_sub_step_up();
+        }
+        break;
+    case 33:
+        bustup_load_step(25133);
+        break;
+    case 34:
+        bustup_ptr_init();
+        now_girl = 6;
+        zyotai_sprite_set_chk();
+        cd_read_start2(15, 0x801E8000, 19219);
+        break;
+    case 35:
+        if (get_g_zyotai_low(6) == 4)
+            fade_in_step();
+        else
+            fade_in();
+        break;
+    case 36:
+        if (get_CD_State2() & 1) {
+            switch (get_g_zyotai_low(6)) {
+            case 0:
+            case 1:
+                now_serifu = 78;
+                break;
+            case 2:
+                now_serifu = 80;
+                break;
+            case 3:
+                now_serifu = 82;
+                break;
+            case 4:
+                now_serifu = 84;
+                break;
+            }
+            bunkasai_girl6_srf_bank_set();
+            if ((u32)tt_result < 2)
+                now_serifu = now_serifu + 1;
+        }
+        break;
+    case 37:
+        serifu_run();
+        break;
+    case 38:
+        sub_sub_step_up();
+        switch (get_g_zyotai_low(6)) {
+        case 0:
+        case 1:
+            now_serifu = 1;
+            break;
+        case 2:
+            now_serifu = 2;
+            break;
+        case 3:
+            now_serifu = 3;
+            break;
+        case 4:
+            goto_sub_sub_step(41);
+            break;
+        }
+        break;
+    case 39:
+        serifu_run();
+        break;
+    case 40:
+        fade_down_main();
+        break;
+    case 41:
+        fade_out_step();
+        break;
+    case 42:
+        now_serifu = 0;
+        sub_sub_step_up();
+        break;
+    case 43:
+        serifu_run();
+        break;
+    case 44:
+        bunkaken_flags |= 1;
+        bunkasai_sub_reset();
+        break;
+    default:
+        game_reset();
+        break;
+    }
+}

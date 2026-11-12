@@ -1,0 +1,1 @@
+{"host": "0x8012AC40", "type": "LIBGS_F_LIGHT", "size": 16, "count": 3, "leaves": [[0, "vx", "s32"], [4, "vy", "s32"], [8, "vz", "s32"], [12, "r", "u8"], [13, "g", "u8"], [14, "b", "u8"]], "header": "tokimeki/libgs_types.h"}

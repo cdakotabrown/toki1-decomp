@@ -1,0 +1,25 @@
+{
+  "_comment": "Data sections incorrectly identified as functions. These need to be extracted from disk and included in builds as raw data, not compiled code.",
+  "_format": "address: { size, type, description, symbols }",
+
+  "sections": {
+    "0x80087AF8": {
+      "size": 320,
+      "type": "jump_table_and_strings",
+      "description": "Jump table (80 words) followed by debug string literals",
+      "symbols": ["etc_disp"],
+      "strings": [
+        "MDEDC_reset:bad option(%d)\\n",
+        "MDEDC_in_sync",
+        "MDEDC_out_sync"
+      ],
+      "extract_command": "dd if=disks/SLPS_000.65 bs=1 skip=$((0x80087AF8 - 0x80010000 + 0x800)) count=320 of=data/extracted/data_80087AF8.bin"
+    }
+  },
+
+  "extraction_notes": {
+    "base_vram": "0x80010000",
+    "exe_header_size": "0x800",
+    "formula": "file_offset = (vram_addr - 0x80010000) + 0x800"
+  }
+}

@@ -1,0 +1,16 @@
+{
+ "description": "Remediation worklist for tools/analysis/audit_plain_vs_shipped.py. \"differ\": functions whose shipped (post-PostProc) object is not a register-renaming + reschedule of their PostProc-free compile. \"sched_branch_copy\": functions whose scheduler_normalizer step took a branch displacement from retail instead of from its own permutation. The gate fails only on NEW entries or growth; remove an entry by fixing the C (or demoting to asm_only) and re-running --write-baseline.",
+ "generated": "2026-10-03",
+ "criterion": "r3 (WL multiset after 3 rounds) != [0,0]",
+ "arg_home_exemption": true,
+ "counts": {
+  "measured": 7433,
+  "same": 7433,
+  "differ": 0,
+  "unmeasurable": 0,
+  "sched_branch_copy": 0
+ },
+ "differ": {},
+ "unmeasurable": {},
+ "sched_branch_copy": {}
+}

@@ -1,0 +1,1 @@
+{"scope": "ETC", "hosts": ["0x8014EC50", "0x8014ECF8", "0x8014F1FC", "0x8014F638"], "type": "ETC_EV_RES_BG", "header": "tokimeki/etc_ev_res.h", "size": 28, "count": 1, "head_leaf": "pal", "leaves": [[0, "pal", "s32"], [4, "bg[0]", "s32"], [8, "bg[1]", "s32"], [12, "bg[2]", "s32"], [16, "bg[3]", "s32"], [20, "bg[4]", "s32"], [24, "bg[5]", "s32"]]}

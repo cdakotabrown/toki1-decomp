@@ -1,0 +1,1 @@
+{"scope": "TAIIKU", "host": "0x8014A644", "count": 4, "type": "TAIIKU_SPOON_BAL", "size": 28, "leaves": [[8, "tilt", "s32"], [12, "down", "u8"], [20, "wobble", "u16"]]}

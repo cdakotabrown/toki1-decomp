@@ -1,0 +1,63 @@
+{
+ "armed": {
+  "adjust_branch_offset": "2026-10-03",
+  "convert_addiu_to_ori": "2026-10-03",
+  "convert_ori_to_addiu": "2026-10-03"
+ },
+ "classes": {
+  "adjust_branch_offset": {},
+  "convert_addiu_to_ori": {},
+  "convert_addiu_to_slti": {},
+  "convert_ori_to_addiu": {},
+  "fill_delay_slots": {},
+  "invert_branch": {},
+  "nop_at_offset": {},
+  "patch_insn_imm16": {},
+  "swap_spill_with_move": {},
+  "zero_reg_paint": {}
+ },
+ "counts": {
+  "adjust_branch_offset": {
+   "functions": 0,
+   "sites": 0
+  },
+  "convert_addiu_to_ori": {
+   "functions": 0,
+   "sites": 0
+  },
+  "convert_addiu_to_slti": {
+   "functions": 0,
+   "sites": 0
+  },
+  "convert_ori_to_addiu": {
+   "functions": 0,
+   "sites": 0
+  },
+  "fill_delay_slots": {
+   "functions": 0,
+   "sites": 0
+  },
+  "invert_branch": {
+   "functions": 0,
+   "sites": 0
+  },
+  "nop_at_offset": {
+   "functions": 0,
+   "sites": 0
+  },
+  "patch_insn_imm16": {
+   "functions": 0,
+   "sites": 0
+  },
+  "swap_spill_with_move": {
+   "functions": 0,
+   "sites": 0
+  },
+  "zero_reg_paint": {
+   "functions": 0,
+   "sites": 0
+  }
+ },
+ "description": "Functions that used a RESTRICTED PostProc class before it was banned for new use on 2026-09-27 (docs/reference/PS1-HARDENING-AUDIT.md). This is a REMEDIATION WORKLIST, not a permission: banned_postproc.check_restricted_postproc_steps refuses the class for any function not listed here, or for more sites than listed. Entries may only be REMOVED (fix the C, or demote to asm_only); `python3 tools/build/banned_postproc.py --census --prune` drops remediated entries and never adds. Main functions are keyed by address (names are being renamed).",
+ "generated": "2026-09-27"
+}

@@ -1,0 +1,1 @@
+{"host": "0x800F0230", "type": "TACO_REC", "header": "tokimeki/save_work.h", "size": 24, "count": 1, "leaves": [[0, "flags", "u8"], [2, "name[0][0]", "u8"], [5, "name[1][0]", "u8"], [8, "name[2][0]", "u8"], [12, "score[0]", "s32"], [16, "score[1]", "s32"], [20, "score[2]", "s32"]]}

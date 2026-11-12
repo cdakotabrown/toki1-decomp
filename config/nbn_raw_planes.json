@@ -1,0 +1,27 @@
+{
+ "schema": "tokimemo.nbn.raw-planes/v1",
+ "evidence": "coherent indexed imagery fills an exact byte plane followed by a shared 2048-byte tail sector",
+ "records": [
+  {"family":"PROLODIR","filename":"O_01.NBN","width":128,"height":192},
+  {"family":"PROLODIR","filename":"O_05.NBN","width":128,"height":128},
+  {"family":"PROLODIR","filename":"O_06.NBN","width":128,"height":128},
+  {"family":"PROLODIR","filename":"O_07.NBN","width":256,"height":192},
+  {"family":"PROLODIR","filename":"O_08.NBN","width":256,"height":192},
+  {"family":"PROLODIR","filename":"O_09.NBN","width":128,"height":128},
+  {"family":"PROLODIR","filename":"O_10.NBN","width":256,"height":192},
+  {"family":"PROLODIR","filename":"O_12.NBN","width":128,"height":256},
+  {"family":"PROLODIR","filename":"O_13.NBN","width":256,"height":512,"geometry_confidence":"tentative"},
+  {"family":"PROLODIR","filename":"O_14.NBN","width":128,"height":128},
+  {"family":"PROLODIR","filename":"O_16.NBN","width":256,"height":192},
+  {"family":"FUKUTEST","filename":"EXAMINE.NBN","width":256,"height":96,"geometry_confidence":"tentative"},
+  {"family":"FUKUTEST","filename":"O_31_01.NBN","width":256,"height":512,"geometry_confidence":"tentative"},
+  {"family":"FUKUTEST","filename":"O_31_02.NBN","width":256,"height":512,"geometry_confidence":"tentative"},
+  {"family":"FUKUTEST","filename":"O_31_03.NBN","width":256,"height":512,"geometry_confidence":"tentative"},
+  {"family":"FUKUTEST","filename":"STAFF_T.NBN","width":256,"height":128},
+  {"family":"TACO","filename":"D_IWA.NBN","width":128,"height":128},
+  {"family":"TACO","filename":"T_HAMA.NBN","width":128,"height":128},
+  {"family":"TACO","filename":"T_SORA.NBN","width":256,"height":128},
+  {"family":"TACO","filename":"T_SUNA.NBN","width":128,"height":128},
+  {"family":"TACO","filename":"T_UMI.NBN","width":128,"height":128}
+ ]
+}

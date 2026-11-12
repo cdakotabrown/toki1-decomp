@@ -1,0 +1,24 @@
+#!/bin/sh
+# Opt-in reaudit hook (install via tools/hooks/install.sh).
+# Before pushing commits that touched the compiler/hook layer, re-test every
+# asm_only function's retained C and loudly flag any that now match.
+# Safe by design: never blocks the push, always exits 0.
+
+. "$(git rev-parse --show-toplevel)/tools/hooks/_common.sh"
+
+# stdin: <local_ref> <local_oid> <remote_ref> <remote_oid> per pushed ref.
+_touched=1
+while read -r _local_ref _local_oid _remote_ref _remote_oid; do
+    # Skip ref deletions (nothing new to audit).
+    is_zero_oid "$_local_oid" && continue
+    if is_zero_oid "$_remote_oid"; then
+        # New branch on the remote: be conservative and re-audit.
+        _touched=0
+    elif reaudit_paths_changed "$_remote_oid" "$_local_oid"; then
+        _touched=0
+    fi
+done
+
+[ "$_touched" -eq 0 ] && reaudit_run_and_banner
+
+exit 0

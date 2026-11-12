@@ -1,0 +1,14 @@
+# Non-code ranges inside the main binary's code section (0x80041000-0x800B5A60)
+# that tools/analysis/audit_main_coverage.py must not report as uncovered code.
+#
+# Format (one per line, END exclusive):
+#     0xSTART 0xEND CATEGORY evidence...
+# CATEGORY is `data` or `padding` -- nothing else is accepted.  Code NEVER goes
+# here: real code with no honest C is an asm_only listing with a blocker in
+# config/c_unmatchable.txt, or open work.  An entry overlapping a registered or
+# asm_only window is an error.
+#
+# Empty on purpose (2026-10-03): no data was found inside the code section.
+# Zero-word alignment padding is handled by the gate itself, and the 25
+# "DATA_SECTION" verdicts in config/invalid_function_addresses.txt were all
+# wrong (every one was a registered function).  Data begins at 0x800B5A60.

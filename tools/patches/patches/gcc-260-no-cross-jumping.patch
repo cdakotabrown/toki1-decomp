@@ -1,0 +1,32 @@
+--- gcc-2.6.0/toplev.c.orig	1994-07-06 21:58:55.000000000 -0500
++++ gcc-2.6.0/toplev.c	2026-03-18 23:38:57.204880764 -0500
+@@ -395,6 +395,10 @@
+
+ int flag_no_peephole = 0;
+
++/* Nonzero means don't do cross-jumping optimization.  */
++
++int flag_no_cross_jumping = 0;
++
+ /* Nonzero allows GCC to violate some IEEE or ANSI rules regarding math
+    operations in the interest of optimization.  For example it allows
+    GCC to assume arguments to sqrt are nonnegative numbers, allowing
+@@ -555,7 +559,8 @@
+   {"inhibit-size-directive", &flag_inhibit_size_directive, 1},
+   {"verbose-asm", &flag_verbose_asm, 1},
+   {"gnu-linker", &flag_gnu_linker, 1},
+-  {"bytecode", &output_bytecode, 1}
++  {"bytecode", &output_bytecode, 1},
++  {"cross-jumping", &flag_no_cross_jumping, 0}
+ };
+
+ /* Table of language-specific options.  */
+@@ -3168,7 +3173,7 @@
+
+   if (optimize > 0)
+     {
+-      TIMEVAR (jump_time, jump_optimize (insns, 1, 1, 0));
++      TIMEVAR (jump_time, jump_optimize (insns, flag_no_cross_jumping ? 0 : 1, 1, 0));
+     }
+
+   /* Dump rtl code after jump, if we are doing that.  */

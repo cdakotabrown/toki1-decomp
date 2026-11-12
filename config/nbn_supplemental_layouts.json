@@ -1,0 +1,35 @@
+{
+ "schema": "tokimemo.nbn.supplemental-layouts/v1",
+ "records": [
+  {
+   "family": "ETC_SD",
+   "filename": "SD_P30.NBN",
+   "width": 128,
+   "height": 128,
+   "pixel_offset": 992,
+   "palette_offset": 0,
+   "confidence": "strong",
+   "evidence": "SD descriptor block ends at 0x3E0; exact 128x128 indexed payload and coherent palette-bound atlas"
+  },
+  {
+   "family": "ETC_SD",
+   "filename": "SD_P30W.NBN",
+   "width": 128,
+   "height": 128,
+   "pixel_offset": 992,
+   "palette_offset": 0,
+   "confidence": "strong",
+   "evidence": "SD descriptor block ends at 0x3E0; exact 128x128 indexed payload and coherent palette-bound atlas"
+  },
+  {
+   "family": "ETC_SD",
+   "filename": "SD_P31.NBN",
+   "width": 128,
+   "height": 128,
+   "pixel_offset": 848,
+   "palette_offset": 0,
+   "confidence": "strong",
+   "evidence": "SD descriptor block ends at 0x350; exact 128x128 indexed payload and coherent palette-bound atlas"
+  }
+ ]
+}

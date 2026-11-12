@@ -1,0 +1,1 @@
+{"scope": "TT", "host": "0x80155C78", "count": 5, "type": "TT_BOX", "header": "tokimeki/tt_box.h", "size": 6, "head_leaf": "x", "leaves": [[0, "x", "s16"], [2, "y", "s16"], [4, "w", "u8"], [5, "h", "u8"]]}

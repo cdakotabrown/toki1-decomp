@@ -1,0 +1,13 @@
+diff --git a/config/mips/psx.h b/config/mips/psx.h
+index 373dfb1..9755386 100644
+--- a/config/mips/psx.h
++++ b/config/mips/psx.h
+@@ -21,7 +21,7 @@ Boston, MA 02111-1307, USA.  */
+ 
+ /* Definitions by GIL for PSX */
+ 
+-#define TARGET_DEFAULT (MASK_GAS+MASK_SOFT_FLOAT)
++#define TARGET_DEFAULT (MASK_GAS+MASK_SOFT_FLOAT+MASK_GPOPT)
+ 
+ #define CPP_PREDEFINES	"-Dmips -DMIPSEL"
+ 

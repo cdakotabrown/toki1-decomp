@@ -1,0 +1,12 @@
+/* Address: 0x8013F448 */
+/* Size: 40 bytes (10 instructions) */
+#include "types.h"
+
+extern void FUN_80011DFC();
+extern void FUN_800469F4();
+
+void func_8013F448(void)
+{
+    FUN_800469F4(17028);
+    FUN_80011DFC();
+}

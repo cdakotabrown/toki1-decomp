@@ -1,0 +1,7 @@
+#include "types.h"
+void SD_CmdPut(s32 arg0) {
+    s32 saved = arg0;
+    volatile s32 pad[4];
+    pad[0] = 0;
+    func_801ED9F0(saved & 0xFFFF);
+}

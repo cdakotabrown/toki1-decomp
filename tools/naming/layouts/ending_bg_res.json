@@ -1,0 +1,1 @@
+{"scope": "ENDING", "host": "0x8013C5D0", "count": 1, "type": "ENDING_BG_RES", "size": 28, "leaves": [[0, "pal", "s32"], [4, "bg0", "s32"], [8, "bg1", "s32"], [12, "bg2", "s32"], [16, "bg3", "s32"], [20, "bg4", "s32"], [24, "bg5", "s32"]]}
